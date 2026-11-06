@@ -268,9 +268,12 @@ function renderDaily(){
   el.innerHTML=SPORTS.filter(sp=>picks[sp]).map(sp=>{
     const {m,ti}=picks[sp],t=m.teams[ti],tot=t.p.length+(t.coach?1:0);
     const fait=store.get(dailyKey(DAYN,sp)),s=streakOf(DAYN,sp);
+    // Le match est annoncé franchement : il est de toute façon dévoilé dès
+    // qu'on appuie sur Jouer, donc le cacher ne protégeait rien et rendait la
+    // carte muette. Ce qui reste à trouver, ce sont les noms.
     return `<div class="daily"><span class="tag">${nomSport(sp)} · jour n° ${DAYN}</span>`
-      +`<span class="what">${fait?esc(m.fx):"Une finale, une équipe, la même pour tout le monde"}`
-      +`<small>${fait?`${m.where}, ${m.yr} — ${esc(t.name)}`:`${tot} réponses · une seule partie classée`}</small></span>`
+      +`<span class="what">${esc(m.fx)}`
+      +`<small>${m.where}, ${m.yr} · compo à retrouver : ${esc(t.name)} · ${tot} réponses</small></span>`
       +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
       +`<button class="btn primary" data-jour="${sp}">${fait?"Rejouer hors classement":"Jouer"}</button></div>`;
   }).join("")
