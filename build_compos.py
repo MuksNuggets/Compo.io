@@ -128,6 +128,7 @@ def score_str(a, b, aet=False, pens=None):
 def from_fjelstul(items):
     ms = list(csv.DictReader(io.StringIO(get(GH_FJ + "matches.csv").text)))
     pa = list(csv.DictReader(io.StringIO(get(GH_FJ + "player_appearances.csv").text)))
+    ma = list(csv.DictReader(io.StringIO(get(GH_FJ + "manager_appearances.csv").text)))
     out = []
     for it in items:
         m = next((m for m in ms if m['stage_name'] == 'final' and "Men's" in m['tournament_name'] and m['match_date'][:4] == str(it['yr'])), None)
@@ -143,7 +144,13 @@ def from_fjelstul(items):
             rows = sorted([r for r in pa if r['match_id'] == m['match_id'] and r['team_name'] == tn and r['starter'] == '1'],
                           key=lambda r: int(r['shirt_number']))
             names = [(r['position_code'], r['family_name'] if r['given_name'] == 'not applicable' else f"{r['given_name']} {r['family_name']}") for r in rows]
-            teams.append({'name': fr(tn), 'p': place_foot(names)})
+            eq = {'name': fr(tn), 'p': place_foot(names)}
+            mg = next((g for g in ma if g['match_id'] == m['match_id'] and g['team_name'] == tn), None)
+            if mg:
+                eq['coach'] = (mg['family_name'] if mg['given_name'] == 'not applicable'
+                               else f"{mg['given_name']} {mg['family_name']}", [])
+            else: flag(it['id'], f"{tn} : selectionneur absent de Fjelstul")
+            teams.append(eq)
         out.append(dict(it, a=fr(order[0][0]), b=fr(order[1][0]), score=score_str(order[0][1], order[1][1], m['extra_time'] == '1', pens), teams=teams))
     return out
 
@@ -164,6 +171,10 @@ def from_statsbomb(it):
     home_win = hs > as_ or (hs == as_ and pk[h] > pk[a])
     order = [(h, hs), (a, as_)] if home_win else [(a, as_), (h, hs)]
     pens = (max(pk[h], pk[a]), min(pk[h], pk[a])) if pk else None
+    coachs = {}
+    for cote in ('home_team', 'away_team'):
+        g = (m[cote].get('managers') or [None])[0]
+        if g: coachs[m[cote][cote + '_name']] = g.get('nickname') or g['name']
     teams = []
     for tn, _ in order:
         pl = []
@@ -171,7 +182,10 @@ def from_statsbomb(it):
             lab, x, y = SB.get(p['position']['name'], ('MC', 50, 52))
             if p['position']['name'] not in SB: flag(it['id'], f"poste StatsBomb inconnu : {p['position']['name']}")
             pl.append([lab, x, y, nick[p['player']['id']], []])
-        teams.append({'name': fr(tn), 'p': sorted(pl, key=lambda q: -q[2])})
+        eq = {'name': fr(tn), 'p': sorted(pl, key=lambda q: -q[2])}
+        if coachs.get(tn): eq['coach'] = (coachs[tn], [])
+        else: flag(it['id'], f"{tn} : entraineur absent de StatsBomb")
+        teams.append(eq)
     return dict(it, a=fr(order[0][0]), b=fr(order[1][0]), score=score_str(order[0][1], order[1][1], aet, pens), teams=teams)
 
 # ---------------------------------------------------------------- source 3 : Wikipédia
@@ -205,28 +219,66 @@ def name_of(cell):
     t = code.strip_code().strip()
     return re.sub(r"\(c\)|\(capt?\.?\)|\(captain\)", "", t).strip()
 
-ROW = re.compile(r"^\|\s*([A-Z0-9]{1,4})\s*\|\|\s*'*\s*(\d{1,2})\s*'*\s*\|\|(.*)$")
+ROW = re.compile(r"^\|\s*([A-Z0-9]{1,4})\s*\|\|\s*'*\s*([0-9]{1,2}|[A-O])\s*'*\s*\|\|(.*)$")
 MARK = re.compile(r"^[|!]")                                   # repère = ligne de tableau, pas de prose
 SUBS = re.compile(r"substitut|replacement|remplaçant", re.I)
 STAFF = re.compile(r"manager|coach|entraîneur", re.I)
+CELL = re.compile(r"^\|\s*colspan\s*=\s*\"?\d+\"?\s*\|(.*)$", re.I)
+EFN = re.compile(r"\{\{\s*(?:efn|ref|refn|note|sfn)[^{}]*(?:\{\{[^{}]*\}\}[^{}]*)*\}\}", re.I)
+REFTAG = re.compile(r"<ref[^>]*>.*?</ref>|<ref[^>]*/>", re.I | re.S)
+# poste imprimé sur la ligne -> numéro de maillot correspondant
+RUGBY_NUM = {'LP': 1, 'HK': 2, 'TP': 3, 'LL': 4, 'RL': 5, 'BF': 6, 'OF': 7, 'N8': 8,
+             'SH': 9, 'FH': 10, 'LW': 11, 'IC': 12, 'OC': 13, 'RW': 14, 'FB': 15}
 
-def parse_en_lineups(text):
-    """Feuilles de match au format des articles « final » de Wikipédia anglais."""
-    blocks, cur, skip = [], [], False
+def row_number(code, cell):
+    """Numéro de maillot. Leicester portait des lettres, et pas dans l'ordre de l'alphabet
+    (Dean Richards, n° 8, portait un G) : le numéro vient alors du poste imprimé sur la
+    même ligne, jamais de la place de la lettre."""
+    if cell.isdigit(): return int(cell)
+    return RUGBY_NUM.get(code.upper())
+
+def parse_en_sheets(text):
+    """Feuilles de match des articles anglais : titulaires + entraîneur, dans l'ordre des colonnes."""
+    sheets, cur, skip, attend, lettres = [], [], False, False, False
     for raw in text.splitlines():
-        line = raw.strip()
-        # un intertitre « Replacements » / « Coach » est une cellule de tableau, jamais un paragraphe
+        line = REFTAG.sub('', EFN.sub('', raw.strip()))
+        if attend:                                            # la ligne qui suit « Manager: »
+            if line and line != '|-':
+                c = CELL.match(line)
+                nom = name_of(c.group(1).split('||')[0]) if c else ''
+                if sheets and not sheets[-1]['coach']: sheets[-1]['coach'] = nom or None
+                attend = False
+            continue
+        if line.startswith('{|') or line.startswith('|}'):    # nouveau tableau : fin du saut
+            skip = False; continue
         marker = bool(MARK.match(line)) and len(line) < 120
         if marker and SUBS.search(line):
-            if cur: blocks.append(cur); cur = []
-            skip = True; continue
+            if cur: sheets.append({'p': cur, 'coach': None, 'lettres': lettres}); cur = []
+            lettres = False; skip = True; continue
         if marker and STAFF.search(line):
-            skip = False; continue
+            # certaines pages n'ont pas de ligne « Replacements » : la feuille se clôt ici
+            if cur: sheets.append({'p': cur, 'coach': None, 'lettres': lettres}); cur = []
+            lettres = False; skip = False; attend = True; continue
         m = ROW.match(line)
         if m and not skip:
-            cur.append((m.group(1), int(m.group(2)), name_of(m.group(3).split('||')[0])))
-    if cur: blocks.append(cur)
-    return blocks
+            num = row_number(m.group(1), m.group(2))
+            if num is not None:
+                if not m.group(2).isdigit(): lettres = True
+                cur.append((m.group(1), num, name_of(m.group(3).split('||')[0])))
+    if cur: sheets.append({'p': cur, 'coach': None, 'lettres': lettres})
+    return sheets
+
+def pick_window(b, need, sport):
+    """Un tableau de classement précède parfois la composition : on retient la fenêtre
+    de `need` lignes qui forme une vraie feuille de match."""
+    if len(b) <= need: return b
+    for i in range(len(b) - need + 1):
+        w = b[i:i + need]
+        if sport == 'rugby':
+            if sorted(x[1] for x in w) == list(range(1, need + 1)): return w
+        elif sum(c == 'GK' for c, _, _ in w) == 1 and len({x[2] for x in w}) == need:
+            return w
+    return b[:need]
 
 # ---------------------------------------------------------------- noms, équipes, scores
 def _norm(s):
@@ -276,7 +328,7 @@ def extras(raw, pen_v):
     if not pen:
         m = re.search(r"\{\{\s*pso\s*\|\s*([^}|]+)", raw, re.I)
         if m: pen = m.group(1).strip()
-    aet = bool(re.search(r"\baet\b|golden\s*goal|silver\s*goal|a\.e\.t", raw, re.I))
+    aet = bool(re.search(r"\baet\b|extra\s*time|golden\s*goal|silver\s*goal|a\.e\.t", raw, re.I))
     return pen, aet
 
 def _param(t, *keys):
@@ -362,7 +414,15 @@ def parse_fr_final(text, section):
         nm = clean_team(links[-1][1] or links[-1][0]) if links else '?'
         stop = re.search(r"Remplaçants|Entraîneurs|\n\|\}", after)
         pl = _fr_players(after[:stop.start()] if stop else after[:2500])
-        if pl: teams.append((nm, pl))
+        if not pl: continue
+        coach, autres = None, []
+        em = re.search(r"Entraîneurs?", after)                 # souvent deux noms en rugby français
+        if em:
+            tail = after[em.end():]
+            fin = re.search(r"\n\s*\|", tail)
+            noms = [clean_team(d or t) for t, d in re.findall(link, tail[:fin.start()] if fin else tail[:400])]
+            if noms: coach, autres = noms[0], noms[1:]
+        teams.append((nm, pl, coach, autres))
     return sec, score, teams
 
 def from_wiki(it, verbose=False):
@@ -377,20 +437,24 @@ def from_wiki(it, verbose=False):
         if len(teams) < 2:
             flag(it['id'], f"composition rugby FR non reconnue ({len(teams)} equipe(s) lue(s)) - voir data/raw/{it['id']}.wiki")
             return None
-        (n1, p1), (n2, p2) = teams[:2]
+        (n1, p1, c1, a1), (n2, p2, c2, a2) = teams[:2]
         if score:
             sa, xa, xb, sb = score
             # l'encadre peut nommer les equipes dans l'autre ordre que le tableau des compositions
             if _match(sa, n1) + _match(sb, n2) < _match(sa, n2) + _match(sb, n1):
                 xa, xb = xb, xa
             if xb > xa:                                        # vainqueur en premier
-                (n1, p1), (n2, p2), xa, xb = (n2, p2), (n1, p1), xb, xa
+                (n1, p1, c1, a1), (n2, p2, c2, a2) = (n2, p2, c2, a2), (n1, p1, c1, a1)
+                xa, xb = xb, xa
             a, b, sc = fr(n1), fr(n2), score_str(xa, xb)
         else:
             flag(it['id'], "score introuvable dans l'encadre de match (wiki FR)")
             a, b, sc = fr(n1), fr(n2), '?'
-        return dict(it, a=a, b=b, score=sc, source_title=title,
-                    teams=[{'name': a, 'p': place_rugby(p1)}, {'name': b, 'p': place_rugby(p2)}])
+        eqs = [{'name': a, 'p': place_rugby(p1)}, {'name': b, 'p': place_rugby(p2)}]
+        for eq, c, al in zip(eqs, (c1, c2), (a1, a2)):
+            if c: eq['coach'] = (c, al)
+            else: flag(it['id'], f"{eq['name']} : entraineur introuvable")
+        return dict(it, a=a, b=b, score=sc, source_title=title, teams=eqs)
 
     mb, ib = parse_matchbox(text), parse_infobox(text)
     box = mb or ib
@@ -399,29 +463,37 @@ def from_wiki(it, verbose=False):
     t1, t2, sc, pen, aet = box
     if mb and ib:            # la prolongation (but en or) n'est souvent notee que dans l'infobox
         aet, pen = aet or ib[4], pen or ib[3]
-    blocks = [b for b in parse_en_lineups(text) if len(b) >= need]
-    if len(blocks) == 1 and len(blocks[0]) >= 2 * need:         # les deux equipes dans un seul tableau
-        blocks = [blocks[0][:need], blocks[0][need:2 * need]]
+    sheets = [sh for sh in parse_en_sheets(text) if len(sh['p']) >= need]
+    if len(sheets) == 1 and len(sheets[0]['p']) >= 2 * need:    # les deux equipes dans un seul tableau
+        tout, c0 = sheets[0]['p'], sheets[0]['coach']
+        sheets = [{'p': tout[:need], 'coach': c0, 'lettres': sheets[0].get('lettres')},
+                  {'p': tout[need:2 * need], 'coach': None, 'lettres': sheets[0].get('lettres')}]
+    for sh in sheets: sh['p'] = pick_window(sh['p'], need, it['sport'])
     if verbose:
         print(f"    boite : {t1} | {sc}{' + ' + pen if pen else ''}{' a.p.' if aet else ''} | {t2}")
-        for b in blocks[:2]: print("    ", " - ".join(f"{c}{n} {nm}" for c, n, nm in b[:need]))
-    if len(blocks) < 2:
-        flag(it['id'], f"feuilles de match incompletes ({[len(b) for b in blocks]})"); return None
+        for sh in sheets[:2]:
+            print("    ", " - ".join(f"{c}{n} {nm}" for c, n, nm in sh['p']), "| entr. :", sh['coach'])
+    if len(sheets) < 2:
+        flag(it['id'], f"feuilles de match incompletes ({[len(sh['p']) for sh in sheets]})"); return None
     # l'ordre des colonnes suit les maillots, pas toujours celui de la boite de match
     kits = kit_titles(text)
     if len(kits) >= 2 and _match(kits[0], t2) + _match(kits[1], t1) > _match(kits[0], t1) + _match(kits[1], t2):
-        blocks = [blocks[1], blocks[0]]
+        sheets = [sheets[1], sheets[0]]
     teams = []
-    for nm, b in zip((t1, t2), blocks[:2]):
-        b = b[:need]
+    for nm, sh in zip((t1, t2), sheets[:2]):
+        b = sh['p'][:need]
         if it['sport'] == 'foot':
             if sum(c == 'GK' for c, _, _ in b) != 1: flag(it['id'], f"{nm} : nombre de gardiens anormal")
-            teams.append({'name': fr(nm or '?'), 'p': place_foot([(c, n) for c, _, n in b])})
+            eq = {'name': fr(nm or '?'), 'p': place_foot([(c, n) for c, _, n in b])}
         else:
             by = {num: n for _, num, n in b}
             if sorted(by) != list(range(1, 16)):
                 flag(it['id'], f"{nm} : numeros 1-15 incomplets"); return None
-            teams.append({'name': fr(nm or '?'), 'p': place_rugby(by)})
+            eq = {'name': fr(nm or '?'), 'p': place_rugby(by)}
+        if sh.get('lettres'): flag(it['id'], f"{nm} : maillots lettres, numeros deduits des postes")
+        if sh['coach']: eq['coach'] = (sh['coach'], [])
+        else: flag(it['id'], f"{nm} : entraineur introuvable")
+        teams.append(eq)
     m = re.match(r"(\d+)\s*[\u2013\-\u2014]\s*(\d+)", sc or '')
     if not m:
         flag(it['id'], f"score illisible : < {sc} >"); a, b, s = teams[0]['name'], teams[1]['name'], sc or '?'
@@ -446,6 +518,8 @@ def finalize(r):
     for t in r['teams']:
         for p in t['p']: p[4] = aliases.get(p[3], [])
         if len({p[3] for p in t['p']}) != len(t['p']): flag(r['id'], f"{t['name']} : doublon de joueur")
+        c = t.get('coach')
+        if c: t['coach'] = [c[0], sorted(set(aliases.get(c[0], []) + list(c[1])))]
     return {'id': r['id'], 'sport': r['sport'], 'comp': r['comp'], 'yr': r['yr'],
             'fx': fx(r), 'where': COMP_LABEL[r['comp']], 'teams': r['teams']}
 

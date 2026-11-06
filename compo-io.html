@@ -86,6 +86,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pl.todo .nm{color:rgba(255,255,255,.6)}
 .pl.hit .nm{background:#fff;color:#13241A;animation:pop .35s}
 .pl.miss .nm{background:var(--miss);color:#fff}
+.bench{display:flex;justify-content:center;margin-top:8px}
+.coach{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 12px 5px 7px}
+.coach .badge{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 Barlow,sans-serif;background:rgba(255,255,255,.9);color:#13241A}
+.coach .role{font:600 10.5px/1 Barlow,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.coach .nm{font:600 13px/1.15 Barlow,sans-serif;color:#fff;padding:2px 6px;border-radius:4px}
+.coach.todo .nm{color:rgba(255,255,255,.55)}
+.coach.hit .nm{background:#fff;color:#13241A;animation:pop .35s}
+.coach.miss .nm{background:var(--miss);color:#fff}
 @keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
 .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 16px;font-weight:600}
@@ -120,6 +128,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   </div>
   <p class="flash" id="flash" aria-live="polite"></p>
   <div class="pitch" id="pitch"></div>
+  <div class="bench hidden" id="bench"></div>
   <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="giveup">Abandonner</button></div>
   <div class="result hidden" id="result">
     <div class="big" id="rbig"></div>
@@ -165,7 +174,7 @@ function renderHome(){
   MATCHES.filter(m=>filter==="all"||m.comp===filter).forEach(m=>{
     const li=document.createElement("li");li.className="row";
     li.innerHTML=`<span class="yr">${m.yr}</span><span class="fx">${m.fx}<small>${m.where}</small></span><span class="picks"></span>`;
-    m.teams.forEach((t,ti)=>{const tot=t.p.length,b=store.get(bestKey(m,ti)),k=kitOf(t);
+    m.teams.forEach((t,ti)=>{const tot=t.p.length+(t.coach?1:0),b=store.get(bestKey(m,ti)),k=kitOf(t);
       const btn=document.createElement("button");btn.className="pick";
       btn.innerHTML=`<i style="background:${k.bg}"></i>${t.name}<b class="${b&&b.f===tot?"full":""}">${b?b.f+"/"+tot:""}</b>`;
       btn.setAttribute("aria-label",`Deviner la compo : ${t.name}`);btn.onclick=()=>start(m,ti);li.querySelector(".picks").appendChild(btn);});
@@ -180,19 +189,23 @@ const LINES={
 };
 function start(m,ti){
   M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,k:keysFor(n,al)}));
+  if(t.coach)P.push({lab:"ENTR",n:t.coach[0],k:keysFor(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
   $("home").classList.add("hidden");$("play").classList.remove("hidden");$("result").classList.add("hidden");$("acts").classList.remove("hidden");
-  $("ptitle").textContent=m.fx;$("psub").textContent=`${m.where}, ${m.yr}. Compo à retrouver : ${t.name}.`;
+  $("ptitle").textContent=m.fx;$("psub").textContent=`${m.where}, ${m.yr}. Compo à retrouver : ${t.name}${t.coach?", entraîneur compris":""}.`;
   $("psport").textContent=m.sport==="foot"?"Football":"Rugby";$("swap").classList.toggle("hidden",m.teams.length<2);
   const pitch=$("pitch");pitch.className="pitch "+m.sport;pitch.innerHTML=LINES[m.sport];
-  P.forEach((p,i)=>{const d=document.createElement("div");d.className="pl todo";d.id="pl"+i;d.style.left=p.x+"%";d.style.top=p.y+"%";
+  P.forEach((p,i)=>{if(p.coach)return;const d=document.createElement("div");d.className="pl todo";d.id="pl"+i;d.style.left=p.x+"%";d.style.top=p.y+"%";
     d.innerHTML=jersey(kitOf(t),p.lab)+`<span class="nm">?</span>`;pitch.appendChild(d);});
+  const ci=P.findIndex(p=>p.coach),bench=$("bench");bench.classList.toggle("hidden",ci<0);
+  if(ci>=0)bench.innerHTML=`<div class="coach todo" id="pl${ci}"><span class="badge">E</span><span class="role">Entraîneur</span><span class="nm">?</span></div>`;
+  $("inp").placeholder=ci>=0?"Tape un joueur ou l’entraîneur…":"Tape un joueur…";
   $("inp").value="";$("inp").disabled=false;$("flash").textContent="";
   upd();clearInterval(tick);tick=setInterval(()=>{left--;upd();if(left<=0)end();},1000);
   window.scrollTo(0,0);setTimeout(()=>$("inp").focus(),50);
 }
 function upd(){$("clock").textContent=fmt(Math.max(left,0));$("clock").classList.toggle("low",left<=30);$("count").textContent=found.size+"/"+P.length;}
-function hit(i){found.add(i);const d=$("pl"+i);d.className="pl hit";d.querySelector(".nm").textContent=P[i].n;$("inp").value="";$("flash").textContent=P[i].n+" ✓";upd();if(found.size===P.length)end();}
+function hit(i){found.add(i);const d=$("pl"+i);d.className=(P[i].coach?"coach":"pl")+" hit";d.querySelector(".nm").textContent=P[i].n;$("inp").value="";$("flash").textContent=P[i].n+" ✓";upd();if(found.size===P.length)end();}
 function tryMatch(q,loose){
   const n=norm(q);if(n.length<2)return false;const c=n.replace(/ /g,"");
   let idx=P.findIndex((p,i)=>!found.has(i)&&(p.k.has(n)||p.k.has(c)));
@@ -210,12 +223,15 @@ $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!foun
 $("giveup").onclick=()=>end();
 function end(){
   if(over)return;over=true;clearInterval(tick);$("inp").disabled=true;
-  P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className="pl miss";d.querySelector(".nm").textContent=p.n;}});
+  P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.n;}});
   const t=Math.round((Date.now()-startT)/1000),tot=P.length,key=bestKey(M,TI),b=store.get(key);
   const better=found.size>0&&(!b||found.size>b.f||(found.size===b.f&&t<b.t));if(better)store.set(key,{f:found.size,t});
-  const miss=tot-found.size;
+  const miss=tot-found.size,coachOut=P.some((p,i)=>p.coach&&!found.has(i));
   $("rbig").textContent=found.size+"/"+tot;
-  $("rtxt").textContent=(miss?`${miss} joueur${miss>1?"s":""} manquant${miss>1?"s":""}, en rouge sur le terrain.`:`Compo complète en ${fmt(t)}.`)
+  const nj=miss-(coachOut?1:0),bits=[];
+  if(nj)bits.push(`${nj} joueur${nj>1?"s":""}`);
+  if(coachOut)bits.push("l’entraîneur");
+  $("rtxt").textContent=(miss?`${bits.join(" et ")} manquant${miss>1?"s":""}, en rouge.`:`Compo complète en ${fmt(t)}.`)
     +(hinted.size?` ${hinted.size} indice${hinted.size>1?"s":""} utilisé${hinted.size>1?"s":""}.`:"")+(better&&b?" Nouveau record.":(!better&&b?` Record : ${b.f}/${tot}.`:""));
   $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";
 }
