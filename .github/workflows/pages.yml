@@ -35,12 +35,14 @@ jobs:
           cp index.html site/index.html
           cp index.html site/404.html
 
-      # enablement: active GitHub Pages si le depot ne l'a pas encore, depuis le
-      # runner et avec le jeton du workflow (d'ou la permission pages: write
-      # ci-dessus). Evite d'avoir a le faire a la main dans les reglages.
+      # Ne pas remettre `enablement: true` ici : essaye, refuse. L'action appelle
+      # alors l'API de creation du site Pages, qui demande le droit
+      # d'administration sur le depot ; le jeton d'un workflow ne l'a jamais,
+      # meme avec pages: write. Le run echoue sur "Create Pages site failed.
+      # Error: Resource not accessible by integration".
+      # Activer Pages reste une manipulation humaine, une seule fois :
+      # Settings > Pages > Source: GitHub Actions.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
