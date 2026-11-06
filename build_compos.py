@@ -568,12 +568,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--test', action='store_true'); ap.add_argument('--only', default='')
     ap.add_argument('--html', default='')
+    ap.add_argument('--maj', action='store_true',
+                    help="ne requête que les finales absentes de compos.json")
     args = ap.parse_args()
     items = manifest()
     if args.test:
         items = [i for i in items if i['id'] in ('ldc-2023', 'hcup-2010', 'top14-1995')]
     elif args.only:
         keep = set(args.only.split(',')); items = [i for i in items if i['comp'] in keep]
+    if args.maj and not args.test:
+        p = f"{OUT}/compos.json"
+        deja = {m['id'] for m in json.load(open(p, encoding='utf-8'))} if os.path.exists(p) else set()
+        avant = len(items)
+        items = [i for i in items if i['id'] not in deja]
+        print(f"{avant - len(items)} finale(s) déjà en base, {len(items)} à chercher")
     os.makedirs(OUT, exist_ok=True)
     results = []
     fj = [i for i in items if i['src'] == 'fjelstul']
