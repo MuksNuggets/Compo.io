@@ -92,6 +92,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 .daily .what small{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:2px}
 .daily .pts{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:30px;line-height:1}
 .daily .streak{font-weight:600;font-size:14px;color:var(--muted)}
+.daily .ident{display:flex;flex-wrap:wrap;gap:8px;align-items:center;width:100%}
+.daily input{flex:1;min-width:150px;font:inherit;font-size:15px;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:inherit}
+.daily .note{width:100%;font-size:13px;color:var(--muted)}
+.daily .note b{color:inherit}
+.board{margin:14px 0 0;width:100%;border-collapse:collapse;font-size:14px}
+.board th,.board td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line)}
+.board th{font:700 11px/1 Barlow,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.board td.n{text-align:right;font-variant-numeric:tabular-nums}
+.board tr.moi td{background:var(--accent);color:var(--accent-ink)}
 .bench{display:flex;justify-content:center;margin-top:8px}
 .coach{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 12px 5px 7px}
 .coach .badge{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 Barlow,sans-serif;background:rgba(255,255,255,.9);color:#13241A}
@@ -140,6 +149,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   <div class="result hidden" id="result">
     <div class="big" id="rbig"></div>
     <p id="rtxt" style="margin:6px 0 12px;color:var(--muted)"></p>
+    <div id="board"></div>
     <div class="actions" style="margin:0"><button class="btn primary" id="share" hidden>Partager</button><button class="btn" id="again">Rejouer</button><button class="btn" id="swap">Jouer l’autre équipe</button><button class="btn" id="other">Autre match</button></div>
   </div>
 </section>
@@ -206,6 +216,26 @@ const parisDay=d=>new Intl.DateTimeFormat("fr-CA",{timeZone:"Europe/Paris",year:
 const dayNumber=()=>Math.round((Date.parse(parisDay(new Date())+"T12:00:00Z")-Date.parse(EPOCH+"T12:00:00Z"))/864e5)+1;
 const DAYN=dayNumber();
 const dailyKey=n=>"compo:jour:"+n;
+const SB_URL="https://raqseqflxmjfseyarlpx.supabase.co/functions/v1/compo";
+const SB_KEY="sb_publishable_PTB-6n0TJfrBc09e8cWERQ_3wF7Hz-4";   // publique : elle n'ouvre rien
+async function api(action,corps){
+  const r=await fetch(SB_URL,{method:"POST",headers:{"Content-Type":"application/json",
+    "Authorization":"Bearer "+SB_KEY},body:JSON.stringify({action,...corps})});
+  return r.json();
+}
+const CLE_MOI="compo:moi";
+function moi(){
+  let m=store.get(CLE_MOI);
+  if(!m||!m.id){m={id:(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)),pseudo:"",groupe:""};store.set(CLE_MOI,m);}
+  return m;
+}
+const majMoi=p=>{const m={...moi(),...p};store.set(CLE_MOI,m);return m};
+const normCode=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,24);
+// un lien d'invitation pose le groupe ; appelé à l'initialisation, pas ici,
+// car store et $ ne sont définis que plus bas dans le script.
+function groupeDuLien(){const g=normCode(new URLSearchParams(location.search).get("groupe")||"");if(g.length>=3)majMoi({groupe:g});}
+const lienGroupe=()=>location.origin+location.pathname+"?groupe="+moi().groupe;
 function dailyPick(n){
   for(let k=0;k<DAY_ORDER.length;k++){                        // saute une compo retirée des données
     const [id,ti]=DAY_ORDER[(n-1+k)%DAY_ORDER.length].split(":");
@@ -231,16 +261,81 @@ const bestKey=(m,t)=>"compo:best:"+m.id+":"+t;
 let filter="all";
 $("filters").innerHTML=COMPS.map(([k,l])=>`<button data-f="${k}" aria-pressed="${k==="all"}">${l}</button>`).join("");
 $("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{filter=b.dataset.f;$("filters").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderHome();});
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function renderDaily(){
   const el=$("daily"),pick=dailyPick(DAYN);
   if(!pick){el.hidden=true;return}
-  const {m,ti}=pick,t=m.teams[ti],tot=t.p.length+(t.coach?1:0),fait=store.get(dailyKey(DAYN)),s=streakOf(DAYN);
+  const {m,ti}=pick,t=m.teams[ti],tot=t.p.length+(t.coach?1:0);
+  const fait=store.get(dailyKey(DAYN)),s=streakOf(DAYN),je=moi();
+  if(!je.pseudo){                                     // première visite : on demande un pseudo
+    el.innerHTML=`<span class="tag">Compo du jour n° ${DAYN}</span>`
+      +`<span class="what">Choisis un pseudo pour entrer au classement<small>Pas de compte, rien à retenir.</small></span>`
+      +`<div class="ident"><input id="pseudo" maxlength="20" placeholder="Ton pseudo" autocomplete="nickname">`
+      +`<input id="groupe" maxlength="24" placeholder="Code de groupe (facultatif)" value="${esc(je.groupe||"")}">`
+      +`<button class="btn primary" id="valide">Valider</button></div>`;
+    $("valide").onclick=()=>{
+      const v=$("pseudo").value.trim();
+      if(v.length<2){$("pseudo").focus();return}
+      majMoi({pseudo:v.slice(0,20),groupe:normCode($("groupe").value)});renderDaily();
+    };
+    $("pseudo").onkeydown=e=>{if(e.key==="Enter")$("valide").click()};
+    $("pseudo").focus();return;
+  }
   el.innerHTML=`<span class="tag">Compo du jour n° ${DAYN}</span>`
-    +`<span class="what">${fait?m.fx:"Une finale, une équipe, la même pour tout le monde"}`
-    +`<small>${fait?`${m.where}, ${m.yr} — ${t.name}`:`${m.sport==="foot"?"Football":"Rugby"} · ${tot} réponses · une seule partie classée`}</small></span>`
+    +`<span class="what">${fait?esc(m.fx):"Une finale, une équipe, la même pour tout le monde"}`
+    +`<small>${fait?`${m.where}, ${m.yr} — ${esc(t.name)}`:`${m.sport==="foot"?"Football":"Rugby"} · ${tot} réponses · une seule partie classée`}</small></span>`
     +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
-    +`<button class="btn primary" id="playday">${fait?"Rejouer hors classement":"Jouer"}</button>`;
-  $("playday").onclick=()=>start(m,ti,!fait);
+    +`<button class="btn primary" id="playday">${fait?"Rejouer hors classement":"Jouer"}</button>`
+    +`<span class="note">${esc(je.pseudo)} · `
+    +(je.groupe?`groupe <b>${esc(je.groupe)}</b> · <a href="#" id="invit">copier le lien d’invitation</a>`
+              :`<a href="#" id="creer">rejoindre ou créer un groupe</a>`)
+    +` · <a href="#" id="chpseudo">changer de pseudo</a></span>`;
+  $("playday").onclick=()=>lancerJour(m,ti,!fait);
+  $("chpseudo").onclick=e=>{e.preventDefault();majMoi({pseudo:""});renderDaily()};
+  if($("creer"))$("creer").onclick=e=>{e.preventDefault();
+    const c=normCode(prompt("Code du groupe, par exemple potes-leo")||"");
+    if(c.length>=3){majMoi({groupe:c});renderDaily()}else if(c)alert("Trois caractères minimum.")};
+  if($("invit"))$("invit").onclick=async e=>{e.preventDefault();
+    try{await navigator.clipboard.writeText(lienGroupe());e.target.textContent="lien copié !";}
+    catch(err){prompt("Lien d’invitation :",lienGroupe());}};
+}
+async function lancerJour(m,ti,classe){
+  if(!classe)return start(m,ti,false);
+  const t=m.teams[ti],tot=t.p.length+(t.coach?1:0),je=moi(),b=$("playday");
+  b.disabled=true;b.textContent="…";
+  let r=null;
+  try{r=await api("start",{playerId:je.id,pseudo:je.pseudo,size:tot,
+      duration:TIME[m.sport],groupCode:je.groupe||undefined});}catch(e){}
+  b.disabled=false;b.textContent="Jouer";
+  if(r&&r.erreur&&/déjà jouée/.test(r.erreur)){
+    store.set(dailyKey(DAYN),{d:DAYN,f:0,n:tot,h:0,l:0,p:0,t:0});renderDaily();
+    alert("Tu as déjà joué la compo du jour sur un autre appareil.");return;
+  }
+  ROUND=r&&r.roundId?r.roundId:null;        // sans réseau on joue quand même, score local
+  start(m,ti,true);
+}
+function afficherBoard(b){
+  const je=moi();
+  $("board").innerHTML=(b.classement&&b.classement.length)
+    ?`<table class="board"><thead><tr><th>#</th><th>Joueur</th><th class="n">Score</th><th class="n">Trouvés</th><th class="n">Temps</th></tr></thead><tbody>`
+     +b.classement.map(l=>`<tr class="${l.playerId===je.id?"moi":""}"><td>${l.rang}</td><td>${esc(l.pseudo)}</td>`
+       +`<td class="n">${l.points.toLocaleString("fr-FR")}</td><td class="n">${l.found}/${l.size}</td><td class="n">${fmt(l.seconds)}</td></tr>`).join("")
+     +`</tbody></table>`:"";
+}
+async function majClassement(trouves,indices){
+  let r=null;
+  if(ROUND){try{r=await api("submit",{roundId:ROUND,found:trouves,hints:indices});}catch(e){}}
+  if(r&&typeof r.points==="number"){           // le serveur fait foi
+    store.set(dailyKey(DAYN),{d:DAYN,f:r.found,n:r.size,h:r.hints,l:r.timeLeft,p:r.points,
+      t:Math.max(0,TIME[M.sport]-r.timeLeft)});
+    $("rbig").textContent=r.points.toLocaleString("fr-FR")+" pts";
+  }else if(r&&r.erreur){$("rtxt").textContent+=" Classement : "+r.erreur+".";}
+  else if(!ROUND){$("rtxt").textContent+=" Hors ligne : score non classé.";}
+  const je=moi();
+  if(je.groupe){
+    let b=null;try{b=await api("board",{groupCode:je.groupe,playerId:je.id});}catch(e){}
+    if(b)afficherBoard(b);
+  }
 }
 function renderHome(){
   const ul=$("list");ul.innerHTML="";
@@ -254,7 +349,7 @@ function renderHome(){
     ul.appendChild(li);
   });
 }
-let M,TI,P,found,hinted,left,tick,over,startT,RANKED=false;
+let M,TI,P,found,hinted,left,tick,over,startT,RANKED=false,ROUND=null;
 const jersey=(k,lab)=>`<svg viewBox="0 0 40 38" aria-hidden="true"><path d="M13 2 L4 7 L0 16 L7 19 L8 15 L8 37 L32 37 L32 15 L33 19 L40 16 L36 7 L27 2 Q20 7 13 2Z" fill="${k.bg}" stroke="rgba(0,0,0,.35)" stroke-width="1"/>${k.stripe?`<rect x="17" y="6" width="6" height="31" fill="${k.stripe}" opacity=".9"/>`:""}<text x="20" y="${lab.length>2?26:27}" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="${lab.length>2?10:13}" fill="${k.fg}" ${k.stripe?'stroke="'+k.bg+'" stroke-width="2.5" paint-order="stroke"':""}>${lab}</text></svg>`;
 const LINES={
  foot:`<svg class="lines" viewBox="0 0 68 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width=".45" style="color:var(--chalk)"><rect x="3" y="3" width="62" height="94"/><line x1="3" y1="50" x2="65" y2="50"/><ellipse cx="34" cy="50" rx="8.5" ry="8.5"/><rect x="15" y="3" width="38" height="15"/><rect x="25" y="3" width="18" height="5"/><rect x="15" y="82" width="38" height="15"/><rect x="25" y="92" width="18" height="5"/></svg>`,
@@ -316,20 +411,22 @@ function end(){
       +(hinted.size?` ${50*hinted.size} points retirés pour ${hinted.size} indice${hinted.size>1?"s":""}.`:"");
     const s=streakOf(DAYN);
     $("share").hidden=false;
+    majClassement(found.size,hinted.size);
     $("share").onclick=async()=>{
-      const txt=`Compo du jour n° ${DAYN} — ${found.size}/${tot} — ${pts.toLocaleString("fr-FR")} pts`
-        +(s>1?` 🔥${s}`:"")+"\n"+location.origin+location.pathname;
+      const f=store.get(dailyKey(DAYN))||{f:found.size,n:tot,p:pts};
+      const txt=`Compo du jour n° ${DAYN} — ${f.f}/${f.n} — ${f.p.toLocaleString("fr-FR")} pts`
+        +(s>1?` 🔥${s}`:"")+"\n"+(moi().groupe?lienGroupe():location.origin+location.pathname);
       try{await navigator.clipboard.writeText(txt);$("share").textContent="Copié !";
         setTimeout(()=>$("share").textContent="Partager",1800);}
       catch(e){prompt("Copie ce texte :",txt);}
     };
-  } else $("share").hidden=true;
+  } else {$("share").hidden=true;$("board").innerHTML="";}
   $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";
 }
 $("again").onclick=()=>start(M,TI,false);$("swap").onclick=()=>start(M,1-TI,false);
 const home=()=>{clearInterval(tick);over=true;$("play").classList.add("hidden");$("home").classList.remove("hidden");renderDaily();renderHome();};
 $("other").onclick=home;$("back").onclick=home;
-renderDaily();renderHome();
+groupeDuLien();renderDaily();renderHome();
 </script>
 </body>
 </html>
