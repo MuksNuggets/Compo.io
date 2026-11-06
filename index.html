@@ -96,8 +96,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .daily .streak{font-weight:600;font-size:14px;color:var(--muted)}
 .daily .ident{display:flex;flex-wrap:wrap;gap:8px;align-items:center;width:100%}
 .daily input{flex:1;min-width:150px;font:inherit;font-size:15px;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:inherit}
-.daily .note{width:100%;font-size:13px;color:var(--muted)}
-.daily .note b{color:inherit}
+.note{width:100%;font-size:13px;color:var(--muted);margin:-6px 0 18px}
+.note b{color:inherit}
+.note a{color:var(--ink);text-underline-offset:2px}
+#voirtout{margin:0 0 18px}
 .board{margin:14px 0 0;width:100%;border-collapse:collapse;font-size:14px}
 .board th,.board td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line)}
 .board th{font:700 11px/1 Barlow,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
@@ -130,9 +132,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 <section id="home">
   <div class="brand"><h1>Compo<span class="dot">.</span>io</h1></div>
   <p class="lede">Retrouve les titulaires des finales qui ont marqué l’histoire. Choisis un match, puis l’équipe à deviner. Un nom de famille suffit.</p>
-  <div class="daily" id="daily"></div>
-  <div class="filters" role="group" aria-label="Compétition" id="filters"></div>
-  <ul class="list" id="list"></ul>
+  <div id="daily"></div>
+  <button class="btn" id="voirtout" aria-expanded="false" aria-controls="archive">Toutes les finales</button>
+  <div id="archive" hidden>
+    <div class="filters" role="group" aria-label="Compétition" id="filters"></div>
+    <ul class="list" id="list"></ul>
+  </div>
   <p class="src">Données : Fjelstul World Cup Database (CC BY-SA 4.0), StatsBomb Open Data, Wikipédia.</p>
 </section>
 <section id="play" class="hidden">
@@ -212,12 +217,14 @@ const BYNAME={"France":"fra","Argentine":"arg","Brésil":"bra","Italie":"ita","R
  "Étoile rouge de Belgrade":{bg:"#ED1C24",fg:"#fff",stripe:"#fff"}};
 function kitOf(t){let k=KITS[t.kit]||BYNAME[t.name];if(typeof k==="string")k=KITS[k];if(k)return k;
   let h=0;for(const c of t.name)h=(h*31+c.charCodeAt(0))%360;return {bg:`hsl(${h} 55% 42%)`,fg:"#fff"};}
-const DAY_ORDER=["hcup-2026:1", "ldc-2018:0", "ldc-2013:0", "ldc-2025:0", "euro-2016:1", "cdm-2002:1", "top14-2017:0", "ldc-2006:1", "top14-2026:0", "rwc-2015:0", "hcup-1997:1", "hcup-1996:0", "rwc-2007:0", "top14-2013:0", "top14-2014:1", "ldc-1994:1", "hcup-2008:1", "hcup-2024:0", "ldc-2016:0", "hcup-2014:1", "ldc-1993:1", "top14-2021:0", "ldc-1995:0", "euro-2024:1", "hcup-2019:0", "hcup-2019:1", "ldc-2022:0", "euro-2000:1", "ldc-1991:1", "ldc-2018:1", "top14-2019:0", "top14-2004:1", "hcup-2015:0", "ldc-1998:0", "ldc-2003:0", "euro-1992:0", "hcup-1998:0", "cdm-2022:1", "euro-2012:1", "top14-1993:1", "ldc-2023:1", "ldc-2004:0", "hcup-2025:1", "ldc-2024:1", "ldc-2014:1", "hcup-2020:1", "hcup-1996:1", "ldc-2007:1", "ldc-2006:0", "ldc-2012:0", "top14-1993:0", "hcup-2025:0", "ldc-2026:0", "ldc-2010:0", "top14-2004:0", "hcup-2016:0", "hcup-2026:0", "ldc-1999:1", "ldc-2003:1", "hcup-2008:0", "ldc-2008:0", "top14-2016:0", "euro-1996:1", "cdm-2010:0", "top14-2019:1", "ldc-2008:1", "cdm-2018:1", "rwc-1991:1", "hcup-2017:0", "hcup-2009:0", "hcup-2011:0", "top14-2009:0", "euro-2008:1", "top14-2018:0", "euro-2016:0", "rwc-2003:0", "ldc-2017:1", "top14-1997:0", "top14-2011:1", "ldc-2000:1", "ldc-2016:1", "ldc-2017:0", "top14-2015:0", "rwc-2015:1", "hcup-2012:0", "top14-2023:0", "rwc-2007:1", "hcup-2015:1", "euro-2004:0", "hcup-2014:0", "rwc-2019:1", "top14-1995:0", "ldc-2022:1", "top14-2012:0", "top14-1995:1", "ldc-1997:0", "hcup-2005:0", "ldc-2009:1", "top14-2012:1", "ldc-2011:0", "hcup-2021:1", "top14-2013:1", "hcup-2002:0", "ldc-2019:1", "euro-2024:0", "ldc-2021:1", "hcup-2018:0", "cdm-1998:0", "cdm-2006:1", "ldc-2004:1", "euro-2012:0", "ldc-2025:1", "top14-2022:1", "hcup-2022:0", "cdm-2014:1", "hcup-2000:1", "hcup-2010:0", "ldc-2023:0", "hcup-2005:1", "hcup-2010:1", "ldc-2012:1", "hcup-2000:0", "ldc-2000:0", "ldc-1993:0", "top14-2024:1", "top14-2014:0", "hcup-1999:1", "top14-2008:0", "ldc-2019:0", "hcup-2009:1", "top14-2007:1", "euro-2000:0", "hcup-2001:0", "ldc-1997:1", "top14-2022:0", "ldc-2015:1", "top14-2023:1", "rwc-2023:0", "hcup-2022:1", "hcup-2021:0", "top14-2021:1", "top14-2009:1", "ldc-2002:0", "cdm-1994:1", "top14-2015:1", "hcup-2003:0", "ldc-2001:1", "cdm-2022:0", "rwc-1999:0", "top14-2018:1", "ldc-1999:0", "hcup-2024:1", "euro-1992:1", "cdm-2010:1", "ldc-1992:0", "cdm-1998:1", "ldc-2009:0", "hcup-2006:0", "hcup-2013:1", "ldc-2001:0", "euro-2004:1", "ldc-1995:1", "ldc-2021:0", "hcup-2023:0", "hcup-2001:1", "top14-2016:1", "rwc-1991:0", "ldc-2020:1", "ldc-2011:1", "rwc-1995:1", "cdm-2006:0", "hcup-2004:0", "cdm-2018:0", "hcup-2017:1", "top14-1997:1", "ldc-1998:1", "hcup-2003:1", "ldc-1996:1", "ldc-1991:0", "rwc-2003:1", "hcup-1999:0", "hcup-2013:0", "ldc-2013:1", "top14-2025:1", "rwc-2023:1", "hcup-1997:0", "top14-2008:1", "ldc-1996:0", "ldc-2010:1", "ldc-1994:0", "rwc-2011:1", "hcup-2023:1", "cdm-2026:0", "hcup-2002:1", "top14-2011:0", "hcup-2006:1", "ldc-2007:0", "ldc-2002:1", "rwc-2019:0", "ldc-2005:0", "ldc-2014:0", "cdm-2026:1", "top14-2024:0", "ldc-2005:1", "rwc-1999:1", "top14-2007:0", "rwc-2011:0", "hcup-2007:1", "cdm-1990:0", "rwc-1995:0", "hcup-2020:0", "top14-2025:0", "ldc-2015:0", "hcup-2016:1", "hcup-1998:1", "euro-2020:1", "hcup-2011:1", "hcup-2004:1", "euro-2008:0", "cdm-2002:0", "top14-2026:1", "cdm-1994:0", "ldc-2026:1", "hcup-2012:1", "ldc-1992:1", "hcup-2018:1", "top14-2017:1", "ldc-2020:0", "cdm-1990:1", "hcup-2007:0", "euro-2020:0", "euro-1996:0", "cdm-2014:0", "ldc-2024:0"];
+const DAY_ORDER={"foot": ["ldc-2018:0", "ldc-2013:0", "ldc-2025:0", "euro-2016:1", "cdm-2002:1", "ldc-2006:1", "ldc-1994:1", "ldc-2016:0", "ldc-1993:1", "ldc-1995:0", "euro-2024:1", "ldc-2022:0", "euro-2000:1", "ldc-1991:1", "ldc-2018:1", "ldc-1998:0", "ldc-2003:0", "euro-1992:0", "cdm-2022:1", "euro-2012:1", "ldc-2023:1", "ldc-2004:0", "ldc-2024:1", "ldc-2014:1", "ldc-2007:1", "ldc-2006:0", "ldc-2012:0", "ldc-2026:0", "ldc-2010:0", "ldc-1999:1", "ldc-2003:1", "ldc-2008:0", "euro-1996:1", "cdm-2010:0", "ldc-2008:1", "cdm-2018:1", "euro-2008:1", "euro-2016:0", "ldc-2017:1", "ldc-2000:1", "ldc-2016:1", "ldc-2017:0", "euro-2004:0", "ldc-2022:1", "ldc-1997:0", "ldc-2009:1", "ldc-2011:0", "ldc-2019:1", "euro-2024:0", "ldc-2021:1", "cdm-1998:0", "cdm-2006:1", "ldc-2004:1", "euro-2012:0", "ldc-2025:1", "cdm-2014:1", "ldc-2023:0", "ldc-2012:1", "ldc-2000:0", "ldc-1993:0", "ldc-2019:0", "euro-2000:0", "ldc-1997:1", "ldc-2015:1", "ldc-2002:0", "cdm-1994:1", "ldc-2001:1", "cdm-2022:0", "ldc-1999:0", "euro-1992:1", "cdm-2010:1", "ldc-1992:0", "cdm-1998:1", "ldc-2009:0", "ldc-2001:0", "euro-2004:1", "ldc-1995:1", "ldc-2021:0", "ldc-2020:1", "ldc-2011:1", "cdm-2006:0", "cdm-2018:0", "ldc-1998:1", "ldc-1996:1", "ldc-1991:0", "ldc-2013:1", "ldc-1996:0", "ldc-2010:1", "ldc-1994:0", "cdm-2026:0", "ldc-2007:0", "ldc-2002:1", "ldc-2005:0", "ldc-2014:0", "cdm-2026:1", "ldc-2005:1", "cdm-1990:0", "ldc-2015:0", "euro-2020:1", "euro-2008:0", "cdm-2002:0", "cdm-1994:0", "ldc-2026:1", "ldc-1992:1", "ldc-2020:0", "cdm-1990:1", "euro-2020:0", "euro-1996:0", "cdm-2014:0", "ldc-2024:0"], "rugby": ["hcup-2026:1", "top14-2017:0", "top14-2026:0", "rwc-2015:0", "hcup-1997:1", "hcup-1996:0", "rwc-2007:0", "top14-2013:0", "top14-2014:1", "hcup-2008:1", "hcup-2024:0", "hcup-2014:1", "top14-2021:0", "hcup-2019:0", "hcup-2019:1", "top14-2019:0", "top14-2004:1", "hcup-2015:0", "hcup-1998:0", "top14-1993:1", "hcup-2025:1", "hcup-2020:1", "hcup-1996:1", "top14-1993:0", "hcup-2025:0", "top14-2004:0", "hcup-2016:0", "hcup-2026:0", "hcup-2008:0", "top14-2016:0", "top14-2019:1", "rwc-1991:1", "hcup-2017:0", "hcup-2009:0", "hcup-2011:0", "top14-2009:0", "top14-2018:0", "rwc-2003:0", "top14-1997:0", "top14-2011:1", "top14-2015:0", "rwc-2015:1", "hcup-2012:0", "top14-2023:0", "rwc-2007:1", "hcup-2015:1", "hcup-2014:0", "rwc-2019:1", "top14-1995:0", "top14-2012:0", "top14-1995:1", "hcup-2005:0", "top14-2012:1", "hcup-2021:1", "top14-2013:1", "hcup-2002:0", "hcup-2018:0", "top14-2022:1", "hcup-2022:0", "hcup-2000:1", "hcup-2010:0", "hcup-2005:1", "hcup-2010:1", "hcup-2000:0", "top14-2024:1", "top14-2014:0", "hcup-1999:1", "top14-2008:0", "hcup-2009:1", "top14-2007:1", "hcup-2001:0", "top14-2022:0", "top14-2023:1", "rwc-2023:0", "hcup-2022:1", "hcup-2021:0", "top14-2021:1", "top14-2009:1", "top14-2015:1", "hcup-2003:0", "rwc-1999:0", "top14-2018:1", "hcup-2024:1", "hcup-2006:0", "hcup-2013:1", "hcup-2023:0", "hcup-2001:1", "top14-2016:1", "rwc-1991:0", "rwc-1995:1", "hcup-2004:0", "hcup-2017:1", "top14-1997:1", "hcup-2003:1", "rwc-2003:1", "hcup-1999:0", "hcup-2013:0", "top14-2025:1", "rwc-2023:1", "hcup-1997:0", "top14-2008:1", "rwc-2011:1", "hcup-2023:1", "hcup-2002:1", "top14-2011:0", "hcup-2006:1", "rwc-2019:0", "top14-2024:0", "rwc-1999:1", "top14-2007:0", "rwc-2011:0", "hcup-2007:1", "rwc-1995:0", "hcup-2020:0", "top14-2025:0", "hcup-2016:1", "hcup-1998:1", "hcup-2011:1", "hcup-2004:1", "top14-2026:1", "hcup-2012:1", "hcup-2018:1", "top14-2017:1", "hcup-2007:0"]};
 const EPOCH="2026-11-06";                       // jour n° 1
 const parisDay=d=>new Intl.DateTimeFormat("fr-CA",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
 const dayNumber=()=>Math.round((Date.parse(parisDay(new Date())+"T12:00:00Z")-Date.parse(EPOCH+"T12:00:00Z"))/864e5)+1;
 const DAYN=dayNumber();
-const dailyKey=n=>"compo:jour:"+n;
+const SPORTS=["foot","rugby"];
+const nomSport=sp=>sp==="foot"?"Football":"Rugby";
+const dailyKey=(n,sp)=>"compo:jour:"+sp+":"+n;
 const SB_URL="https://raqseqflxmjfseyarlpx.supabase.co/functions/v1/compo";
 const SB_KEY="sb_publishable_PTB-6n0TJfrBc09e8cWERQ_3wF7Hz-4";   // publique : elle n'ouvre rien
 async function api(action,corps){
@@ -238,15 +245,29 @@ const normCode=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""
 // car store et $ ne sont définis que plus bas dans le script.
 function groupeDuLien(){const g=normCode(new URLSearchParams(location.search).get("groupe")||"");if(g.length>=3)majMoi({groupe:g});}
 const lienGroupe=()=>location.origin+location.pathname+"?groupe="+moi().groupe;
-function dailyPick(n){
-  for(let k=0;k<DAY_ORDER.length;k++){                        // saute une compo retirée des données
-    const [id,ti]=DAY_ORDER[(n-1+k)%DAY_ORDER.length].split(":");
+function dailyPick(n,sp){
+  const ordre=DAY_ORDER[sp]||[];
+  for(let k=0;k<ordre.length;k++){                            // saute une compo retirée des données
+    const [id,ti]=ordre[(n-1+k)%ordre.length].split(":");
     const m=MATCHES.find(x=>x.id===id);
     if(m&&m.teams[+ti])return{m,ti:+ti};
   }
   return null;
 }
-function streakOf(n){let s=0;for(let d=n;store.get(dailyKey(d));d--)s++;return s}
+// Une série par sport : ne pas jouer le foot ne casse pas la série de rugby.
+function streakOf(n,sp){let s=0;for(let d=n;store.get(dailyKey(d,sp));d--)s++;return s}
+// Les compos du jour encore à jouer restent hors de l'archive, pour qu'on ne
+// puisse pas les répéter avant de les jouer pour de bon.
+function picksDuJour(){
+  const out={};
+  SPORTS.forEach(sp=>{const p=dailyPick(DAYN,sp);if(p)out[sp]=p;});
+  return out;
+}
+function aJouerEncore(){
+  return Object.entries(picksDuJour())
+    .filter(([sp])=>!store.get(dailyKey(DAYN,sp)))
+    .map(([,p])=>p.m.id+":"+p.ti);
+}
 const TIME={foot:180,rugby:270};
 const BONUS_MAX=360;   // même plafond de rapidité pour les deux sports (voir supabase/functions/compo)
 const $=id=>document.getElementById(id);
@@ -266,16 +287,15 @@ $("filters").innerHTML=COMPS.map(([k,l])=>`<button data-f="${k}" aria-pressed="$
 $("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{filter=b.dataset.f;$("filters").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderHome();});
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function renderDaily(){
-  const el=$("daily"),pick=dailyPick(DAYN);
-  if(!pick){el.hidden=true;return}
-  const {m,ti}=pick,t=m.teams[ti],tot=t.p.length+(t.coach?1:0);
-  const fait=store.get(dailyKey(DAYN)),s=streakOf(DAYN),je=moi();
+  const el=$("daily"),je=moi(),picks=picksDuJour();
+  if(!Object.keys(picks).length){el.hidden=true;return}
+  el.hidden=false;
   if(!je.pseudo){                                     // première visite : on demande un pseudo
-    el.innerHTML=`<span class="tag">Compo du jour n° ${DAYN}</span>`
+    el.innerHTML=`<div class="daily"><span class="tag">Compo du jour n° ${DAYN}</span>`
       +`<span class="what">Choisis un pseudo pour entrer au classement<small>Pas de compte, rien à retenir.</small></span>`
       +`<div class="ident"><input id="pseudo" maxlength="20" placeholder="Ton pseudo" autocomplete="nickname">`
       +`<input id="groupe" maxlength="24" placeholder="Code de groupe (facultatif)" value="${esc(je.groupe||"")}">`
-      +`<button class="btn primary" id="valide">Valider</button></div>`;
+      +`<button class="btn primary" id="valide">Valider</button></div></div>`;
     $("valide").onclick=()=>{
       const v=$("pseudo").value.trim();
       if(v.length<2){$("pseudo").focus();return}
@@ -284,16 +304,25 @@ function renderDaily(){
     $("pseudo").onkeydown=e=>{if(e.key==="Enter")$("valide").click()};
     $("pseudo").focus();return;
   }
-  el.innerHTML=`<span class="tag">Compo du jour n° ${DAYN}</span>`
-    +`<span class="what">${fait?esc(m.fx):"Une finale, une équipe, la même pour tout le monde"}`
-    +`<small>${fait?`${m.where}, ${m.yr} — ${esc(t.name)}`:`${m.sport==="foot"?"Football":"Rugby"} · ${tot} réponses · une seule partie classée`}</small></span>`
-    +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
-    +`<button class="btn primary" id="playday">${fait?"Rejouer hors classement":"Jouer"}</button>`
-    +`<span class="note">${esc(je.pseudo)} · `
+  // Une carte par sport : un amateur de rugby a quelque chose à jouer tous les
+  // jours, sans dépendre du tirage du foot.
+  el.innerHTML=SPORTS.filter(sp=>picks[sp]).map(sp=>{
+    const {m,ti}=picks[sp],t=m.teams[ti],tot=t.p.length+(t.coach?1:0);
+    const fait=store.get(dailyKey(DAYN,sp)),s=streakOf(DAYN,sp);
+    return `<div class="daily"><span class="tag">${nomSport(sp)} · jour n° ${DAYN}</span>`
+      +`<span class="what">${fait?esc(m.fx):"Une finale, une équipe, la même pour tout le monde"}`
+      +`<small>${fait?`${m.where}, ${m.yr} — ${esc(t.name)}`:`${tot} réponses · une seule partie classée`}</small></span>`
+      +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
+      +`<button class="btn primary" data-jour="${sp}">${fait?"Rejouer hors classement":"Jouer"}</button></div>`;
+  }).join("")
+    +`<p class="note">${esc(je.pseudo)} · `
     +(je.groupe?`groupe <b>${esc(je.groupe)}</b> · <a href="#" id="invit">copier le lien d’invitation</a>`
               :`<a href="#" id="creer">rejoindre ou créer un groupe</a>`)
-    +` · <a href="#" id="chpseudo">changer de pseudo</a></span>`;
-  $("playday").onclick=()=>lancerJour(m,ti,!fait);
+    +` · <a href="#" id="chpseudo">changer de pseudo</a></p>`;
+  el.querySelectorAll("[data-jour]").forEach(b=>{
+    const sp=b.dataset.jour,{m,ti}=picks[sp];
+    b.onclick=()=>lancerJour(m,ti,!store.get(dailyKey(DAYN,sp)),sp,b);
+  });
   $("chpseudo").onclick=e=>{e.preventDefault();majMoi({pseudo:""});renderDaily()};
   if($("creer"))$("creer").onclick=e=>{e.preventDefault();
     const c=normCode(prompt("Code du groupe, par exemple potes-leo")||"");
@@ -302,17 +331,25 @@ function renderDaily(){
     try{await navigator.clipboard.writeText(lienGroupe());e.target.textContent="lien copié !";}
     catch(err){prompt("Lien d’invitation :",lienGroupe());}};
 }
-async function lancerJour(m,ti,classe){
+async function lancerJour(m,ti,classe,sp,b){
+  NOTE_FIN="";
   if(!classe)return start(m,ti,false);
-  const t=m.teams[ti],tot=t.p.length+(t.coach?1:0),je=moi(),b=$("playday");
+  const t=m.teams[ti],tot=t.p.length+(t.coach?1:0),je=moi(),libelle=b.textContent;
   b.disabled=true;b.textContent="…";
   let r=null;
-  try{r=await api("start",{playerId:je.id,pseudo:je.pseudo,size:tot,
+  try{r=await api("start",{playerId:je.id,pseudo:je.pseudo,sport:sp,size:tot,
       duration:TIME[m.sport],groupCode:je.groupe||undefined});}catch(e){}
-  b.disabled=false;b.textContent="Jouer";
+  b.disabled=false;b.textContent=libelle;
   if(r&&r.code==="deja_joue"){            // code stable, jamais le texte
-    store.set(dailyKey(DAYN),{d:DAYN,f:0,n:tot,h:0,l:0,p:0,t:0});renderDaily();
-    alert("Tu as déjà joué la compo du jour sur un autre appareil.");return;
+    if(r.sport===sp){                     // le serveur confirme : c'est bien ce sport-là
+      store.set(dailyKey(DAYN,sp),{d:DAYN,f:0,n:tot,h:0,l:0,p:0,t:0});renderDaily();
+      alert("Tu as déjà joué cette compo du jour sur un autre appareil.");return;
+    }
+    // Serveur pas encore redéployé : il ne compte qu'une partie classée par jour,
+    // les deux sports confondus, et ne sait pas dire laquelle. On joue sans
+    // classer plutôt que d'inscrire un zéro sur une compo jamais jouée.
+    NOTE_FIN=" Partie non classée : le classement n’accepte encore qu’un sport par jour.";
+    ROUND=null;return start(m,ti,false);
   }
   ROUND=r&&r.roundId?r.roundId:null;        // sans réseau on joue quand même, score local
   start(m,ti,true);
@@ -330,7 +367,7 @@ async function majClassement(trouves,indices){
   if(ROUND){try{r=await api("submit",{roundId:ROUND,found:trouves,hints:indices});}catch(e){}}
   if(r&&typeof r.points==="number"){           // le serveur fait foi
     const t=Math.max(0,TIME[M.sport]-r.timeLeft);
-    store.set(dailyKey(DAYN),{d:DAYN,f:r.found,n:r.size,h:r.hints,l:r.timeLeft,p:r.points,t});
+    store.set(dailyKey(DAYN,M.sport),{d:DAYN,f:r.found,n:r.size,h:r.hints,l:r.timeLeft,p:r.points,t});
     $("rbig").textContent=r.points.toLocaleString("fr-FR")+" pts";
     // La phrase est refaite avec les chiffres du serveur, et le bonus est déduit
     // de son total au lieu d'être recalculé ici. Elle colle donc au score affiché
@@ -343,23 +380,33 @@ async function majClassement(trouves,indices){
   else if(!ROUND){$("rtxt").textContent+=" Hors ligne : score non classé.";}
   const je=moi();
   if(je.groupe){
-    let b=null;try{b=await api("board",{groupCode:je.groupe,playerId:je.id});}catch(e){}
+    let b=null;try{b=await api("board",{groupCode:je.groupe,playerId:je.id,sport:M.sport});}catch(e){}
     if(b)afficherBoard(b);
   }
 }
 function renderHome(){
   const ul=$("list");ul.innerHTML="";
+  const cachees=new Set(aJouerEncore());     // les compos du jour pas encore jouées
   MATCHES.filter(m=>filter==="all"||m.comp===filter).forEach(m=>{
     const li=document.createElement("li");li.className="row";
     li.innerHTML=`<span class="yr">${m.yr}</span><span class="fx">${m.fx}<small>${m.where}</small></span><span class="picks"></span>`;
-    m.teams.forEach((t,ti)=>{const tot=t.p.length+(t.coach?1:0),b=store.get(bestKey(m,ti)),k=kitOf(t);
-      const btn=document.createElement("button");btn.className="pick";
+    m.teams.forEach((t,ti)=>{
+      if(cachees.has(m.id+":"+ti))return;    // sinon on pourrait la répéter avant de la jouer
+      const tot=t.p.length+(t.coach?1:0),b=store.get(bestKey(m,ti)),k=kitOf(t);
+      const btn=document.createElement("button");btn.className="pick";btn.dataset.compo=m.id+":"+ti;
       btn.innerHTML=`<i style="background:${k.bg}"></i>${t.name}<b class="${b&&b.f===tot?"full":""}">${b?b.f+"/"+tot:""}</b>`;
       btn.setAttribute("aria-label",`Deviner la compo : ${t.name}`);btn.onclick=()=>start(m,ti);li.querySelector(".picks").appendChild(btn);});
-    ul.appendChild(li);
+    if(li.querySelector(".picks").children.length)ul.appendChild(li);
   });
 }
-let M,TI,P,found,hinted,left,tick,over,startT,RANKED=false,ROUND=null;
+$("voirtout").onclick=()=>{
+  const a=$("archive"),ouvert=!a.hidden;
+  if(!ouvert)renderHome();
+  a.hidden=ouvert;
+  $("voirtout").setAttribute("aria-expanded",String(!ouvert));
+  $("voirtout").textContent=ouvert?"Toutes les finales":"Masquer les finales";
+};
+let M,TI,P,found,hinted,left,tick,over,startT,RANKED=false,ROUND=null,NOTE_FIN="";
 const jersey=(k,lab)=>`<svg viewBox="0 0 40 38" aria-hidden="true"><path d="M13 2 L4 7 L0 16 L7 19 L8 15 L8 37 L32 37 L32 15 L33 19 L40 16 L36 7 L27 2 Q20 7 13 2Z" fill="${k.bg}" stroke="rgba(0,0,0,.35)" stroke-width="1"/>${k.stripe?`<rect x="17" y="6" width="6" height="31" fill="${k.stripe}" opacity=".9"/>`:""}<text x="20" y="${lab.length>2?26:27}" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="${lab.length>2?10:13}" fill="${k.fg}" ${k.stripe?'stroke="'+k.bg+'" stroke-width="2.5" paint-order="stroke"':""}>${lab}</text></svg>`;
 const LINES={
  foot:`<svg class="lines" viewBox="0 0 68 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width=".45" style="color:var(--chalk)"><rect x="3" y="3" width="62" height="94"/><line x1="3" y1="50" x2="65" y2="50"/><ellipse cx="34" cy="50" rx="8.5" ry="8.5"/><rect x="15" y="3" width="38" height="15"/><rect x="25" y="3" width="18" height="5"/><rect x="15" y="82" width="38" height="15"/><rect x="25" y="92" width="18" height="5"/></svg>`,
@@ -410,23 +457,23 @@ function end(){
   if(nj)bits.push(`${nj} joueur${nj>1?"s":""}`);
   if(coachOut)bits.push("l’entraîneur");
   $("rtxt").textContent=(miss?`${bits.join(" et ")} manquant${miss>1?"s":""}, en rouge.`:`Compo complète en ${fmt(t)}.`)
-    +(hinted.size?` ${hinted.size} indice${hinted.size>1?"s":""} utilisé${hinted.size>1?"s":""}.`:"")+(better&&b?" Nouveau record.":(!better&&b?` Record : ${b.f}/${tot}.`:""));
-  if(RANKED&&!store.get(dailyKey(DAYN))){
+    +(hinted.size?` ${hinted.size} indice${hinted.size>1?"s":""} utilisé${hinted.size>1?"s":""}.`:"")+(better&&b?" Nouveau record.":(!better&&b?` Record : ${b.f}/${tot}.`:""))+NOTE_FIN;
+  if(RANKED&&!store.get(dailyKey(DAYN,M.sport))){
     const reste=Math.max(left,0),duree=TIME[M.sport];
     // Bonus proportionnel au temps accordé : foot et rugby plafonnent au même score.
     const bonus=found.size===tot?Math.round(BONUS_MAX*reste/duree):0;
     const pts=Math.max(0,Math.round(1000*found.size/tot)+bonus-50*hinted.size);
-    store.set(dailyKey(DAYN),{d:DAYN,f:found.size,n:tot,h:hinted.size,l:reste,p:pts,t});
+    store.set(dailyKey(DAYN,M.sport),{d:DAYN,f:found.size,n:tot,h:hinted.size,l:reste,p:pts,t});
     $("rbig").textContent=pts.toLocaleString("fr-FR")+" pts";
     $("rtxt").textContent=`${found.size}/${tot} trouvés en ${fmt(t)}.`
       +(found.size===tot?` Bonus de ${bonus} points pour ${reste} secondes restantes.`:"")
       +(hinted.size?` ${50*hinted.size} points retirés pour ${hinted.size} indice${hinted.size>1?"s":""}.`:"");
-    const s=streakOf(DAYN);
+    const s=streakOf(DAYN,M.sport);
     $("share").hidden=false;
     majClassement(found.size,hinted.size);
     $("share").onclick=async()=>{
-      const f=store.get(dailyKey(DAYN))||{f:found.size,n:tot,p:pts};
-      const txt=`Compo du jour n° ${DAYN} — ${f.f}/${f.n} — ${f.p.toLocaleString("fr-FR")} pts`
+      const f=store.get(dailyKey(DAYN,M.sport))||{f:found.size,n:tot,p:pts};
+      const txt=`Compo.io ${nomSport(M.sport)} n° ${DAYN} — ${f.f}/${f.n} — ${f.p.toLocaleString("fr-FR")} pts`
         +(s>1?` 🔥${s}`:"")+"\n"+(moi().groupe?lienGroupe():location.origin+location.pathname);
       try{await navigator.clipboard.writeText(txt);$("share").textContent="Copié !";
         setTimeout(()=>$("share").textContent="Partager",1800);}

@@ -19,6 +19,27 @@ Le workflow ne met en ligne que `index.html` (copié aussi en `404.html`, pour q
 n’importe quelle adresse du site ouvre le jeu). Le pipeline de données et les
 migrations Supabase restent dans le dépôt, hors du site publié.
 
+# Compo du jour
+
+Deux compos par jour : une de football, une de rugby. Chacune a son classement
+et sa série de jours, et ne jouer qu'un sport ne pénalise pas dans l'autre.
+
+L'ordre de passage vit dans `data/day_order_foot.json` et
+`data/day_order_rugby.json`, reconstruits par :
+```
+python tools/ordre_du_jour.py --html index.html
+```
+**Une entrée déjà présente garde sa place.** Les finales ajoutées plus tard sont
+mises à la fin, jamais mélangées au reste : sinon le numéro du jour ne désigne
+plus la même compo et l'historique des joueurs se décale. L'outil s'en charge,
+il suffit de ne pas réécrire ces fichiers à la main.
+
+Aujourd'hui : 110 compos de football et 124 de rugby, donc pas de répétition
+avant 110 jours côté foot.
+
+Les deux compos du jour restent hors de l'archive tant qu'elles n'ont pas été
+jouées, pour qu'on ne puisse pas les répéter avant de les jouer pour de bon.
+
 # Pipeline de données
 
 ## Installation

@@ -38,6 +38,10 @@ const points = (trouves: number, taille: number, restant: number, indices: numbe
 const uuid = (s: unknown) =>
   typeof s === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
+// Une compo du jour par sport : le sport fait partie de la cle du classement.
+const SPORTS = new Set(["foot", "rugby"]);
+const sportDe = (s: unknown) => (typeof s === "string" && SPORTS.has(s) ? s : null);
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   let c: Record<string, any>;
@@ -52,6 +56,8 @@ Deno.serve(async (req) => {
       if (pseudo.length < 2 || pseudo.length > 20) return json({ code: "pseudo", erreur: "pseudo entre 2 et 20 caracteres" }, 400);
       const taille = Number(c.size), duree = Number(c.duration);
       if (!(taille >= 1 && taille <= 30) || !(duree >= 30 && duree <= 1800)) return json({ code: "partie", erreur: "partie invalide" }, 400);
+      const sport = sportDe(c.sport);
+      if (!sport) return json({ code: "sport", erreur: "sport invalide" }, 400);
 
       await db.from("players").upsert({ id: c.playerId, pseudo, last_seen: new Date().toISOString() });
 
@@ -62,14 +68,18 @@ Deno.serve(async (req) => {
         await db.from("memberships").upsert({ group_code: code, player_id: c.playerId });
       }
 
-      const { data: deja } = await db.from("scores").select("day").eq("player_id", c.playerId).eq("day", aujourdhui).maybeSingle();
-      if (deja) return json({ code: "deja_joue", erreur: "deja joue aujourd'hui", day: aujourdhui }, 409);
+      const { data: deja } = await db.from("scores").select("day")
+        .eq("player_id", c.playerId).eq("day", aujourdhui).eq("sport", sport).maybeSingle();
+      // Le sport est renvoye avec le refus : c'est ce qui permet a l'app de
+      // distinguer cette reponse de celle d'une ancienne version de la fonction,
+      // qui ne comptait qu'une partie par jour tous sports confondus.
+      if (deja) return json({ code: "deja_joue", erreur: "deja joue aujourd'hui", day: aujourdhui, sport }, 409);
 
       const { data, error } = await db.from("rounds")
-        .insert({ player_id: c.playerId, day: aujourdhui, size: taille, duration: duree })
+        .insert({ player_id: c.playerId, day: aujourdhui, sport, size: taille, duration: duree })
         .select("id").single();
       if (error) throw error;
-      return json({ roundId: data.id, day: aujourdhui });
+      return json({ roundId: data.id, day: aujourdhui, sport });
     }
 
     // ---- fin de partie : le score est recalculé ici, le navigateur ne l'envoie pas
@@ -96,38 +106,42 @@ Deno.serve(async (req) => {
 
       await db.from("rounds").update({ submitted: true }).eq("id", r.id);
       const { error } = await db.from("scores").insert({
-        player_id: r.player_id, day: r.day, found: trouves, size: r.size,
+        player_id: r.player_id, day: r.day, sport: r.sport, found: trouves, size: r.size,
         hints: indices, time_left: restant, seconds: Math.min(ecoule, r.duration), points: pts,
       });
       if (error && error.code !== "23505") throw error;           // 23505 = déjà classé
 
-      return json({ day: r.day, found: trouves, size: r.size, hints: indices, timeLeft: restant, points: pts });
+      return json({ day: r.day, sport: r.sport, found: trouves, size: r.size, hints: indices, timeLeft: restant, points: pts });
     }
 
     // ---- classement du jour dans un groupe, et série du joueur
     if (c.action === "board") {
       const code = String(c.groupCode ?? "").trim().toLowerCase();
       if (!/^[a-z0-9-]{3,24}$/.test(code)) return json({ code: "groupe", erreur: "code de groupe invalide" }, 400);
+      const sport = sportDe(c.sport);
+      if (!sport) return json({ code: "sport", erreur: "sport invalide" }, 400);
       const j = Number.isInteger(c.day) ? c.day : aujourdhui;
 
       const { data: membres } = await db.from("memberships").select("player_id").eq("group_code", code);
       const ids = (membres ?? []).map((m: any) => m.player_id);
-      if (!ids.length) return json({ day: j, classement: [] });
+      if (!ids.length) return json({ day: j, sport, classement: [] });
 
+      // Un classement par sport : ne jouer que le rugby ne fait pas descendre.
       const { data: lignes } = await db.from("scores")
         .select("player_id, points, found, size, seconds, hints, players(pseudo)")
-        .eq("day", j).in("player_id", ids)
+        .eq("day", j).eq("sport", sport).in("player_id", ids)
         .order("points", { ascending: false }).order("seconds", { ascending: true });
 
       let serie = 0;
       if (uuid(c.playerId)) {
         const { data: jours } = await db.from("scores").select("day")
-          .eq("player_id", c.playerId).lte("day", aujourdhui).order("day", { ascending: false }).limit(400);
+          .eq("player_id", c.playerId).eq("sport", sport).lte("day", aujourdhui)
+          .order("day", { ascending: false }).limit(400);
         for (const [i, l] of (jours ?? []).entries()) { if (l.day === aujourdhui - i) serie++; else break; }
       }
 
       return json({
-        day: j, serie,
+        day: j, sport, serie,
         classement: (lignes ?? []).map((l: any, i: number) => ({
           rang: i + 1, playerId: l.player_id, pseudo: l.players?.pseudo ?? "?",
           points: l.points, found: l.found, size: l.size, seconds: l.seconds, hints: l.hints,

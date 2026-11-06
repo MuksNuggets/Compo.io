@@ -19,7 +19,22 @@ la reçoit de Supabase à l'exécution.
 - `migrations/0002_grants.sql` — droits du rôle `service_role`. Nécessaire parce
   que l'option « exposition automatique des nouvelles tables » est désactivée
   sur le projet : sans ce fichier, la fonction échoue avec « erreur serveur ».
+- `migrations/0003_sport.sql` — une compo du jour par sport. La clé du
+  classement passe de `(player_id, day)` à `(player_id, day, sport)`.
 - `functions/compo/index.ts` — `start`, `submit`, `board`.
+
+## Un classement par sport
+
+`start` et `board` exigent maintenant `sport` (`foot` ou `rugby`), et `start`
+renvoie le sport avec son refus `deja_joue`. C'est ce détail qui permet à l'app
+de reconnaître une ancienne version de la fonction : sans `sport` dans la
+réponse, elle sait que le serveur ne compte qu'une partie par jour tous sports
+confondus, et joue alors hors classement plutôt que d'inscrire un zéro sur une
+compo jamais jouée.
+
+**Ordre de déploiement : la migration d'abord, la fonction ensuite.** Le défaut
+`'foot'` posé par la migration existe pour que l'ancienne fonction continue de
+tourner dans l'intervalle.
 
 ## Barème
 
