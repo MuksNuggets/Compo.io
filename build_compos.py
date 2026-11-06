@@ -102,12 +102,21 @@ COMP_LABEL = {'cdm':'Finale de la Coupe du monde','euro':'Finale de l’Euro','l
 REVIEW = []
 def flag(mid, msg): REVIEW.append((mid, msg)); print(f"  ⚠ {mid}: {msg}")
 _cache = {}
+PAUSE = 1.0                      # Wikipédia limite le débit : une requête par seconde suffit
 def get(url, **params):
     key = url + json.dumps(params, sort_keys=True)
-    if key not in _cache:
-        r = requests.get(url, params=params or None, headers=UA, timeout=30); r.raise_for_status()
-        _cache[key] = r; time.sleep(0.3)
-    return _cache[key]
+    if key in _cache: return _cache[key]
+    for essai in range(6):
+        r = requests.get(url, params=params or None, headers=UA, timeout=30)
+        if r.status_code in (429, 503):          # trop de requêtes : on attend et on réessaie
+            attente = float(r.headers.get('Retry-After') or 0) or min(60, 3 * 2 ** essai)
+            print(f"  … {r.status_code}, nouvelle tentative dans {attente:.0f} s")
+            time.sleep(attente); continue
+        r.raise_for_status()
+        _cache[key] = r; time.sleep(PAUSE)
+        return r
+    r.raise_for_status()
+    return r
 
 def score_str(a, b, aet=False, pens=None):
     s = f"{a}–{b}"
@@ -248,6 +257,28 @@ def team_name(v):
                 if a in CODES: return CODES[a]
     return clean_team(code.strip_code().strip())
 
+SCORE_RE = re.compile(r"\d{1,3}\s*[–\-—]\s*\d{1,3}")
+def score_text(v):
+    """Le score est souvent emballé dans un modèle ({{score link}}), que strip_code efface."""
+    if v is None: return ''
+    s = v.strip_code().strip()
+    if SCORE_RE.search(s): return s
+    for t in mw.parse(str(v)).filter_templates():
+        for i in range(1, 6):
+            if t.has(i):
+                a = str(t.get(i).value).strip()
+                if SCORE_RE.search(a): return a
+    return s
+
+def extras(raw, pen_v):
+    """Prolongation et tirs au but, lus dans la valeur brute du paramètre score."""
+    pen = score_text(pen_v)
+    if not pen:
+        m = re.search(r"\{\{\s*pso\s*\|\s*([^}|]+)", raw, re.I)
+        if m: pen = m.group(1).strip()
+    aet = bool(re.search(r"\baet\b|golden\s*goal|silver\s*goal|a\.e\.t", raw, re.I))
+    return pen, aet
+
 def _param(t, *keys):
     for k in keys:
         if t.has(k):
@@ -263,11 +294,10 @@ def parse_matchbox(text):
         if not any(k in n for k in MBOX): continue
         v1, v2 = _param(t, 'team1', 'home'), _param(t, 'team2', 'away')
         if not (v1 and v2): continue
-        sc, pen, aet = _param(t, 'score'), _param(t, 'penaltyscore', 'penalties'), _param(t, 'aet')
-        return (team_name(v1), team_name(v2),
-                sc.strip_code().strip() if sc else '',
-                pen.strip_code().strip() if pen else '',
-                bool(aet) and str(aet).strip().lower() not in ('no', 'non', 'n'))
+        sc_v, aet_v = _param(t, 'score'), _param(t, 'aet')
+        pen, aet = extras(str(sc_v or ''), _param(t, 'penaltyscore', 'penalties'))
+        aet = aet or (bool(aet_v) and str(aet_v).strip().lower() not in ('no', 'non', 'n'))
+        return team_name(v1), team_name(v2), score_text(sc_v), pen, aet
     return None
 
 def parse_infobox(text):
@@ -276,16 +306,17 @@ def parse_infobox(text):
         if 'infobox' not in str(t.name).lower(): continue
         v1, v2 = _param(t, 'team1'), _param(t, 'team2')
         if not (v1 and v2): continue
-        sc = _param(t, 'score')
-        s = sc.strip_code().strip() if sc else ''
-        if not re.match(r"\d+\s*[–\-—]\s*\d+", s):
+        sc_v = _param(t, 'score')
+        s = score_text(sc_v)
+        if not SCORE_RE.search(s):
             s1, s2 = _param(t, 'team1score'), _param(t, 'team2score')
             if s1 is not None and s2 is not None:
                 s = f"{s1.strip_code().strip()}–{s2.strip_code().strip()}"
-        pen, aet = _param(t, 'penaltyscore', 'penalties'), _param(t, 'aet')
-        return (team_name(v1), team_name(v2), s,
-                pen.strip_code().strip() if pen else '',
-                bool(aet) and str(aet).strip().lower() not in ('no', 'non', 'n'))
+        aet_v = _param(t, 'aet')
+        pen, aet = extras(str(sc_v or '') + str(_param(t, 'details') or ''),
+                          _param(t, 'penaltyscore', 'penalties'))
+        aet = aet or (bool(aet_v) and str(aet_v).strip().lower() not in ('no', 'non', 'n'))
+        return team_name(v1), team_name(v2), s, pen, aet
     return None
 
 def kit_titles(text):
@@ -361,10 +392,13 @@ def from_wiki(it, verbose=False):
         return dict(it, a=a, b=b, score=sc, source_title=title,
                     teams=[{'name': a, 'p': place_rugby(p1)}, {'name': b, 'p': place_rugby(p2)}])
 
-    box = parse_matchbox(text) or parse_infobox(text)
+    mb, ib = parse_matchbox(text), parse_infobox(text)
+    box = mb or ib
     if not box:
         flag(it['id'], "ni boite de match ni infobox exploitable"); return None
     t1, t2, sc, pen, aet = box
+    if mb and ib:            # la prolongation (but en or) n'est souvent notee que dans l'infobox
+        aet, pen = aet or ib[4], pen or ib[3]
     blocks = [b for b in parse_en_lineups(text) if len(b) >= need]
     if len(blocks) == 1 and len(blocks[0]) >= 2 * need:         # les deux equipes dans un seul tableau
         blocks = [blocks[0][:need], blocks[0][need:2 * need]]

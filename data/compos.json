@@ -1,5 +1,181 @@
 [
  {
+  "id": "cdm-2026",
+  "sport": "foot",
+  "comp": "cdm",
+  "yr": 2026,
+  "fx": "Espagne 1–0 Argentine (a.p.)",
+  "where": "Finale de la Coupe du monde",
+  "teams": [
+   {
+    "name": "Espagne",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Unai Simón",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Pau Cubarsí",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Aymeric Laporte",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Pedro Porro",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Marc Cucurella",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Rodri",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Dani Olmo",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Fabián Ruiz",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Lamine Yamal",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Álex Baena",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Mikel Oyarzabal",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Argentine",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Emiliano Martínez",
+      [
+       "dibu"
+      ]
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Cristian Romero",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Lisandro Martínez",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Gonzalo Montiel",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Nicolás Tagliafico",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Enzo Fernández",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Alexis Mac Allister",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Rodrigo De Paul",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Nicolás González",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Lionel Messi",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Julián Alvarez",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
   "id": "cdm-2022",
   "sport": "foot",
   "comp": "cdm",
@@ -15,7 +191,9 @@
       50,
       90,
       "Emiliano Martínez",
-      []
+      [
+       "dibu"
+      ]
      ],
      [
       "DC",
@@ -78,7 +256,9 @@
       22,
       24,
       "Ángel Di María",
-      []
+      [
+       "fideo"
+      ]
      ],
      [
       "BU",
@@ -146,14 +326,18 @@
       50,
       37,
       "Antoine Griezmann",
-      []
+      [
+       "grizou"
+      ]
      ],
      [
       "AG",
       18,
       27,
       "Kylian Mbappé",
-      []
+      [
+       "kyks"
+      ]
      ],
      [
       "AD",
@@ -238,14 +422,18 @@
       50,
       37,
       "Antoine Griezmann",
-      []
+      [
+       "grizou"
+      ]
      ],
      [
       "AD",
       82,
       27,
       "Kylian Mbappé",
-      []
+      [
+       "kyks"
+      ]
      ],
      [
       "AG",
@@ -572,7 +760,9 @@
       63,
       61,
       "Xabi Alonso",
-      []
+      [
+       "xabi"
+      ]
      ],
      [
       "MDC",
@@ -842,7 +1032,10 @@
       50,
       37,
       "Zinedine Zidane",
-      []
+      [
+       "zizou",
+       "zz"
+      ]
      ],
      [
       "AG",
@@ -948,7 +1141,9 @@
       63,
       18,
       "Ronaldo",
-      []
+      [
+       "r9"
+      ]
      ],
      [
       "BU",
@@ -1080,7 +1275,9 @@
       15,
       72,
       "Bixente Lizarazu",
-      []
+      [
+       "liza"
+      ]
      ],
      [
       "DD",
@@ -1094,7 +1291,9 @@
       50,
       61,
       "Didier Deschamps",
-      []
+      [
+       "dd"
+      ]
      ],
      [
       "MC",
@@ -1122,7 +1321,10 @@
       37,
       37,
       "Zinedine Zidane",
-      []
+      [
+       "zizou",
+       "zz"
+      ]
      ],
      [
       "BU",
@@ -1204,7 +1406,9 @@
       63,
       18,
       "Ronaldo",
-      []
+      [
+       "r9"
+      ]
      ],
      [
       "BU",
@@ -1914,6 +2118,2457 @@
   ]
  },
  {
+  "id": "euro-2016",
+  "sport": "foot",
+  "comp": "euro",
+  "yr": 2016,
+  "fx": "Portugal 1–0 France (a.p.)",
+  "where": "Finale de l’Euro",
+  "teams": [
+   {
+    "name": "Portugal",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Rui Patrício",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Pepe",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "José Fonte",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Cédric",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Raphaël Guerreiro",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "William Carvalho",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Adrien Silva",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Renato Sanches",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "João Mário",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Nani",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Cristiano Ronaldo",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "France",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Hugo Lloris",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Laurent Koscielny",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Samuel Umtiti",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Bacary Sagna",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Patrice Evra",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Paul Pogba",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Blaise Matuidi",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Moussa Sissoko",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Dimitri Payet",
+      []
+     ],
+     [
+      "SA",
+      50,
+      30,
+      "Antoine Griezmann",
+      [
+       "grizou"
+      ]
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Olivier Giroud",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "euro-2012",
+  "sport": "foot",
+  "comp": "euro",
+  "yr": 2012,
+  "fx": "Espagne 4–0 Italie",
+  "where": "Finale de l’Euro",
+  "teams": [
+   {
+    "name": "Espagne",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Iker Casillas",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Gerard Piqué",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Sergio Ramos",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Álvaro Arbeloa",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Jordi Alba",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Sergio Busquets",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Xavi",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Xabi Alonso",
+      [
+       "xabi"
+      ]
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Cesc Fàbregas",
+      []
+     ],
+     [
+      "MOC",
+      63,
+      37,
+      "David Silva",
+      []
+     ],
+     [
+      "MOC",
+      37,
+      37,
+      "Andrés Iniesta",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Italie",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Gianluigi Buffon",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Andrea Barzagli",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Leonardo Bonucci",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Ignazio Abate",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Giorgio Chiellini",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Andrea Pirlo",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Riccardo Montolivo",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Claudio Marchisio",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Daniele De Rossi",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Mario Balotelli",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Antonio Cassano",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "euro-2008",
+  "sport": "foot",
+  "comp": "euro",
+  "yr": 2008,
+  "fx": "Espagne 1–0 Allemagne",
+  "where": "Finale de l’Euro",
+  "teams": [
+   {
+    "name": "Espagne",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Iker Casillas",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Carlos Marchena",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Carles Puyol",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Sergio Ramos",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Joan Capdevila",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Marcos Senna",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Xavi",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Cesc Fàbregas",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Andrés Iniesta",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "David Silva",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Fernando Torres",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Allemagne",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Jens Lehmann",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Per Mertesacker",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Christoph Metzelder",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Arne Friedrich",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Philipp Lahm",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Torsten Frings",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Thomas Hitzlsperger",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Michael Ballack",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Bastian Schweinsteiger",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Lukas Podolski",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Miroslav Klose",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "euro-2004",
+  "sport": "foot",
+  "comp": "euro",
+  "yr": 2004,
+  "fx": "Grèce 1–0 Portugal",
+  "where": "Finale de l’Euro",
+  "teams": [
+   {
+    "name": "Grèce",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Antonios Nikopolidis",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Michalis Kapsis",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Traianos Dellas",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Giourkas Seitaridis",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Takis Fyssas",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Kostas Katsouranis",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Theodoros Zagorakis",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Angelos Basinas",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Angelos Charisteas",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Stelios Giannakopoulos",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Zisis Vryzas",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Portugal",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Ricardo",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Jorge Andrade",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Ricardo Carvalho",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Miguel",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Nuno Valente",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Maniche",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Costinha",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Deco",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Cristiano Ronaldo",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Luís Figo",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Pauleta",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "euro-2000",
+  "sport": "foot",
+  "comp": "euro",
+  "yr": 2000,
+  "fx": "France 2–1 Italie (a.p.)",
+  "where": "Finale de l’Euro",
+  "teams": [
+   {
+    "name": "France",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Fabien Barthez",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Marcel Desailly",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Laurent Blanc",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Lilian Thuram",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Bixente Lizarazu",
+      [
+       "liza"
+      ]
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Patrick Vieira",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Didier Deschamps",
+      [
+       "dd"
+      ]
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Zinedine Zidane",
+      [
+       "zizou",
+       "zz"
+      ]
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Youri Djorkaeff",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Thierry Henry",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Christophe Dugarry",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Italie",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Francesco Toldo",
+      []
+     ],
+     [
+      "DC",
+      72,
+      77,
+      "Fabio Cannavaro",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Alessandro Nesta",
+      []
+     ],
+     [
+      "DC",
+      28,
+      77,
+      "Mark Iuliano",
+      []
+     ],
+     [
+      "PD",
+      87,
+      62,
+      "Gianluca Pessotto",
+      []
+     ],
+     [
+      "PG",
+      13,
+      62,
+      "Paolo Maldini",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Demetrio Albertini",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Luigi Di Biagio",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Stefano Fiore",
+      []
+     ],
+     [
+      "SA",
+      50,
+      30,
+      "Francesco Totti",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Marco Delvecchio",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "euro-1996",
+  "sport": "foot",
+  "comp": "euro",
+  "yr": 1996,
+  "fx": "Allemagne 2–1 Tchéquie (a.p.)",
+  "where": "Finale de l’Euro",
+  "teams": [
+   {
+    "name": "Allemagne",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Andreas Köpke",
+      []
+     ],
+     [
+      "LIB",
+      50,
+      83,
+      "Matthias Sammer",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Markus Babbel",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Thomas Helmer",
+      []
+     ],
+     [
+      "PD",
+      87,
+      62,
+      "Thomas Strunz",
+      []
+     ],
+     [
+      "PG",
+      13,
+      62,
+      "Christian Ziege",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Dieter Eilts",
+      []
+     ],
+     [
+      "MOC",
+      63,
+      37,
+      "Mehmet Scholl",
+      []
+     ],
+     [
+      "MOC",
+      37,
+      37,
+      "Thomas Häßler",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Jürgen Klinsmann",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Stefan Kuntz",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Tchéquie",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Petr Kouba",
+      []
+     ],
+     [
+      "LIB",
+      50,
+      83,
+      "Miroslav Kadlec",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Michal Horňák",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Jan Suchopárek",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Pavel Nedvěd",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Radek Bejbl",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Karel Rada",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Patrik Berger",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Karel Poborský",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Jiří Němec",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Pavel Kuka",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "euro-1992",
+  "sport": "foot",
+  "comp": "euro",
+  "yr": 1992,
+  "fx": "Danemark 2–0 Allemagne",
+  "where": "Finale de l’Euro",
+  "teams": [
+   {
+    "name": "Danemark",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Peter Schmeichel",
+      []
+     ],
+     [
+      "DC",
+      72,
+      77,
+      "Lars Olsen",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Torben Piechnik",
+      []
+     ],
+     [
+      "DC",
+      28,
+      77,
+      "Kent Nielsen",
+      []
+     ],
+     [
+      "PD",
+      87,
+      62,
+      "John Sivebæk",
+      []
+     ],
+     [
+      "PG",
+      13,
+      62,
+      "Kim Christofte",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "John Jensen",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Kim Vilfort",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Henrik Larsen",
+      []
+     ],
+     [
+      "SA",
+      50,
+      30,
+      "Brian Laudrup",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Flemming Povlsen",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Allemagne",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Bodo Illgner",
+      []
+     ],
+     [
+      "LIB",
+      50,
+      83,
+      "Guido Buchwald",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Jürgen Kohler",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Thomas Helmer",
+      []
+     ],
+     [
+      "PD",
+      87,
+      62,
+      "Stefan Reuter",
+      []
+     ],
+     [
+      "PG",
+      13,
+      62,
+      "Andreas Brehme",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Matthias Sammer",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Stefan Effenberg",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Thomas Häßler",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Karl-Heinz Riedle",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Jürgen Klinsmann",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2026",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2026,
+  "fx": "Paris Saint-Germain 1–1 Arsenal (4–3 t.a.b.)",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Paris Saint-Germain",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Matvey Safonov",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Marquinhos",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Willian Pacho",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Achraf Hakimi",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Nuno Mendes",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Vitinha",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "João Neves",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Fabián Ruiz",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Désiré Doué",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Khvicha Kvaratskhelia",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Ousmane Dembélé",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Arsenal",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "David Raya",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "William Saliba",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Gabriel Magalhães",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Cristhian Mosquera",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Piero Hincapié",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Declan Rice",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Myles Lewis-Skelly",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Martin Ødegaard",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Bukayo Saka",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Leandro Trossard",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Kai Havertz",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2025",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2025,
+  "fx": "Paris Saint-Germain 5–0 Inter Milan",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Paris Saint-Germain",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Gianluigi Donnarumma",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Marquinhos",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Willian Pacho",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Achraf Hakimi",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Nuno Mendes",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "João Neves",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Vitinha",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Fabián Ruiz",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Désiré Doué",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Khvicha Kvaratskhelia",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Ousmane Dembélé",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Inter Milan",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Yann Sommer",
+      []
+     ],
+     [
+      "DC",
+      72,
+      77,
+      "Benjamin Pavard",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Francesco Acerbi",
+      []
+     ],
+     [
+      "DC",
+      28,
+      77,
+      "Alessandro Bastoni",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Nicolò Barella",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Hakan Çalhanoğlu",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Henrikh Mkhitaryan",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Denzel Dumfries",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Federico Dimarco",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Marcus Thuram",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Lautaro Martínez",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2024",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2024,
+  "fx": "Real Madrid 2–0 Borussia Dortmund",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Real Madrid",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Thibaut Courtois",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Antonio Rüdiger",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Nacho",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Dani Carvajal",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Ferland Mendy",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Eduardo Camavinga",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Federico Valverde",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Toni Kroos",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Jude Bellingham",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Rodrygo",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Vinícius Júnior",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Borussia Dortmund",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Gregor Kobel",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Mats Hummels",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Nico Schlotterbeck",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Julian Ryerson",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Ian Maatsen",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Emre Can",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Marcel Sabitzer",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Julian Brandt",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Jadon Sancho",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Karim Adeyemi",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Niclas Füllkrug",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2023",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2023,
+  "fx": "Manchester City 1–0 Inter Milan",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Manchester City",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Ederson",
+      []
+     ],
+     [
+      "DC",
+      72,
+      77,
+      "Manuel Akanji",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Rúben Dias",
+      []
+     ],
+     [
+      "DC",
+      28,
+      77,
+      "Nathan Aké",
+      []
+     ],
+     [
+      "MDC",
+      63,
+      61,
+      "John Stones",
+      []
+     ],
+     [
+      "MDC",
+      37,
+      61,
+      "Rodri",
+      []
+     ],
+     [
+      "MOC",
+      63,
+      37,
+      "Kevin De Bruyne",
+      []
+     ],
+     [
+      "MOC",
+      37,
+      37,
+      "İlkay Gündoğan",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Bernardo Silva",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Jack Grealish",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Erling Haaland",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Inter Milan",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "André Onana",
+      []
+     ],
+     [
+      "DC",
+      72,
+      77,
+      "Matteo Darmian",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Francesco Acerbi",
+      []
+     ],
+     [
+      "DC",
+      28,
+      77,
+      "Alessandro Bastoni",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Nicolò Barella",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Marcelo Brozović",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Hakan Çalhanoğlu",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Denzel Dumfries",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Federico Dimarco",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Lautaro Martínez",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Edin Džeko",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2022",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2022,
+  "fx": "Real Madrid 1–0 Liverpool",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Real Madrid",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Thibaut Courtois",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Éder Militão",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "David Alaba",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Dani Carvajal",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Ferland Mendy",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Luka Modrić",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Casemiro",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Toni Kroos",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Federico Valverde",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Vinícius Júnior",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Karim Benzema",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Liverpool",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Alisson",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Ibrahima Konaté",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Virgil van Dijk",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Trent Alexander-Arnold",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Andrew Robertson",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Jordan Henderson",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Fabinho",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Thiago Alcântara",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Mohamed Salah",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Luis Díaz",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Sadio Mané",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2021",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2021,
+  "fx": "Chelsea 1–0 Manchester City",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Chelsea",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Édouard Mendy",
+      []
+     ],
+     [
+      "DC",
+      72,
+      77,
+      "César Azpilicueta",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Thiago Silva",
+      []
+     ],
+     [
+      "DC",
+      28,
+      77,
+      "Antonio Rüdiger",
+      []
+     ],
+     [
+      "PD",
+      87,
+      62,
+      "Reece James",
+      []
+     ],
+     [
+      "PG",
+      13,
+      62,
+      "Ben Chilwell",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Jorginho",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "N'Golo Kanté",
+      []
+     ],
+     [
+      "MOC",
+      63,
+      37,
+      "Kai Havertz",
+      []
+     ],
+     [
+      "MOC",
+      37,
+      37,
+      "Mason Mount",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Timo Werner",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Manchester City",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Ederson",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "John Stones",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Rúben Dias",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Kyle Walker",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Oleksandr Zinchenko",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Bernardo Silva",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "İlkay Gündoğan",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Phil Foden",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Kevin De Bruyne",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Riyad Mahrez",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Raheem Sterling",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2020",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2020,
+  "fx": "Bayern Munich 1–0 Paris Saint-Germain",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Bayern Munich",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Manuel Neuer",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Jérôme Boateng",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "David Alaba",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Joshua Kimmich",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Alphonso Davies",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Thiago",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Leon Goretzka",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Thomas Müller",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Serge Gnabry",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Kingsley Coman",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Robert Lewandowski",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Paris Saint-Germain",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Keylor Navas",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Thiago Silva",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Presnel Kimpembe",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Thilo Kehrer",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Juan Bernat",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Ander Herrera",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Marquinhos",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Leandro Paredes",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Ángel Di María",
+      [
+       "fideo"
+      ]
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Neymar",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Kylian Mbappé",
+      [
+       "kyks"
+      ]
+     ]
+    ]
+   }
+  ]
+ },
+ {
   "id": "ldc-2019",
   "sport": "foot",
   "comp": "ldc",
@@ -2603,7 +5258,9 @@
       38,
       19,
       "Antoine Griezmann",
-      []
+      [
+       "grizou"
+      ]
      ]
     ]
    }
@@ -2848,7 +5505,9 @@
       36,
       52,
       "Ángel Di María",
-      []
+      [
+       "fideo"
+      ]
      ],
      [
       "AD",
@@ -3828,6 +6487,180 @@
   ]
  },
  {
+  "id": "ldc-2008",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2008,
+  "fx": "Manchester United 1–1 Chelsea (6–5 t.a.b.)",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Manchester United",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Edwin van der Sar",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Rio Ferdinand",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Nemanja Vidić",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Wes Brown",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Patrice Evra",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Paul Scholes",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Michael Carrick",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Owen Hargreaves",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Cristiano Ronaldo",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Wayne Rooney",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Carlos Tevez",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Chelsea",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Petr Čech",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Ricardo Carvalho",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "John Terry",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Michael Essien",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Ashley Cole",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Claude Makélélé",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Michael Ballack",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Frank Lampard",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Joe Cole",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Florent Malouda",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Didier Drogba",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
   "id": "ldc-2007",
   "sport": "foot",
   "comp": "ldc",
@@ -3967,7 +6800,9 @@
       36,
       52,
       "Xabi Alonso",
-      []
+      [
+       "xabi"
+      ]
      ],
      [
       "MOC",
@@ -3995,6 +6830,180 @@
       50,
       18,
       "Dirk Kuyt",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2006",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2006,
+  "fx": "FC Barcelone 2–1 Arsenal",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "FC Barcelone",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Víctor Valdés",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Rafael Márquez",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Carles Puyol",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Oleguer",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Giovanni van Bronckhorst",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Edmílson",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Deco",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Mark van Bommel",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Ludovic Giuly",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Ronaldinho",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Samuel Eto'o",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Arsenal",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Jens Lehmann",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Kolo Touré",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Sol Campbell",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Emmanuel Eboué",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Ashley Cole",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Gilberto Silva",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Cesc Fàbregas",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Robert Pires",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Alexander Hleb",
+      []
+     ],
+     [
+      "SA",
+      50,
+      30,
+      "Freddie Ljungberg",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Thierry Henry",
       []
      ]
     ]
@@ -4052,7 +7061,9 @@
       37,
       61,
       "Xabi Alonso",
-      []
+      [
+       "xabi"
+      ]
      ],
      [
       "MC",
@@ -4350,16 +7361,716 @@
   ]
  },
  {
+  "id": "ldc-2003",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2003,
+  "fx": "Milan 0–0 Juventus (3–2 t.a.b.)",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Milan",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Dida",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Alessandro Nesta",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Paolo Maldini",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Alessandro Costacurta",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Kakha Kaladze",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Andrea Pirlo",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Gennaro Gattuso",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Clarence Seedorf",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Rui Costa",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Andriy Shevchenko",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Filippo Inzaghi",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Juventus",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Gianluigi Buffon",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Ciro Ferrara",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Igor Tudor",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Lilian Thuram",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Paolo Montero",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Alessio Tacchinardi",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Edgar Davids",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Mauro Camoranesi",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Gianluca Zambrotta",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "David Trezeguet",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Alessandro Del Piero",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2002",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2002,
+  "fx": "Real Madrid 2–1 Bayer Leverkusen",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Real Madrid",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "César",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Fernando Hierro",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Iván Helguera",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Míchel Salgado",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Roberto Carlos",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Claude Makélélé",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Luís Figo",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Santiago Solari",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Zinedine Zidane",
+      [
+       "zizou",
+       "zz"
+      ]
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Raúl",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Fernando Morientes",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Bayer Leverkusen",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Hans-Jörg Butt",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Boris Živković",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Lúcio",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Zoltán Sebescen",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Diego Placente",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Carsten Ramelow",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Michael Ballack",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Bernd Schneider",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Thomas Brdarić",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Yıldıray Baştürk",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Oliver Neuville",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2001",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2001,
+  "fx": "Bayern Munich 1–1 Valencia (5–4 t.a.b.)",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Bayern Munich",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Oliver Kahn",
+      []
+     ],
+     [
+      "DC",
+      72,
+      77,
+      "Samuel Kuffour",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Patrik Andersson",
+      []
+     ],
+     [
+      "DC",
+      28,
+      77,
+      "Thomas Linke",
+      []
+     ],
+     [
+      "PD",
+      87,
+      62,
+      "Willy Sagnol",
+      []
+     ],
+     [
+      "PG",
+      13,
+      62,
+      "Bixente Lizarazu",
+      [
+       "liza"
+      ]
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Owen Hargreaves",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Stefan Effenberg",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Hasan Salihamidžić",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Mehmet Scholl",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Giovane Élber",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Valencia",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Santiago Cañizares",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Roberto Ayala",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Mauricio Pellegrino",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Jocelyn Angloma",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Amedeo Carboni",
+      []
+     ],
+     [
+      "MC",
+      72,
+      52,
+      "Gaizka Mendieta",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Rubén Baraja",
+      []
+     ],
+     [
+      "MC",
+      28,
+      52,
+      "Kily González",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Pablo Aimar",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Juan Ginés Sánchez",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "John Carew",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-2000",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 2000,
+  "fx": "Real Madrid 3–0 Valencia",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Real Madrid",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Iker Casillas",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Aitor Karanka",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Iván Helguera",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Míchel Salgado",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Roberto Carlos",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Fernando Redondo",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Iván Campo",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Steve McManaman",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Raúl",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Fernando Morientes",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Nicolas Anelka",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Valencia",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Santiago Cañizares",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Miroslav Đukić",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Mauricio Pellegrino",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Jocelyn Angloma",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Gerardo",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Javier Farinós",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Gerard López",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Gaizka Mendieta",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Kily González",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Miguel Ángel Angulo",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Claudio López",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
   "id": "ldc-1999",
   "sport": "foot",
   "comp": "ldc",
   "yr": 1999,
   "fx": "Manchester United 2–1 Bayern Munich",
-  "where": "Finale de la Ligue des champions, Barcelone",
+  "where": "Finale de la Ligue des champions",
   "teams": [
    {
     "name": "Manchester United",
-    "kit": "mu",
     "p": [
      [
       "G",
@@ -4369,73 +8080,1037 @@
       []
      ],
      [
-      "DD",
-      85,
-      73,
-      "Gary Neville",
-      []
-     ],
-     [
       "DC",
-      62,
-      77,
-      "Jaap Stam",
-      []
-     ],
-     [
-      "DC",
-      38,
+      63,
       77,
       "Ronny Johnsen",
       []
      ],
      [
+      "DC",
+      37,
+      77,
+      "Jaap Stam",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Gary Neville",
+      []
+     ],
+     [
       "DG",
       15,
-      73,
+      72,
       "Denis Irwin",
       []
      ],
      [
-      "MD",
-      85,
-      47,
-      "Ryan Giggs",
-      []
-     ],
-     [
       "MC",
-      62,
-      54,
+      63,
+      52,
       "David Beckham",
       []
      ],
      [
       "MC",
-      38,
-      54,
+      37,
+      52,
       "Nicky Butt",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Ryan Giggs",
       []
      ],
      [
       "MG",
       15,
-      47,
+      48,
       "Jesper Blomqvist",
       []
      ],
      [
       "BU",
-      62,
-      20,
+      63,
+      18,
       "Dwight Yorke",
       []
      ],
      [
       "BU",
-      38,
-      20,
+      37,
+      18,
       "Andy Cole",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Bayern Munich",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Oliver Kahn",
+      []
+     ],
+     [
+      "LIB",
+      50,
+      83,
+      "Lothar Matthäus",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Thomas Linke",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Samuel Kuffour",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Markus Babbel",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Michael Tarnat",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Stefan Effenberg",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Jens Jeremies",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Mario Basler",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Alexander Zickler",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Carsten Jancker",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-1998",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 1998,
+  "fx": "Real Madrid 1–0 Juventus",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Real Madrid",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Bodo Illgner",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Manolo Sanchís",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Fernando Hierro",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Christian Panucci",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Roberto Carlos",
+      []
+     ],
+     [
+      "MDC",
+      63,
+      61,
+      "Christian Karembeu",
+      []
+     ],
+     [
+      "MDC",
+      37,
+      61,
+      "Fernando Redondo",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
+      "Clarence Seedorf",
+      []
+     ],
+     [
+      "MOC",
+      63,
+      37,
+      "Fernando Morientes",
+      []
+     ],
+     [
+      "MOC",
+      37,
+      37,
+      "Predrag Mijatović",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Raúl",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Juventus",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Angelo Peruzzi",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Mark Iuliano",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Paolo Montero",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Moreno Torricelli",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Gianluca Pessotto",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Didier Deschamps",
+      [
+       "dd"
+      ]
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Edgar Davids",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Angelo Di Livio",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Alessandro Del Piero",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Zinedine Zidane",
+      [
+       "zizou",
+       "zz"
+      ]
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Filippo Inzaghi",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-1997",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 1997,
+  "fx": "Borussia Dortmund 3–1 Juventus",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Borussia Dortmund",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Stefan Klos",
+      []
+     ],
+     [
+      "LIB",
+      50,
+      83,
+      "Matthias Sammer",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Jürgen Kohler",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Martin Kree",
+      []
+     ],
+     [
+      "PD",
+      87,
+      62,
+      "Stefan Reuter",
+      []
+     ],
+     [
+      "PG",
+      13,
+      62,
+      "Jörg Heinrich",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Paul Lambert",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Paulo Sousa",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Andreas Möller",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Karl-Heinz Riedle",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Stéphane Chapuisat",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Juventus",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Angelo Peruzzi",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Ciro Ferrara",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Paolo Montero",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Sergio Porrini",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Mark Iuliano",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Didier Deschamps",
+      [
+       "dd"
+      ]
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Angelo Di Livio",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Vladimir Jugović",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Zinedine Zidane",
+      [
+       "zizou",
+       "zz"
+      ]
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Christian Vieri",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Alen Bokšić",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-1996",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 1996,
+  "fx": "Juventus 1–1 Ajax (4–2 t.a.b.)",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Juventus",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Angelo Peruzzi",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Ciro Ferrara",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Pietro Vierchowod",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Moreno Torricelli",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Gianluca Pessotto",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Paulo Sousa",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Didier Deschamps",
+      [
+       "dd"
+      ]
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Antonio Conte",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Fabrizio Ravanelli",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Alessandro Del Piero",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Gianluca Vialli",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Ajax",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Edwin van der Sar",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Danny Blind",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Sonny Silooy",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Winston Bogarde",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Frank de Boer",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Ronald de Boer",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Edgar Davids",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Jari Litmanen",
+      []
+     ],
+     [
+      "AD",
+      82,
+      27,
+      "Finidi George",
+      []
+     ],
+     [
+      "AG",
+      18,
+      27,
+      "Kiki Musampa",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Nwankwo Kanu",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-1995",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 1995,
+  "fx": "Ajax 1–0 Milan",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Ajax",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Edwin van der Sar",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Danny Blind",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Michael Reiziger",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Frank de Boer",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Frank Rijkaard",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Clarence Seedorf",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Edgar Davids",
+      []
+     ],
+     [
+      "MOC",
+      50,
+      37,
+      "Jari Litmanen",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Finidi George",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Marc Overmars",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Ronald de Boer",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Milan",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Sebastiano Rossi",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Alessandro Costacurta",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Franco Baresi",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Christian Panucci",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Paolo Maldini",
+      []
+     ],
+     [
+      "MDC",
+      63,
+      61,
+      "Demetrio Albertini",
+      []
+     ],
+     [
+      "MDC",
+      37,
+      61,
+      "Marcel Desailly",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Roberto Donadoni",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Zvonimir Boban",
+      []
+     ],
+     [
+      "SA",
+      50,
+      30,
+      "Marco Simone",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Daniele Massaro",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-1994",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 1994,
+  "fx": "Milan 4–0 FC Barcelone",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Milan",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Sebastiano Rossi",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Filippo Galli",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Paolo Maldini",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Mauro Tassotti",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Christian Panucci",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Demetrio Albertini",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Marcel Desailly",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Zvonimir Boban",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Roberto Donadoni",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Dejan Savićević",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Daniele Massaro",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "FC Barcelone",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Andoni Zubizarreta",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Ronald Koeman",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Miguel Ángel Nadal",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Albert Ferrer",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Sergi Barjuán",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Pep Guardiola",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "José Mari Bakero",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Guillermo Amor",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Hristo Stoichkov",
+      []
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Txiki Begiristain",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Romário",
       []
      ]
     ]
@@ -4448,11 +9123,10 @@
   "comp": "ldc",
   "yr": 1993,
   "fx": "Marseille 1–0 Milan",
-  "where": "Finale de la Ligue des champions, Munich",
+  "where": "Finale de la Ligue des champions",
   "teams": [
    {
     "name": "Marseille",
-    "kit": "om",
     "p": [
      [
       "G",
@@ -4462,80 +9136,507 @@
       []
      ],
      [
-      "DD",
-      85,
-      73,
-      "Jocelyn Angloma",
-      []
-     ],
-     [
-      "DC",
-      62,
-      77,
+      "LIB",
+      50,
+      83,
       "Basile Boli",
       []
      ],
      [
       "DC",
-      38,
+      50,
       77,
       "Marcel Desailly",
       []
      ],
      [
+      "DD",
+      85,
+      72,
+      "Jocelyn Angloma",
+      []
+     ],
+     [
       "DG",
       15,
-      73,
+      72,
       "Éric Di Meco",
       []
      ],
      [
       "MC",
       72,
-      53,
+      52,
+      "Franck Sauzée",
+      []
+     ],
+     [
+      "MC",
+      50,
+      52,
       "Jean-Jacques Eydelie",
       [
        "jje"
       ]
      ],
      [
-      "MDC",
-      50,
-      59,
-      "Didier Deschamps",
-      []
-     ],
-     [
       "MC",
       28,
-      53,
-      "Franck Sauzée",
+      52,
+      "Didier Deschamps",
+      [
+       "dd"
+      ]
+     ],
+     [
+      "AG",
+      22,
+      24,
+      "Rudi Völler",
       []
      ],
      [
       "AD",
-      80,
-      28,
-      "Abedi Pelé",
-      [
-       "abedi",
-       "pele"
-      ]
+      78,
+      24,
+      "Abedi Pele",
+      []
      ],
      [
       "BU",
       50,
       18,
-      "Rudi Völler",
-      [
-       "voeller"
-      ]
+      "Alen Bokšić",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Milan",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Sebastiano Rossi",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Alessandro Costacurta",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Franco Baresi",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Mauro Tassotti",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Paolo Maldini",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Demetrio Albertini",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Frank Rijkaard",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Gianluigi Lentini",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Roberto Donadoni",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Marco van Basten",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Daniele Massaro",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-1992",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 1992,
+  "fx": "FC Barcelone 1–0 Sampdoria (a.p.)",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "FC Barcelone",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Andoni Zubizarreta",
+      []
+     ],
+     [
+      "LIB",
+      50,
+      83,
+      "Ronald Koeman",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Albert Ferrer",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Nando",
+      []
+     ],
+     [
+      "PD",
+      87,
+      62,
+      "Eusebio Sacristán",
+      []
+     ],
+     [
+      "PG",
+      13,
+      62,
+      "Juan Carlos",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Pep Guardiola",
+      []
+     ],
+     [
+      "MOC",
+      63,
+      37,
+      "José Mari Bakero",
+      []
+     ],
+     [
+      "MOC",
+      37,
+      37,
+      "Michael Laudrup",
+      []
+     ],
+     [
+      "SA",
+      50,
+      30,
+      "Hristo Stoichkov",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Julio Salinas",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Sampdoria",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Gianluca Pagliuca",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Pietro Vierchowod",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Marco Lanna",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Moreno Mannini",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Srečko Katanec",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Fausto Pari",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Toninho Cerezo",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Attilio Lombardo",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Ivano Bonetti",
+      []
+     ],
+     [
+      "BU",
+      63,
+      18,
+      "Roberto Mancini",
+      []
+     ],
+     [
+      "BU",
+      37,
+      18,
+      "Gianluca Vialli",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ldc-1991",
+  "sport": "foot",
+  "comp": "ldc",
+  "yr": 1991,
+  "fx": "Red Star Belgrade 0–0 Marseille (5–3 t.a.b.)",
+  "where": "Finale de la Ligue des champions",
+  "teams": [
+   {
+    "name": "Red Star Belgrade",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Stevan Stojanović",
+      []
+     ],
+     [
+      "DC",
+      63,
+      77,
+      "Ilija Najdoski",
+      []
+     ],
+     [
+      "DC",
+      37,
+      77,
+      "Siniša Mihajlović",
+      []
+     ],
+     [
+      "DD",
+      85,
+      72,
+      "Refik Šabanadžović",
+      []
+     ],
+     [
+      "DG",
+      15,
+      72,
+      "Slobodan Marović",
+      []
+     ],
+     [
+      "MDC",
+      50,
+      61,
+      "Miodrag Belodedici",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Robert Prosinečki",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Dejan Savićević",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Dragiša Binić",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Vladimir Jugović",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Darko Pančev",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Marseille",
+    "p": [
+     [
+      "G",
+      50,
+      90,
+      "Pascal Olmeta",
+      []
+     ],
+     [
+      "DC",
+      72,
+      77,
+      "Basile Boli",
+      []
+     ],
+     [
+      "DC",
+      50,
+      77,
+      "Carlos Mozer",
+      []
+     ],
+     [
+      "DC",
+      28,
+      77,
+      "Bernard Casoni",
+      []
+     ],
+     [
+      "MC",
+      63,
+      52,
+      "Laurent Fournier",
+      []
+     ],
+     [
+      "MC",
+      37,
+      52,
+      "Bruno Germain",
+      []
+     ],
+     [
+      "MD",
+      85,
+      48,
+      "Manuel Amoros",
+      []
+     ],
+     [
+      "MG",
+      15,
+      48,
+      "Éric Di Meco",
+      []
+     ],
+     [
+      "AD",
+      78,
+      24,
+      "Chris Waddle",
+      []
      ],
      [
       "AG",
-      20,
-      28,
-      "Alen Bokšić",
+      22,
+      24,
+      "Abedi Pele",
+      []
+     ],
+     [
+      "BU",
+      50,
+      18,
+      "Jean-Pierre Papin",
       []
      ]
     ]
