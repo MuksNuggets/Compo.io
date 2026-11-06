@@ -12,7 +12,7 @@ Usage :
   python build_compos.py --test                 # 3 pages Wikipédia difficiles, détail + dumps
   python build_compos.py --only cdm,euro,ldc    # lancement par compétitions
   python build_compos.py                        # tout
-  python build_compos.py --html ../compo-io.html  # injecte les données dans l’app
+  python build_compos.py --html index.html     # injecte les données dans l’app
 
 Sorties : data/compos.json, data/review.csv (cas à relire), data/raw/*.wiki (sources brutes).
 """

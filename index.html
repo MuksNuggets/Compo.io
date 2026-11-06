@@ -42,8 +42,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .brand h1{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:clamp(56px,14vw,88px);line-height:.9;margin:0;letter-spacing:-.01em}
 .brand .dot{color:var(--pitch)}
 .lede{color:var(--muted);margin:6px 0 24px;max-width:46ch}
-.filters{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;margin-bottom:12px;background:var(--surface)}
-.filters button{border:0;background:none;padding:6px 16px;border-radius:999px;font-weight:600;color:var(--muted)}
+/* Sur un téléphone la barre ne tient pas : elle défile au doigt plutôt que de déborder. */
+.filters{display:flex;width:max-content;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;border:1px solid var(--line);border-radius:999px;padding:3px;margin-bottom:12px;background:var(--surface)}
+.filters::-webkit-scrollbar{display:none}
+.filters button{flex:0 0 auto;white-space:nowrap;border:0;background:none;padding:6px 16px;border-radius:999px;font-weight:600;color:var(--muted)}
 .filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .list{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
 .row{display:grid;grid-template-columns:56px 1fr;gap:6px 14px;align-items:start;border-bottom:1px solid var(--line);padding:14px 4px}

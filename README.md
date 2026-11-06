@@ -1,4 +1,25 @@
-# Compo.io : pipeline de données
+# Compo.io
+
+Le jeu tient dans `index.html` : un seul fichier, aucune dépendance à installer.
+Pour y jouer en local, ouvre-le dans un navigateur, ou sers le dossier :
+```
+python -m http.server 8000
+```
+puis <http://localhost:8000>.
+
+## Mise en ligne (GitHub Pages)
+
+Une seule manipulation, à faire une fois, dans l’onglet **Settings → Pages** du dépôt :
+choisir **Source : GitHub Actions**. Ensuite, chaque modification de `index.html`
+poussée sur `main` republie le site toute seule, via `.github/workflows/pages.yml`.
+
+L’adresse publique sera `https://muksnuggets.github.io/Compo.io/`.
+
+Le workflow ne met en ligne que `index.html` (copié aussi en `404.html`, pour que
+n’importe quelle adresse du site ouvre le jeu). Le pipeline de données et les
+migrations Supabase restent dans le dépôt, hors du site publié.
+
+# Pipeline de données
 
 ## Installation
 ```
@@ -31,7 +52,7 @@ Chaque lancement s’ajoute à `data/compos.json` sans effacer le reste.
 2. Pour ajouter des surnoms, édite `aliases.json`, par exemple `{"Zinedine Zidane": ["zizou"]}`, puis relance.
 3. Injecte les données dans l’app :
 ```
-python build_compos.py --only cdm --html compo-io.html
+python build_compos.py --only cdm --html index.html
 ```
 
 ## Sources
