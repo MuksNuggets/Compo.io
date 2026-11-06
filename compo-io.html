@@ -86,6 +86,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pl.todo .nm{color:rgba(255,255,255,.6)}
 .pl.hit .nm{background:#fff;color:#13241A;animation:pop .35s}
 .pl.miss .nm{background:var(--miss);color:#fff}
+.daily{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 18px;background:var(--surface);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.daily .tag{font:700 11px/1 Barlow,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent);padding:5px 9px;border-radius:999px}
+.daily .what{flex:1;min-width:190px;font-weight:600;font-size:16px;line-height:1.3}
+.daily .what small{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:2px}
+.daily .pts{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:30px;line-height:1}
+.daily .streak{font-weight:600;font-size:14px;color:var(--muted)}
 .bench{display:flex;justify-content:center;margin-top:8px}
 .coach{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 12px 5px 7px}
 .coach .badge{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 Barlow,sans-serif;background:rgba(255,255,255,.9);color:#13241A}
@@ -113,6 +119,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 <section id="home">
   <div class="brand"><h1>Compo<span class="dot">.</span>io</h1></div>
   <p class="lede">Retrouve les titulaires des finales qui ont marqué l’histoire. Choisis un match, puis l’équipe à deviner. Un nom de famille suffit.</p>
+  <div class="daily" id="daily"></div>
   <div class="filters" role="group" aria-label="Compétition" id="filters"></div>
   <ul class="list" id="list"></ul>
   <p class="src">Données : Fjelstul World Cup Database (CC BY-SA 4.0), StatsBomb Open Data, Wikipédia.</p>
@@ -133,7 +140,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   <div class="result hidden" id="result">
     <div class="big" id="rbig"></div>
     <p id="rtxt" style="margin:6px 0 12px;color:var(--muted)"></p>
-    <div class="actions" style="margin:0"><button class="btn primary" id="again">Rejouer</button><button class="btn" id="swap">Jouer l’autre équipe</button><button class="btn" id="other">Autre match</button></div>
+    <div class="actions" style="margin:0"><button class="btn primary" id="share" hidden>Partager</button><button class="btn" id="again">Rejouer</button><button class="btn" id="swap">Jouer l’autre équipe</button><button class="btn" id="other">Autre match</button></div>
   </div>
 </section>
 </div>
@@ -193,6 +200,21 @@ const BYNAME={"France":"fra","Argentine":"arg","Brésil":"bra","Italie":"ita","R
  "Étoile rouge de Belgrade":{bg:"#ED1C24",fg:"#fff",stripe:"#fff"}};
 function kitOf(t){let k=KITS[t.kit]||BYNAME[t.name];if(typeof k==="string")k=KITS[k];if(k)return k;
   let h=0;for(const c of t.name)h=(h*31+c.charCodeAt(0))%360;return {bg:`hsl(${h} 55% 42%)`,fg:"#fff"};}
+const DAY_ORDER=["hcup-2026:1", "ldc-2018:0", "ldc-2013:0", "ldc-2025:0", "euro-2016:1", "cdm-2002:1", "top14-2017:0", "ldc-2006:1", "top14-2026:0", "rwc-2015:0", "hcup-1997:1", "hcup-1996:0", "rwc-2007:0", "top14-2013:0", "top14-2014:1", "ldc-1994:1", "hcup-2008:1", "hcup-2024:0", "ldc-2016:0", "hcup-2014:1", "ldc-1993:1", "top14-2021:0", "ldc-1995:0", "euro-2024:1", "hcup-2019:0", "hcup-2019:1", "ldc-2022:0", "euro-2000:1", "ldc-1991:1", "ldc-2018:1", "top14-2019:0", "top14-2004:1", "hcup-2015:0", "ldc-1998:0", "ldc-2003:0", "euro-1992:0", "hcup-1998:0", "cdm-2022:1", "euro-2012:1", "top14-1993:1", "ldc-2023:1", "ldc-2004:0", "hcup-2025:1", "ldc-2024:1", "ldc-2014:1", "hcup-2020:1", "hcup-1996:1", "ldc-2007:1", "ldc-2006:0", "ldc-2012:0", "top14-1993:0", "hcup-2025:0", "ldc-2026:0", "ldc-2010:0", "top14-2004:0", "hcup-2016:0", "hcup-2026:0", "ldc-1999:1", "ldc-2003:1", "hcup-2008:0", "ldc-2008:0", "top14-2016:0", "euro-1996:1", "cdm-2010:0", "top14-2019:1", "ldc-2008:1", "cdm-2018:1", "rwc-1991:1", "hcup-2017:0", "hcup-2009:0", "hcup-2011:0", "top14-2009:0", "euro-2008:1", "top14-2018:0", "euro-2016:0", "rwc-2003:0", "ldc-2017:1", "top14-1997:0", "top14-2011:1", "ldc-2000:1", "ldc-2016:1", "ldc-2017:0", "top14-2015:0", "rwc-2015:1", "hcup-2012:0", "top14-2023:0", "rwc-2007:1", "hcup-2015:1", "euro-2004:0", "hcup-2014:0", "rwc-2019:1", "top14-1995:0", "ldc-2022:1", "top14-2012:0", "top14-1995:1", "ldc-1997:0", "hcup-2005:0", "ldc-2009:1", "top14-2012:1", "ldc-2011:0", "hcup-2021:1", "top14-2013:1", "hcup-2002:0", "ldc-2019:1", "euro-2024:0", "ldc-2021:1", "hcup-2018:0", "cdm-1998:0", "cdm-2006:1", "ldc-2004:1", "euro-2012:0", "ldc-2025:1", "top14-2022:1", "hcup-2022:0", "cdm-2014:1", "hcup-2000:1", "hcup-2010:0", "ldc-2023:0", "hcup-2005:1", "hcup-2010:1", "ldc-2012:1", "hcup-2000:0", "ldc-2000:0", "ldc-1993:0", "top14-2024:1", "top14-2014:0", "hcup-1999:1", "top14-2008:0", "ldc-2019:0", "hcup-2009:1", "top14-2007:1", "euro-2000:0", "hcup-2001:0", "ldc-1997:1", "top14-2022:0", "ldc-2015:1", "top14-2023:1", "rwc-2023:0", "hcup-2022:1", "hcup-2021:0", "top14-2021:1", "top14-2009:1", "ldc-2002:0", "cdm-1994:1", "top14-2015:1", "hcup-2003:0", "ldc-2001:1", "cdm-2022:0", "rwc-1999:0", "top14-2018:1", "ldc-1999:0", "hcup-2024:1", "euro-1992:1", "cdm-2010:1", "ldc-1992:0", "cdm-1998:1", "ldc-2009:0", "hcup-2006:0", "hcup-2013:1", "ldc-2001:0", "euro-2004:1", "ldc-1995:1", "ldc-2021:0", "hcup-2023:0", "hcup-2001:1", "top14-2016:1", "rwc-1991:0", "ldc-2020:1", "ldc-2011:1", "rwc-1995:1", "cdm-2006:0", "hcup-2004:0", "cdm-2018:0", "hcup-2017:1", "top14-1997:1", "ldc-1998:1", "hcup-2003:1", "ldc-1996:1", "ldc-1991:0", "rwc-2003:1", "hcup-1999:0", "hcup-2013:0", "ldc-2013:1", "top14-2025:1", "rwc-2023:1", "hcup-1997:0", "top14-2008:1", "ldc-1996:0", "ldc-2010:1", "ldc-1994:0", "rwc-2011:1", "hcup-2023:1", "cdm-2026:0", "hcup-2002:1", "top14-2011:0", "hcup-2006:1", "ldc-2007:0", "ldc-2002:1", "rwc-2019:0", "ldc-2005:0", "ldc-2014:0", "cdm-2026:1", "top14-2024:0", "ldc-2005:1", "rwc-1999:1", "top14-2007:0", "rwc-2011:0", "hcup-2007:1", "cdm-1990:0", "rwc-1995:0", "hcup-2020:0", "top14-2025:0", "ldc-2015:0", "hcup-2016:1", "hcup-1998:1", "euro-2020:1", "hcup-2011:1", "hcup-2004:1", "euro-2008:0", "cdm-2002:0", "top14-2026:1", "cdm-1994:0", "ldc-2026:1", "hcup-2012:1", "ldc-1992:1", "hcup-2018:1", "top14-2017:1", "ldc-2020:0", "cdm-1990:1", "hcup-2007:0", "euro-2020:0", "euro-1996:0", "cdm-2014:0", "ldc-2024:0"];
+const EPOCH="2026-11-06";                       // jour n° 1
+const parisDay=d=>new Intl.DateTimeFormat("fr-CA",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+const dayNumber=()=>Math.round((Date.parse(parisDay(new Date())+"T12:00:00Z")-Date.parse(EPOCH+"T12:00:00Z"))/864e5)+1;
+const DAYN=dayNumber();
+const dailyKey=n=>"compo:jour:"+n;
+function dailyPick(n){
+  for(let k=0;k<DAY_ORDER.length;k++){                        // saute une compo retirée des données
+    const [id,ti]=DAY_ORDER[(n-1+k)%DAY_ORDER.length].split(":");
+    const m=MATCHES.find(x=>x.id===id);
+    if(m&&m.teams[+ti])return{m,ti:+ti};
+  }
+  return null;
+}
+function streakOf(n){let s=0;for(let d=n;store.get(dailyKey(d));d--)s++;return s}
 const TIME={foot:180,rugby:270};
 const $=id=>document.getElementById(id);
 const norm=s=>s.toLowerCase().replace(/œ/g,"oe").replace(/ß/g,"ss").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’'`-]/g," ").replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim();
@@ -209,6 +231,17 @@ const bestKey=(m,t)=>"compo:best:"+m.id+":"+t;
 let filter="all";
 $("filters").innerHTML=COMPS.map(([k,l])=>`<button data-f="${k}" aria-pressed="${k==="all"}">${l}</button>`).join("");
 $("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{filter=b.dataset.f;$("filters").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderHome();});
+function renderDaily(){
+  const el=$("daily"),pick=dailyPick(DAYN);
+  if(!pick){el.hidden=true;return}
+  const {m,ti}=pick,t=m.teams[ti],tot=t.p.length+(t.coach?1:0),fait=store.get(dailyKey(DAYN)),s=streakOf(DAYN);
+  el.innerHTML=`<span class="tag">Compo du jour n° ${DAYN}</span>`
+    +`<span class="what">${fait?m.fx:"Une finale, une équipe, la même pour tout le monde"}`
+    +`<small>${fait?`${m.where}, ${m.yr} — ${t.name}`:`${m.sport==="foot"?"Football":"Rugby"} · ${tot} réponses · une seule partie classée`}</small></span>`
+    +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
+    +`<button class="btn primary" id="playday">${fait?"Rejouer hors classement":"Jouer"}</button>`;
+  $("playday").onclick=()=>start(m,ti,!fait);
+}
 function renderHome(){
   const ul=$("list");ul.innerHTML="";
   MATCHES.filter(m=>filter==="all"||m.comp===filter).forEach(m=>{
@@ -221,14 +254,14 @@ function renderHome(){
     ul.appendChild(li);
   });
 }
-let M,TI,P,found,hinted,left,tick,over,startT;
+let M,TI,P,found,hinted,left,tick,over,startT,RANKED=false;
 const jersey=(k,lab)=>`<svg viewBox="0 0 40 38" aria-hidden="true"><path d="M13 2 L4 7 L0 16 L7 19 L8 15 L8 37 L32 37 L32 15 L33 19 L40 16 L36 7 L27 2 Q20 7 13 2Z" fill="${k.bg}" stroke="rgba(0,0,0,.35)" stroke-width="1"/>${k.stripe?`<rect x="17" y="6" width="6" height="31" fill="${k.stripe}" opacity=".9"/>`:""}<text x="20" y="${lab.length>2?26:27}" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="${lab.length>2?10:13}" fill="${k.fg}" ${k.stripe?'stroke="'+k.bg+'" stroke-width="2.5" paint-order="stroke"':""}>${lab}</text></svg>`;
 const LINES={
  foot:`<svg class="lines" viewBox="0 0 68 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width=".45" style="color:var(--chalk)"><rect x="3" y="3" width="62" height="94"/><line x1="3" y1="50" x2="65" y2="50"/><ellipse cx="34" cy="50" rx="8.5" ry="8.5"/><rect x="15" y="3" width="38" height="15"/><rect x="25" y="3" width="18" height="5"/><rect x="15" y="82" width="38" height="15"/><rect x="25" y="92" width="18" height="5"/></svg>`,
  rugby:`<svg class="lines" viewBox="0 0 70 112" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width=".45" style="color:var(--chalk)"><rect x="3" y="3" width="64" height="106"/><line x1="3" y1="10" x2="67" y2="10" stroke-width=".8"/><line x1="3" y1="102" x2="67" y2="102" stroke-width=".8"/><line x1="3" y1="29" x2="67" y2="29"/><line x1="3" y1="83" x2="67" y2="83"/><line x1="3" y1="56" x2="67" y2="56"/><line x1="3" y1="47" x2="67" y2="47" stroke-dasharray="2 2"/><line x1="3" y1="65" x2="67" y2="65" stroke-dasharray="2 2"/></svg>`
 };
-function start(m,ti){
-  M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,k:keysFor(n,al)}));
+function start(m,ti,ranked){
+  RANKED=!!ranked;M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,k:keysFor(n,al)}));
   if(t.coach)P.push({lab:"ENTR",n:t.coach[0],k:keysFor(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
   $("home").classList.add("hidden");$("play").classList.remove("hidden");$("result").classList.add("hidden");$("acts").classList.remove("hidden");
@@ -273,12 +306,30 @@ function end(){
   if(coachOut)bits.push("l’entraîneur");
   $("rtxt").textContent=(miss?`${bits.join(" et ")} manquant${miss>1?"s":""}, en rouge.`:`Compo complète en ${fmt(t)}.`)
     +(hinted.size?` ${hinted.size} indice${hinted.size>1?"s":""} utilisé${hinted.size>1?"s":""}.`:"")+(better&&b?" Nouveau record.":(!better&&b?` Record : ${b.f}/${tot}.`:""));
+  if(RANKED&&!store.get(dailyKey(DAYN))){
+    const reste=Math.max(left,0);
+    const pts=Math.max(0,Math.round(1000*found.size/tot)+(found.size===tot?2*reste:0)-50*hinted.size);
+    store.set(dailyKey(DAYN),{d:DAYN,f:found.size,n:tot,h:hinted.size,l:reste,p:pts,t});
+    $("rbig").textContent=pts.toLocaleString("fr-FR")+" pts";
+    $("rtxt").textContent=`${found.size}/${tot} trouvés en ${fmt(t)}.`
+      +(found.size===tot?` Bonus de ${2*reste} points pour ${reste} secondes restantes.`:"")
+      +(hinted.size?` ${50*hinted.size} points retirés pour ${hinted.size} indice${hinted.size>1?"s":""}.`:"");
+    const s=streakOf(DAYN);
+    $("share").hidden=false;
+    $("share").onclick=async()=>{
+      const txt=`Compo du jour n° ${DAYN} — ${found.size}/${tot} — ${pts.toLocaleString("fr-FR")} pts`
+        +(s>1?` 🔥${s}`:"")+"\n"+location.origin+location.pathname;
+      try{await navigator.clipboard.writeText(txt);$("share").textContent="Copié !";
+        setTimeout(()=>$("share").textContent="Partager",1800);}
+      catch(e){prompt("Copie ce texte :",txt);}
+    };
+  } else $("share").hidden=true;
   $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";
 }
-$("again").onclick=()=>start(M,TI);$("swap").onclick=()=>start(M,1-TI);
-const home=()=>{clearInterval(tick);over=true;$("play").classList.add("hidden");$("home").classList.remove("hidden");renderHome();};
+$("again").onclick=()=>start(M,TI,false);$("swap").onclick=()=>start(M,1-TI,false);
+const home=()=>{clearInterval(tick);over=true;$("play").classList.add("hidden");$("home").classList.remove("hidden");renderDaily();renderHome();};
 $("other").onclick=home;$("back").onclick=home;
-renderHome();
+renderDaily();renderHome();
 </script>
 </body>
 </html>
