@@ -307,7 +307,7 @@ async function lancerJour(m,ti,classe){
   try{r=await api("start",{playerId:je.id,pseudo:je.pseudo,size:tot,
       duration:TIME[m.sport],groupCode:je.groupe||undefined});}catch(e){}
   b.disabled=false;b.textContent="Jouer";
-  if(r&&r.erreur&&/déjà jouée/.test(r.erreur)){
+  if(r&&r.code==="deja_joue"){            // code stable, jamais le texte
     store.set(dailyKey(DAYN),{d:DAYN,f:0,n:tot,h:0,l:0,p:0,t:0});renderDaily();
     alert("Tu as déjà joué la compo du jour sur un autre appareil.");return;
   }

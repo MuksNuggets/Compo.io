@@ -35,29 +35,29 @@ const uuid = (s: unknown) =>
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   let c: Record<string, any>;
-  try { c = await req.json(); } catch { return json({ erreur: "corps illisible" }, 400); }
+  try { c = await req.json(); } catch { return json({ code: "corps", erreur: "corps illisible" }, 400); }
   const aujourdhui = jour();
 
   try {
     // ---- ouverture de partie : c'est ici que démarre l'horloge qui fait foi
     if (c.action === "start") {
-      if (!uuid(c.playerId)) return json({ erreur: "identifiant invalide" }, 400);
+      if (!uuid(c.playerId)) return json({ code: "id", erreur: "identifiant invalide" }, 400);
       const pseudo = String(c.pseudo ?? "").trim();
-      if (pseudo.length < 2 || pseudo.length > 20) return json({ erreur: "pseudo entre 2 et 20 caractères" }, 400);
+      if (pseudo.length < 2 || pseudo.length > 20) return json({ code: "pseudo", erreur: "pseudo entre 2 et 20 caracteres" }, 400);
       const taille = Number(c.size), duree = Number(c.duration);
-      if (!(taille >= 1 && taille <= 30) || !(duree >= 30 && duree <= 1800)) return json({ erreur: "partie invalide" }, 400);
+      if (!(taille >= 1 && taille <= 30) || !(duree >= 30 && duree <= 1800)) return json({ code: "partie", erreur: "partie invalide" }, 400);
 
       await db.from("players").upsert({ id: c.playerId, pseudo, last_seen: new Date().toISOString() });
 
       const code = String(c.groupCode ?? "").trim().toLowerCase();
       if (code) {
-        if (!/^[a-z0-9-]{3,24}$/.test(code)) return json({ erreur: "code de groupe invalide" }, 400);
+        if (!/^[a-z0-9-]{3,24}$/.test(code)) return json({ code: "groupe", erreur: "code de groupe invalide" }, 400);
         await db.from("groups").upsert({ code }, { onConflict: "code", ignoreDuplicates: true });
         await db.from("memberships").upsert({ group_code: code, player_id: c.playerId });
       }
 
       const { data: deja } = await db.from("scores").select("day").eq("player_id", c.playerId).eq("day", aujourdhui).maybeSingle();
-      if (deja) return json({ erreur: "partie classée déjà jouée aujourd'hui", day: aujourdhui }, 409);
+      if (deja) return json({ code: "deja_joue", erreur: "deja joue aujourd'hui", day: aujourdhui }, 409);
 
       const { data, error } = await db.from("rounds")
         .insert({ player_id: c.playerId, day: aujourdhui, size: taille, duration: duree })
@@ -68,11 +68,11 @@ Deno.serve(async (req) => {
 
     // ---- fin de partie : le score est recalculé ici, le navigateur ne l'envoie pas
     if (c.action === "submit") {
-      if (!uuid(c.roundId)) return json({ erreur: "partie inconnue" }, 400);
+      if (!uuid(c.roundId)) return json({ code: "inconnue", erreur: "partie inconnue" }, 400);
       const { data: r } = await db.from("rounds").select("*").eq("id", c.roundId).maybeSingle();
-      if (!r) return json({ erreur: "partie inconnue" }, 404);
-      if (r.submitted) return json({ erreur: "partie déjà close" }, 409);
-      if (r.day !== aujourdhui) return json({ erreur: "partie périmée" }, 409);
+      if (!r) return json({ code: "inconnue", erreur: "partie inconnue" }, 404);
+      if (r.submitted) return json({ code: "close", erreur: "partie deja close" }, 409);
+      if (r.day !== aujourdhui) return json({ code: "perimee", erreur: "partie perimee" }, 409);
 
       const trouves = Math.max(0, Math.min(Number(c.found) || 0, r.size));
       const indices = Math.max(0, Math.min(Number(c.hints) || 0, r.size));
@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
       // aussitôt en annonçant tout trouvé. La partie reste ouverte, donc un joueur
       // honnête qui va très vite n'a qu'à renvoyer une seconde plus tard.
       const plancher = trouves;                                  // 1 seconde par réponse
-      if (ecoule < plancher) return json({ erreur: "partie trop rapide", minimum: plancher }, 409);
+      if (ecoule < plancher) return json({ code: "trop_rapide", erreur: "partie trop rapide", minimum: plancher }, 409);
 
       const restant = Math.max(0, r.duration - ecoule);          // horloge serveur
       const pts = points(trouves, r.size, restant, indices);
@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
     // ---- classement du jour dans un groupe, et série du joueur
     if (c.action === "board") {
       const code = String(c.groupCode ?? "").trim().toLowerCase();
-      if (!/^[a-z0-9-]{3,24}$/.test(code)) return json({ erreur: "code de groupe invalide" }, 400);
+      if (!/^[a-z0-9-]{3,24}$/.test(code)) return json({ code: "groupe", erreur: "code de groupe invalide" }, 400);
       const j = Number.isInteger(c.day) ? c.day : aujourdhui;
 
       const { data: membres } = await db.from("memberships").select("player_id").eq("group_code", code);
@@ -129,9 +129,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    return json({ erreur: "action inconnue" }, 400);
+    return json({ code: "action", erreur: "action inconnue" }, 400);
   } catch (e) {
     console.error(e);
-    return json({ erreur: "erreur serveur" }, 500);
+    return json({ code: "serveur", erreur: "erreur serveur" }, 500);
   }
 });
