@@ -42,24 +42,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .brand h1{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:clamp(56px,14vw,88px);line-height:.9;margin:0;letter-spacing:-.01em}
 .brand .dot{color:var(--pitch)}
 .lede{color:var(--muted);margin:6px 0 24px;max-width:46ch}
-/* Sur un téléphone la barre ne tient pas : elle défile au doigt plutôt que de déborder. */
-.filters{display:flex;width:max-content;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;border:1px solid var(--line);border-radius:999px;padding:3px;margin-bottom:12px;background:var(--surface)}
-.filters::-webkit-scrollbar{display:none}
-.filters button{flex:0 0 auto;white-space:nowrap;border:0;background:none;padding:6px 16px;border-radius:999px;font-weight:600;color:var(--muted)}
-.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.list{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
-.row{display:grid;grid-template-columns:56px 1fr;gap:6px 14px;align-items:start;border-bottom:1px solid var(--line);padding:14px 4px}
-.picks{grid-column:2;display:flex;gap:8px;flex-wrap:wrap}
-.pick{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px 5px 6px;font-weight:600;font-size:14px}
-.pick:hover{border-color:var(--ink)}
-.pick i{width:14px;height:14px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
-.pick b{font-family:"Barlow Condensed",sans-serif;font-weight:700;color:var(--muted);font-size:15px}
-.pick b.full{color:var(--ok)}
 .src{color:var(--muted);font-size:13px;margin-top:28px}
-.yr{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:28px;line-height:1.1}
-.fx{font-weight:600;font-size:17px;line-height:1.25}
-.fx small{display:block;font-weight:400;color:var(--muted);font-size:14px}
-.best{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:20px;color:var(--muted);min-width:44px;text-align:right}
 .best.full{color:var(--ok)}
 .sport{font-size:13px;color:var(--muted)}
 
@@ -99,7 +82,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .note{width:100%;font-size:13px;color:var(--muted);margin:-6px 0 18px}
 .note b{color:inherit}
 .note a{color:var(--ink);text-underline-offset:2px}
-#voirtout{margin:0 0 18px}
 .board{margin:14px 0 0;width:100%;border-collapse:collapse;font-size:14px}
 .board th,.board td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line)}
 .board th{font:700 11px/1 Barlow,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
@@ -131,13 +113,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 <div class="wrap">
 <section id="home">
   <div class="brand"><h1>Compo<span class="dot">.</span>io</h1></div>
-  <p class="lede">Retrouve les titulaires des finales qui ont marqué l’histoire. Choisis un match, puis l’équipe à deviner. Un nom de famille suffit.</p>
+  <p class="lede">Retrouve les titulaires des finales qui ont marqué l’histoire. Deux compos par jour, une par sport, les mêmes pour tout le monde. Un nom de famille suffit.</p>
   <div id="daily"></div>
-  <button class="btn" id="voirtout" aria-expanded="false" aria-controls="archive">Toutes les finales</button>
-  <div id="archive" hidden>
-    <div class="filters" role="group" aria-label="Compétition" id="filters"></div>
-    <ul class="list" id="list"></ul>
-  </div>
   <p class="src">Données : Fjelstul World Cup Database (CC BY-SA 4.0), StatsBomb Open Data, Wikipédia.</p>
 </section>
 <section id="play" class="hidden">
@@ -157,7 +134,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     <div class="big" id="rbig"></div>
     <p id="rtxt" style="margin:6px 0 12px;color:var(--muted)"></p>
     <div id="board"></div>
-    <div class="actions" style="margin:0"><button class="btn primary" id="share" hidden>Partager</button><button class="btn" id="again">Rejouer</button><button class="btn" id="swap">Jouer l’autre équipe</button><button class="btn" id="other">Autre match</button></div>
+    <div class="actions" style="margin:0"><button class="btn primary" id="share" hidden>Partager</button><button class="btn" id="again">Rejouer</button><button class="btn" id="swap">Jouer l’autre équipe</button><button class="btn" id="other">Retour</button></div>
   </div>
 </section>
 </div>
@@ -169,7 +146,6 @@ const KITS={
  om:{bg:"#FFFFFF",fg:"#1B9AD6"},mu:{bg:"#DA291C",fg:"#fff"},liv:{bg:"#C8102E",fg:"#fff"},fcb:{bg:"#A50044",fg:"#FFD200",stripe:"#004D98"},
  rsa:{bg:"#007749",fg:"#FFB81C"},eng:{bg:"#FFFFFF",fg:"#C8102E"}
 };
-const COMPS=[["all","Tous"],["cdm","Coupe du monde"],["euro","Euro"],["ldc","Ligue des champions"],["rwc","Mondial rugby"],["hcup","Coupe d’Europe rugby"],["top14","Top 14"]].filter(([k])=>k==="all"||MATCHES.some(m=>m.comp===k));
 const BYNAME={"France":"fra","Argentine":"arg","Brésil":"bra","Italie":"ita","RFA":"ger","Allemagne":"ger","Pays-Bas":"ned","Espagne":"esp","Croatie":"cro",
  "Angleterre":{bg:"#FFFFFF",fg:"#1D2B5C"},"Real Madrid":{bg:"#FFFFFF",fg:"#00529F"},"Liverpool":"liv","Manchester United":"mu","FC Barcelone":"fcb","Marseille":"om",
  "Milan":{bg:"#E30613",fg:"#fff",stripe:"#111"},"Juventus":{bg:"#FFFFFF",fg:"#111",stripe:"#111"},"Bayern Munich":{bg:"#DC052D",fg:"#fff"},
@@ -235,16 +211,10 @@ async function api(action,corps){
 const CLE_MOI="compo:moi";
 function moi(){
   let m=store.get(CLE_MOI);
-  if(!m||!m.id){m={id:(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)),pseudo:"",groupe:""};store.set(CLE_MOI,m);}
+  if(!m||!m.id){m={id:(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)),pseudo:""};store.set(CLE_MOI,m);}
   return m;
 }
 const majMoi=p=>{const m={...moi(),...p};store.set(CLE_MOI,m);return m};
-const normCode=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-  .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,24);
-// un lien d'invitation pose le groupe ; appelé à l'initialisation, pas ici,
-// car store et $ ne sont définis que plus bas dans le script.
-function groupeDuLien(){const g=normCode(new URLSearchParams(location.search).get("groupe")||"");if(g.length>=3)majMoi({groupe:g});}
-const lienGroupe=()=>location.origin+location.pathname+"?groupe="+moi().groupe;
 function dailyPick(n,sp){
   const ordre=DAY_ORDER[sp]||[];
   for(let k=0;k<ordre.length;k++){                            // saute une compo retirée des données
@@ -256,17 +226,10 @@ function dailyPick(n,sp){
 }
 // Une série par sport : ne pas jouer le foot ne casse pas la série de rugby.
 function streakOf(n,sp){let s=0;for(let d=n;store.get(dailyKey(d,sp));d--)s++;return s}
-// Les compos du jour encore à jouer restent hors de l'archive, pour qu'on ne
-// puisse pas les répéter avant de les jouer pour de bon.
 function picksDuJour(){
   const out={};
   SPORTS.forEach(sp=>{const p=dailyPick(DAYN,sp);if(p)out[sp]=p;});
   return out;
-}
-function aJouerEncore(){
-  return Object.entries(picksDuJour())
-    .filter(([sp])=>!store.get(dailyKey(DAYN,sp)))
-    .map(([,p])=>p.m.id+":"+p.ti);
 }
 const TIME={foot:180,rugby:270};
 const BONUS_MAX=360;   // même plafond de rapidité pour les deux sports (voir supabase/functions/compo)
@@ -282,9 +245,6 @@ const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){retu
 const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
 const bestKey=(m,t)=>"compo:best:"+m.id+":"+t;
 
-let filter="all";
-$("filters").innerHTML=COMPS.map(([k,l])=>`<button data-f="${k}" aria-pressed="${k==="all"}">${l}</button>`).join("");
-$("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{filter=b.dataset.f;$("filters").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderHome();});
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function renderDaily(){
   const el=$("daily"),je=moi(),picks=picksDuJour();
@@ -294,12 +254,11 @@ function renderDaily(){
     el.innerHTML=`<div class="daily"><span class="tag">Compo du jour n° ${DAYN}</span>`
       +`<span class="what">Choisis un pseudo pour entrer au classement<small>Pas de compte, rien à retenir.</small></span>`
       +`<div class="ident"><input id="pseudo" maxlength="20" placeholder="Ton pseudo" autocomplete="nickname">`
-      +`<input id="groupe" maxlength="24" placeholder="Code de groupe (facultatif)" value="${esc(je.groupe||"")}">`
       +`<button class="btn primary" id="valide">Valider</button></div></div>`;
     $("valide").onclick=()=>{
       const v=$("pseudo").value.trim();
       if(v.length<2){$("pseudo").focus();return}
-      majMoi({pseudo:v.slice(0,20),groupe:normCode($("groupe").value)});renderDaily();
+      majMoi({pseudo:v.slice(0,20)});renderDaily();
     };
     $("pseudo").onkeydown=e=>{if(e.key==="Enter")$("valide").click()};
     $("pseudo").focus();return;
@@ -315,21 +274,12 @@ function renderDaily(){
       +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
       +`<button class="btn primary" data-jour="${sp}">${fait?"Rejouer hors classement":"Jouer"}</button></div>`;
   }).join("")
-    +`<p class="note">${esc(je.pseudo)} · `
-    +(je.groupe?`groupe <b>${esc(je.groupe)}</b> · <a href="#" id="invit">copier le lien d’invitation</a>`
-              :`<a href="#" id="creer">rejoindre ou créer un groupe</a>`)
-    +` · <a href="#" id="chpseudo">changer de pseudo</a></p>`;
+    +`<p class="note">${esc(je.pseudo)} · <a href="#" id="chpseudo">changer de pseudo</a></p>`;
   el.querySelectorAll("[data-jour]").forEach(b=>{
     const sp=b.dataset.jour,{m,ti}=picks[sp];
     b.onclick=()=>lancerJour(m,ti,!store.get(dailyKey(DAYN,sp)),sp,b);
   });
   $("chpseudo").onclick=e=>{e.preventDefault();majMoi({pseudo:""});renderDaily()};
-  if($("creer"))$("creer").onclick=e=>{e.preventDefault();
-    const c=normCode(prompt("Code du groupe, par exemple potes-leo")||"");
-    if(c.length>=3){majMoi({groupe:c});renderDaily()}else if(c)alert("Trois caractères minimum.")};
-  if($("invit"))$("invit").onclick=async e=>{e.preventDefault();
-    try{await navigator.clipboard.writeText(lienGroupe());e.target.textContent="lien copié !";}
-    catch(err){prompt("Lien d’invitation :",lienGroupe());}};
 }
 async function lancerJour(m,ti,classe,sp,b){
   NOTE_FIN="";
@@ -338,7 +288,7 @@ async function lancerJour(m,ti,classe,sp,b){
   b.disabled=true;b.textContent="…";
   let r=null;
   try{r=await api("start",{playerId:je.id,pseudo:je.pseudo,sport:sp,size:tot,
-      duration:TIME[m.sport],groupCode:je.groupe||undefined});}catch(e){}
+      duration:TIME[m.sport]});}catch(e){}
   b.disabled=false;b.textContent=libelle;
   if(r&&r.code==="deja_joue"){            // code stable, jamais le texte
     if(r.sport===sp){                     // le serveur confirme : c'est bien ce sport-là
@@ -378,34 +328,10 @@ async function majClassement(trouves,indices){
       +(r.hints?` ${50*r.hints} points retirés pour ${r.hints} indice${r.hints>1?"s":""}.`:"");
   }else if(r&&r.erreur){$("rtxt").textContent+=" Classement : "+r.erreur+".";}
   else if(!ROUND){$("rtxt").textContent+=" Hors ligne : score non classé.";}
-  const je=moi();
-  if(je.groupe){
-    let b=null;try{b=await api("board",{groupCode:je.groupe,playerId:je.id,sport:M.sport});}catch(e){}
-    if(b)afficherBoard(b);
-  }
+  // Classement global : un par sport et par jour, tout le monde dedans.
+  let tab=null;try{tab=await api("board",{playerId:moi().id,sport:M.sport});}catch(e){}
+  if(tab&&tab.classement)afficherBoard(tab);
 }
-function renderHome(){
-  const ul=$("list");ul.innerHTML="";
-  const cachees=new Set(aJouerEncore());     // les compos du jour pas encore jouées
-  MATCHES.filter(m=>filter==="all"||m.comp===filter).forEach(m=>{
-    const li=document.createElement("li");li.className="row";
-    li.innerHTML=`<span class="yr">${m.yr}</span><span class="fx">${m.fx}<small>${m.where}</small></span><span class="picks"></span>`;
-    m.teams.forEach((t,ti)=>{
-      if(cachees.has(m.id+":"+ti))return;    // sinon on pourrait la répéter avant de la jouer
-      const tot=t.p.length+(t.coach?1:0),b=store.get(bestKey(m,ti)),k=kitOf(t);
-      const btn=document.createElement("button");btn.className="pick";btn.dataset.compo=m.id+":"+ti;
-      btn.innerHTML=`<i style="background:${k.bg}"></i>${t.name}<b class="${b&&b.f===tot?"full":""}">${b?b.f+"/"+tot:""}</b>`;
-      btn.setAttribute("aria-label",`Deviner la compo : ${t.name}`);btn.onclick=()=>start(m,ti);li.querySelector(".picks").appendChild(btn);});
-    if(li.querySelector(".picks").children.length)ul.appendChild(li);
-  });
-}
-$("voirtout").onclick=()=>{
-  const a=$("archive"),ouvert=!a.hidden;
-  if(!ouvert)renderHome();
-  a.hidden=ouvert;
-  $("voirtout").setAttribute("aria-expanded",String(!ouvert));
-  $("voirtout").textContent=ouvert?"Toutes les finales":"Masquer les finales";
-};
 let M,TI,P,found,hinted,left,tick,over,startT,RANKED=false,ROUND=null,NOTE_FIN="";
 const jersey=(k,lab)=>`<svg viewBox="0 0 40 38" aria-hidden="true"><path d="M13 2 L4 7 L0 16 L7 19 L8 15 L8 37 L32 37 L32 15 L33 19 L40 16 L36 7 L27 2 Q20 7 13 2Z" fill="${k.bg}" stroke="rgba(0,0,0,.35)" stroke-width="1"/>${k.stripe?`<rect x="17" y="6" width="6" height="31" fill="${k.stripe}" opacity=".9"/>`:""}<text x="20" y="${lab.length>2?26:27}" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="${lab.length>2?10:13}" fill="${k.fg}" ${k.stripe?'stroke="'+k.bg+'" stroke-width="2.5" paint-order="stroke"':""}>${lab}</text></svg>`;
 const LINES={
@@ -474,7 +400,7 @@ function end(){
     $("share").onclick=async()=>{
       const f=store.get(dailyKey(DAYN,M.sport))||{f:found.size,n:tot,p:pts};
       const txt=`Compo.io ${nomSport(M.sport)} n° ${DAYN} — ${f.f}/${f.n} — ${f.p.toLocaleString("fr-FR")} pts`
-        +(s>1?` 🔥${s}`:"")+"\n"+(moi().groupe?lienGroupe():location.origin+location.pathname);
+        +(s>1?` 🔥${s}`:"")+"\n"+location.origin+location.pathname;
       try{await navigator.clipboard.writeText(txt);$("share").textContent="Copié !";
         setTimeout(()=>$("share").textContent="Partager",1800);}
       catch(e){prompt("Copie ce texte :",txt);}
@@ -483,9 +409,9 @@ function end(){
   $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";
 }
 $("again").onclick=()=>start(M,TI,false);$("swap").onclick=()=>start(M,1-TI,false);
-const home=()=>{clearInterval(tick);over=true;$("play").classList.add("hidden");$("home").classList.remove("hidden");renderDaily();renderHome();};
+const home=()=>{clearInterval(tick);over=true;$("play").classList.add("hidden");$("home").classList.remove("hidden");renderDaily();};
 $("other").onclick=home;$("back").onclick=home;
-groupeDuLien();renderDaily();renderHome();
+renderDaily();
 </script>
 </body>
 </html>

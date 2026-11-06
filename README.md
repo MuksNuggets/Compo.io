@@ -37,8 +37,12 @@ il suffit de ne pas réécrire ces fichiers à la main.
 Aujourd'hui : 110 compos de football et 124 de rugby, donc pas de répétition
 avant 110 jours côté foot.
 
-Les deux compos du jour restent hors de l'archive tant qu'elles n'ont pas été
-jouées, pour qu'on ne puisse pas les répéter avant de les jouer pour de bon.
+L'app ne propose que ces deux compos : il n'y a pas de catalogue à parcourir.
+Les 117 finales restent dans les données et alimentent le tirage, mais on n'y
+accède pas librement, sinon la compo du jour ne serait qu'un bouton parmi 234.
+
+Le classement est global : un par sport et par jour, tout le monde dedans. Il
+n'y a ni compte ni code de groupe, seulement un pseudo gardé sur l'appareil.
 
 # Pipeline de données
 

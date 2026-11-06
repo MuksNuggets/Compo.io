@@ -36,6 +36,14 @@ compo jamais jouée.
 `'foot'` posé par la migration existe pour que l'ancienne fonction continue de
 tourner dans l'intervalle.
 
+## Classement global
+
+`board` sans `groupCode` renvoie le classement de tout le monde pour ce jour et
+ce sport, limité à cent lignes. C'est le cas normal : l'app ne demande plus de
+code de groupe. Le filtre par groupe reste dans la fonction, inutilisé, pour
+qu'un classement entre amis puisse se rebrancher sans retoucher le serveur —
+les tables `groups` et `memberships` sont toujours là.
+
 ## Barème
 
 Le score est recalculé côté serveur, jamais accepté tel quel. La formule vit en

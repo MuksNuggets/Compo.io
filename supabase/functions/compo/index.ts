@@ -116,21 +116,31 @@ Deno.serve(async (req) => {
 
     // ---- classement du jour dans un groupe, et série du joueur
     if (c.action === "board") {
+      // Sans code de groupe, le classement est global : c'est le cas normal
+      // depuis que l'app ne demande plus de groupe. Le filtre par groupe reste
+      // la, inutilise, pour qu'un classement entre amis se rebranche sans
+      // retoucher le serveur.
       const code = String(c.groupCode ?? "").trim().toLowerCase();
-      if (!/^[a-z0-9-]{3,24}$/.test(code)) return json({ code: "groupe", erreur: "code de groupe invalide" }, 400);
+      if (code && !/^[a-z0-9-]{3,24}$/.test(code)) return json({ code: "groupe", erreur: "code de groupe invalide" }, 400);
       const sport = sportDe(c.sport);
       if (!sport) return json({ code: "sport", erreur: "sport invalide" }, 400);
       const j = Number.isInteger(c.day) ? c.day : aujourdhui;
 
-      const { data: membres } = await db.from("memberships").select("player_id").eq("group_code", code);
-      const ids = (membres ?? []).map((m: any) => m.player_id);
-      if (!ids.length) return json({ day: j, sport, classement: [] });
+      let ids: string[] | null = null;
+      if (code) {
+        const { data: membres } = await db.from("memberships").select("player_id").eq("group_code", code);
+        ids = (membres ?? []).map((m: any) => m.player_id);
+        if (!ids.length) return json({ day: j, sport, classement: [] });
+      }
 
       // Un classement par sport : ne jouer que le rugby ne fait pas descendre.
-      const { data: lignes } = await db.from("scores")
+      let q = db.from("scores")
         .select("player_id, points, found, size, seconds, hints, players(pseudo)")
-        .eq("day", j).eq("sport", sport).in("player_id", ids)
-        .order("points", { ascending: false }).order("seconds", { ascending: true });
+        .eq("day", j).eq("sport", sport);
+      if (ids) q = q.in("player_id", ids);
+      const { data: lignes } = await q
+        .order("points", { ascending: false }).order("seconds", { ascending: true })
+        .limit(100);
 
       let serie = 0;
       if (uuid(c.playerId)) {
