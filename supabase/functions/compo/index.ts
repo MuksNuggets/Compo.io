@@ -26,8 +26,14 @@ function jour(): number {
   return Math.round((Date.UTC(y, m - 1, d, 12) - EPOCH) / 864e5) + 1;
 }
 
-const points = (trouves: number, taille: number, restant: number, indices: number) =>
-  Math.max(0, Math.round(1000 * trouves / taille) + (trouves === taille ? 2 * restant : 0) - 50 * indices);
+// Le bonus de rapidite est proportionnel au temps accorde, pas au nombre de
+// secondes restantes : sinon le rugby (270 s) plafonnerait 180 points au-dessus
+// du foot (180 s) pour la meme performance. Meme maximum des deux cotes : 1360.
+const BONUS_MAX = 360;
+const points = (trouves: number, taille: number, restant: number, indices: number, duree: number) =>
+  Math.max(0, Math.round(1000 * trouves / taille)
+    + (trouves === taille && duree > 0 ? Math.round(BONUS_MAX * restant / duree) : 0)
+    - 50 * indices);
 
 const uuid = (s: unknown) =>
   typeof s === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
@@ -86,7 +92,7 @@ Deno.serve(async (req) => {
       if (ecoule < plancher) return json({ code: "trop_rapide", erreur: "partie trop rapide", minimum: plancher }, 409);
 
       const restant = Math.max(0, r.duration - ecoule);          // horloge serveur
-      const pts = points(trouves, r.size, restant, indices);
+      const pts = points(trouves, r.size, restant, indices, r.duration);
 
       await db.from("rounds").update({ submitted: true }).eq("id", r.id);
       const { error } = await db.from("scores").insert({

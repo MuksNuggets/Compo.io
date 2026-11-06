@@ -21,6 +21,27 @@ la reçoit de Supabase à l'exécution.
   sur le projet : sans ce fichier, la fonction échoue avec « erreur serveur ».
 - `functions/compo/index.ts` — `start`, `submit`, `board`.
 
+## Barème
+
+Le score est recalculé côté serveur, jamais accepté tel quel. La formule vit en
+deux endroits qui doivent rester identiques : `points()` dans
+`functions/compo/index.ts` et le calcul de `pts` dans `index.html`.
+
+```
+1000 × trouvés / total
++ 360 × restant / durée   (seulement si la compo est complète)
+− 50 par indice
+```
+
+Le bonus de rapidité est une fraction du temps accordé, pas un nombre de points
+par seconde : sinon le rugby (270 s) plafonnerait à 1540 contre 1360 au foot
+(180 s) pour la même performance. Les deux culminent maintenant à 1360.
+
+**Après modification de la fonction, il faut la redéployer** (`supabase functions
+deploy compo`), sinon le classement continue d'appliquer l'ancienne formule
+pendant que l'app en affiche une autre. Passer par le CLI, pas par l'éditeur du
+tableau de bord : celui-ci abîme l'UTF-8 au collage.
+
 ## Ce qui est vérifié
 
 | Tentative | Résultat |

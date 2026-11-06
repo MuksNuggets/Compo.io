@@ -248,6 +248,7 @@ function dailyPick(n){
 }
 function streakOf(n){let s=0;for(let d=n;store.get(dailyKey(d));d--)s++;return s}
 const TIME={foot:180,rugby:270};
+const BONUS_MAX=360;   // même plafond de rapidité pour les deux sports (voir supabase/functions/compo)
 const $=id=>document.getElementById(id);
 const norm=s=>s.toLowerCase().replace(/œ/g,"oe").replace(/ß/g,"ss").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’'`-]/g," ").replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim();
 function lev(a,b){if(Math.abs(a.length-b.length)>1)return 9;const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
@@ -404,12 +405,14 @@ function end(){
   $("rtxt").textContent=(miss?`${bits.join(" et ")} manquant${miss>1?"s":""}, en rouge.`:`Compo complète en ${fmt(t)}.`)
     +(hinted.size?` ${hinted.size} indice${hinted.size>1?"s":""} utilisé${hinted.size>1?"s":""}.`:"")+(better&&b?" Nouveau record.":(!better&&b?` Record : ${b.f}/${tot}.`:""));
   if(RANKED&&!store.get(dailyKey(DAYN))){
-    const reste=Math.max(left,0);
-    const pts=Math.max(0,Math.round(1000*found.size/tot)+(found.size===tot?2*reste:0)-50*hinted.size);
+    const reste=Math.max(left,0),duree=TIME[M.sport];
+    // Bonus proportionnel au temps accordé : foot et rugby plafonnent au même score.
+    const bonus=found.size===tot?Math.round(BONUS_MAX*reste/duree):0;
+    const pts=Math.max(0,Math.round(1000*found.size/tot)+bonus-50*hinted.size);
     store.set(dailyKey(DAYN),{d:DAYN,f:found.size,n:tot,h:hinted.size,l:reste,p:pts,t});
     $("rbig").textContent=pts.toLocaleString("fr-FR")+" pts";
     $("rtxt").textContent=`${found.size}/${tot} trouvés en ${fmt(t)}.`
-      +(found.size===tot?` Bonus de ${2*reste} points pour ${reste} secondes restantes.`:"")
+      +(found.size===tot?` Bonus de ${bonus} points pour ${reste} secondes restantes.`:"")
       +(hinted.size?` ${50*hinted.size} points retirés pour ${hinted.size} indice${hinted.size>1?"s":""}.`:"");
     const s=streakOf(DAYN);
     $("share").hidden=false;
