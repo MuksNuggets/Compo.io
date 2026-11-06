@@ -384,16 +384,55 @@ def kit_titles(text):
 FR_NA = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]\s*(?:\{\{[^{}]*\}\}\s*)*(\d{1,2})(?!\d)")
 FR_AN = re.compile(r"(?<!\d)(\d{1,2})\s*(?:\{\{[^{}]*\}\}\s*)*\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 
+def _fr_entry(e):
+    """Une ligne de composition : « 15 [[Nom]] » ou « [[Nom]] 15 », notes et modèles compris,
+    et le nom en clair quand le joueur n'a pas d'article."""
+    txt = re.sub(r"<[^>]+>", " ", e).strip()
+    if not txt: return None
+    tete = re.match(r"(?:\s*\{\{[^{}]*\}\})*[\s:;'’*.-]*(\d{1,2})(?!\d)", txt)
+    queue = re.search(r"(?<!\d)(\d{1,2})(?:\s*\{\{[^{}]*\}\})*\s*'*\s*$", txt)
+    if not (tete or queue): return None
+    num = int(tete.group(1)) if tete else int(queue.group(1))
+    if not 1 <= num <= 15: return None
+    reste = txt[tete.end():] if tete else txt[:queue.start()]
+    code = mw.parse(reste)
+    for l in code.filter_wikilinks():
+        t = str(l.title)
+        if t.lower().startswith(('file:', 'fichier:', 'image:')): continue
+        return num, clean_team(str(l.text) if l.text else t)
+    brut = re.sub(r"\s+", " ", re.sub(r"\([^()]*\)", " ", code.strip_code())).strip(" .,;:'’-")
+    return (num, brut) if len(brut.split()) >= 2 else None
+
 def _fr_players(seg):
-    """Accepte « [[Nom]] 15 » comme « 15 [[Nom]] » ; n'accepte que les numéros 1 à 15 complets."""
-    for rx, order in ((FR_NA, 'na'), (FR_AN, 'an')):
-        out = {}
-        for m in rx.finditer(seg):
-            tgt, txt, num = (m.group(1), m.group(2), m.group(3)) if order == 'na' else (m.group(2), m.group(3), m.group(1))
-            n = int(num)
-            if 1 <= n <= 15 and n not in out:
-                out[n] = clean_team(txt or tgt)
-        if sorted(out) == list(range(1, 16)): return out
+    """Les titulaires d'une cellule, une ligne par joueur. Refuse si les 15 numéros n'y sont pas."""
+    out = {}
+    for e in re.split(r"<br\s*/?>|\n|,|\s+-\s+", seg):   # certaines pages alignent les 15 sur une ligne
+        r = _fr_entry(e)
+        if r and r[0] not in out: out[r[0]] = r[1]
+    return out if sorted(out) == list(range(1, 16)) else None
+
+def parse_fr_box(sec):
+    """Encadré du match : {{Match rugby}} (équipe1/équipe2/score) ou l'ancien « [[A]] 31 – 16 [[B]] »."""
+    for t in mw.parse(sec).filter_templates():
+        if 'match rugby' not in str(t.name).strip().lower(): continue
+        e1, e2, sc = _param(t, 'équipe1', 'equipe1'), _param(t, 'équipe2', 'equipe2'), _param(t, 'score')
+        if not (e1 and e2 and sc): continue
+        m = re.search(r"(\d{1,3})\s*[–\-—]\s*(\d{1,3})", sc.strip_code())
+        if m: return team_name(e1), int(m.group(1)), int(m.group(2)), team_name(e2)
+    lien = r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]"
+    # tableau à libellés « Équipes » / « Score » (pages des années 2006-2010)
+    def ligne(lib):
+        m = re.search(r"'''" + lib + r"'''\s*\n\|[^|\n]*\|(.*)", sec)
+        return m.group(1) if m else None
+    v, vs = ligne('Équipes'), ligne('Score')
+    if v and vs:
+        ls, ms = re.findall(lien, v), re.search(r"(\d{1,3})\s*[–\-—]\s*(\d{1,3})", vs)
+        if len(ls) >= 2 and ms:
+            return (clean_team(ls[0][1] or ls[0][0]), int(ms.group(1)),
+                    int(ms.group(2)), clean_team(ls[1][1] or ls[1][0]))
+    m = re.search(lien + r"'*\s*(\d{1,3})\s*'*\s*[–\-—]\s*'*\s*(\d{1,3})\s*'*\s*" + lien, sec)
+    if m: return (clean_team(m.group(2) or m.group(1)), int(m.group(3)),
+                  int(m.group(4)), clean_team(m.group(6) or m.group(5)))
     return None
 
 def parse_fr_final(text, section):
@@ -402,16 +441,13 @@ def parse_fr_final(text, section):
     secs = code.get_sections(matches=r"^\s*%s\s*$" % re.escape(section), flat=False)
     sec = str(secs[0]) if secs else str(code)
     link = r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]"
-    sm = re.search(link + r"'*\s*(\d{1,3})\s*'*\s*[–\-—]\s*'*\s*(\d{1,3})\s*'*\s*" + link, sec)
-    score = None
-    if sm:
-        score = (clean_team(sm.group(2) or sm.group(1)), int(sm.group(3)),
-                 int(sm.group(4)), clean_team(sm.group(6) or sm.group(5)))
+    score = parse_fr_box(sec)
     teams = []
     for m in re.finditer(r"Titulaires", sec):
         before, after = sec[max(0, m.start() - 500):m.start()], sec[m.end():]
-        links = re.findall(link, before)
-        nm = clean_team(links[-1][1] or links[-1][0]) if links else '?'
+        cell = before[before.rfind(chr(10) + chr(124)):] if (chr(10) + chr(124)) in before else before
+        gras = re.findall(r"'''\s*" + link + r"\s*'''", cell)
+        nm = clean_team(gras[-1][1] or gras[-1][0]) if gras else None
         stop = re.search(r"Remplaçants|Entraîneurs|\n\|\}", after)
         pl = _fr_players(after[:stop.start()] if stop else after[:2500])
         if not pl: continue
@@ -440,9 +476,14 @@ def from_wiki(it, verbose=False):
         (n1, p1, c1, a1), (n2, p2, c2, a2) = teams[:2]
         if score:
             sa, xa, xb, sb = score
-            # l'encadre peut nommer les equipes dans l'autre ordre que le tableau des compositions
-            if _match(sa, n1) + _match(sb, n2) < _match(sa, n2) + _match(sb, n1):
-                xa, xb = xb, xa
+            # les cellules de composition ne portent pas toujours le nom de l'equipe :
+            # on s'oriente sur celui qui est connu, et l'encadre fournit les deux noms
+            conn = n1 or n2
+            if conn:
+                ref = (sa, sb) if n1 else (sb, sa)
+                if _match(conn, ref[0]) < _match(conn, ref[1]):
+                    xa, xb, sa, sb = xb, xa, sb, sa
+            n1, n2 = n1 or sa, n2 or sb
             if xb > xa:                                        # vainqueur en premier
                 (n1, p1, c1, a1), (n2, p2, c2, a2) = (n2, p2, c2, a2), (n1, p1, c1, a1)
                 xa, xb = xb, xa

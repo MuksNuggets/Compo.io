@@ -3985,11 +3985,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2024,
-  "fx": "Toulouse 31–22 Leinster (a.p.)",
+  "fx": "Stade toulousain 31–22 Leinster (a.p.)",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulouse",
+    "name": "Stade toulousain",
     "p": [
      [
       "1",
@@ -4699,11 +4699,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2021,
-  "fx": "Toulouse 22–17 La Rochelle",
+  "fx": "Stade toulousain 22–17 La Rochelle",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulouse",
+    "name": "Stade toulousain",
     "p": [
      [
       "1",
@@ -5651,7 +5651,7 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2017,
-  "fx": "Saracens 28–17 Clermont",
+  "fx": "Saracens 28–17 ASM Clermont",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
@@ -5769,7 +5769,7 @@
     ]
    },
    {
-    "name": "Clermont",
+    "name": "ASM Clermont",
     "p": [
      [
       "1",
@@ -6127,11 +6127,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2015,
-  "fx": "Toulon 24–18 Clermont",
+  "fx": "RC Toulon 24–18 ASM Clermont",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulon",
+    "name": "RC Toulon",
     "p": [
      [
       "1",
@@ -6245,7 +6245,7 @@
     ]
    },
    {
-    "name": "Clermont",
+    "name": "ASM Clermont",
     "p": [
      [
       "1",
@@ -6365,11 +6365,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2014,
-  "fx": "Toulon 23–6 Saracens",
+  "fx": "RC Toulon 23–6 Saracens",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulon",
+    "name": "RC Toulon",
     "p": [
      [
       "1",
@@ -6605,11 +6605,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2013,
-  "fx": "Toulon 16–15 Clermont",
+  "fx": "RC Toulon 16–15 ASM Clermont",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulon",
+    "name": "RC Toulon",
     "p": [
      [
       "1",
@@ -6725,7 +6725,7 @@
     ]
    },
    {
-    "name": "Clermont",
+    "name": "ASM Clermont",
     "p": [
      [
       "1",
@@ -7321,11 +7321,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2010,
-  "fx": "Toulouse 21–19 Biarritz",
+  "fx": "Stade toulousain 21–19 Biarritz",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulouse",
+    "name": "Stade toulousain",
     "p": [
      [
       "1",
@@ -7797,7 +7797,7 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2008,
-  "fx": "Munster 16–13 Toulouse",
+  "fx": "Munster 16–13 Stade toulousain",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
@@ -7915,7 +7915,7 @@
     ]
    },
    {
-    "name": "Toulouse",
+    "name": "Stade toulousain",
     "p": [
      [
       "1",
@@ -8511,11 +8511,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2005,
-  "fx": "Toulouse 18–12 Stade Français (a.p.)",
+  "fx": "Stade toulousain 18–12 Stade français (a.p.)",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulouse",
+    "name": "Stade toulousain",
     "p": [
      [
       "1",
@@ -8629,7 +8629,7 @@
     ]
    },
    {
-    "name": "Stade Français",
+    "name": "Stade français",
     "p": [
      [
       "1",
@@ -8749,7 +8749,7 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2004,
-  "fx": "London Wasps 27–20 Toulouse",
+  "fx": "London Wasps 27–20 Stade toulousain",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
@@ -8867,7 +8867,7 @@
     ]
    },
    {
-    "name": "Toulouse",
+    "name": "Stade toulousain",
     "p": [
      [
       "1",
@@ -8987,11 +8987,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2003,
-  "fx": "Toulouse 22–17 Perpignan",
+  "fx": "Stade toulousain 22–17 Perpignan",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulouse",
+    "name": "Stade toulousain",
     "p": [
      [
       "1",
@@ -9463,7 +9463,7 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 2001,
-  "fx": "Leicester Tigers 34–30 Stade Français",
+  "fx": "Leicester Tigers 34–30 Stade français",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
@@ -9581,7 +9581,7 @@
     ]
    },
    {
-    "name": "Stade Français",
+    "name": "Stade français",
     "p": [
      [
       "1",
@@ -10649,11 +10649,11 @@
   "sport": "rugby",
   "comp": "hcup",
   "yr": 1996,
-  "fx": "Toulouse 21–18 Cardiff (a.p.)",
+  "fx": "Stade toulousain 21–18 Cardiff (a.p.)",
   "where": "Finale de la Coupe d’Europe",
   "teams": [
    {
-    "name": "Toulouse",
+    "name": "Stade toulousain",
     "p": [
      [
       "1",
@@ -15454,7 +15454,7 @@
   "sport": "foot",
   "comp": "ldc",
   "yr": 2001,
-  "fx": "Bayern Munich 1–1 Valencia (5–4 t.a.b.)",
+  "fx": "Bayern Munich 1–1 Valence (5–4 t.a.b.)",
   "where": "Finale de la Ligue des champions",
   "teams": [
    {
@@ -15546,7 +15546,7 @@
     ]
    },
    {
-    "name": "Valencia",
+    "name": "Valence",
     "p": [
      [
       "G",
@@ -15638,7 +15638,7 @@
   "sport": "foot",
   "comp": "ldc",
   "yr": 2000,
-  "fx": "Real Madrid 3–0 Valencia",
+  "fx": "Real Madrid 3–0 Valence",
   "where": "Finale de la Ligue des champions",
   "teams": [
    {
@@ -15728,7 +15728,7 @@
     ]
    },
    {
-    "name": "Valencia",
+    "name": "Valence",
     "p": [
      [
       "G",
@@ -17292,11 +17292,11 @@
   "sport": "foot",
   "comp": "ldc",
   "yr": 1991,
-  "fx": "Red Star Belgrade 0–0 Marseille (5–3 t.a.b.)",
+  "fx": "Étoile rouge de Belgrade 0–0 Marseille (5–3 t.a.b.)",
   "where": "Finale de la Ligue des champions",
   "teams": [
    {
-    "name": "Red Star Belgrade",
+    "name": "Étoile rouge de Belgrade",
     "p": [
      [
       "G",
@@ -19613,6 +19613,5251 @@
     "coach": [
      "Geoff Cooke",
      []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2026",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2026,
+  "fx": "Stade toulousain 28–20 Montpellier HR",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Rodrigue Neti",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Peato Mauvaka",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Joel Merkler",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Joshua Brennan",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Emmanuel Meafou",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "François Cros",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Jack Willis",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Alexandre Roumat",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Antoine Dupont",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Romain Ntamack",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Matthis Lebel",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Santiago Chocobares",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Pierre-Louis Barassi",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Teddy Thomas",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Blair Kinghorn",
+      []
+     ]
+    ],
+    "coach": [
+     "Ugo Mola",
+     []
+    ]
+   },
+   {
+    "name": "Montpellier HR",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Baptiste Erdocio",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Jordan Uelese",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Mohamed Haouas",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Florian Verhaeghe",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Tyler Duguid",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Lenni Nouchi",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Alexandre Bécognée",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Billy Vunipola",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Ali Price",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Domingo Miotti",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Donovan Taofifénua",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Auguste Cadot",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Arthur Vincent",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Gabriel N'Gandebe",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Tom Banks",
+      []
+     ]
+    ],
+    "coach": [
+     "Joan Caudullo",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2025",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2025,
+  "fx": "Stade toulousain 39–33 Bordeaux Bègles",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Rodrigue Neti",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Julien Marchand",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Dorian Aldegheri",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Joshua Brennan",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Thibaud Flament",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "François Cros",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Jack Willis",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Anthony Jelonch",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Paul Graou",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Romain Ntamack",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Blair Kinghorn",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Santiago Chocobares",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Pierre-Louis Barassi",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Juan Cruz Mallía",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Thomas Ramos",
+      []
+     ]
+    ],
+    "coach": [
+     "Ugo Mola",
+     []
+    ]
+   },
+   {
+    "name": "Bordeaux Bègles",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Jefferson Poirot",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Maxime Lamothe",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Ben Tameifuna",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Guido Petti",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Cyril Cazeaux",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Marko Gazzotti",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Pierre Bochaton",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Peter Samu",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Maxime Lucu",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Matthieu Jalibert",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Louis Bielle-Biarrey",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Yoram Moefana",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Nicolas Depoortère",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Damian Penaud",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Romain Buros",
+      []
+     ]
+    ],
+    "coach": [
+     "Yannick Bru",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2024",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2024,
+  "fx": "Stade toulousain 59–3 Bordeaux Bègles",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Rodrigue Neti",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Peato Mauvaka",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Dorian Aldegheri",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Richie Arnold",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Thibaud Flament",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "François Cros",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Jack Willis",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Alexandre Roumat",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Antoine Dupont",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Romain Ntamack",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Blair Kinghorn",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Pita Ahki",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Santiago Chocobares",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Juan Cruz Mallía",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Thomas Ramos",
+      []
+     ]
+    ],
+    "coach": [
+     "Ugo Mola",
+     []
+    ]
+   },
+   {
+    "name": "Bordeaux Bègles",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Jefferson Poirot",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Maxime Lamothe",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Ben Tameifuna",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Cyril Cazeaux",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Adam Coleman",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Bastien Vergnes-Taillefer",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Mahamadou Diaby",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "1996)|Tevita Tatafu]]",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Maxime Lucu",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Matthieu Jalibert",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Louis Bielle-Biarrey",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Yoram Moefana",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Nicolas Depoortère",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Damian Penaud",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Romain Buros",
+      []
+     ]
+    ],
+    "coach": [
+     "Yannick Bru",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2023",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2023,
+  "fx": "Stade toulousain 29–26 La Rochelle",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Cyril Baille",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Julien Marchand",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Dorian Aldegheri",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Richie Arnold",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Emmanuel Meafou",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Jack Willis",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "François Cros",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Alexandre Roumat",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Antoine Dupont",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Romain Ntamack",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Matthis Lebel",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Pita Ahki",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Santiago Chocobares",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Arthur Retière",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Thomas Ramos",
+      []
+     ]
+    ],
+    "coach": [
+     "Ugo Mola",
+     []
+    ]
+   },
+   {
+    "name": "La Rochelle",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Reda Wardi",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Pierre Bourgarit",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Uini Atonio",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Romain Sazy",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Will Skelton",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Paul Boudehent",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Levani Botia",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Grégory Alldritt",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Tawera Kerr-Barlow",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Antoine Hastoy",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Raymond Rhule",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Jonathan Danty",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Ulupano Seuteni",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Dillyn Leyds",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Brice Dulin",
+      []
+     ]
+    ],
+    "coach": [
+     "Ronan O'Gara",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2022",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2022,
+  "fx": "Montpellier HR 29–10 Castres olympique",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Montpellier HR",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Titi Lamositele",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Guilhem Guirado",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Mohamed Haouas",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Florian Verhaeghe",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Bastien Chalureau",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Alexandre Bécognée",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Yacouba Camara",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Zach Mercer",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Benoît Paillaugue",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Paolo Garbisi",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Vincent Rattez",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Jan Serfontein",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Geoffrey Doumayrou",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Arthur Vincent",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Anthony Bouthier",
+      []
+     ]
+    ],
+    "coach": [
+     "Philippe Saint-André",
+     []
+    ]
+   },
+   {
+    "name": "Castres olympique",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Quentin Walcker",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Gaëtan Barlot",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Wilfrid Hounkpatin",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Florent Vanverberghe",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Tom Staniforth",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Mathieu Babillot",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Nick Champion de Crespigny",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Teariki Ben-Nicholas",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Santiago Arata",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Benjamin Urdapilleta",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Filipo Nakosi",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Vilimoni Botitu",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Thomas Combezou",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Geoffrey Palis",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Julien Dumora",
+      []
+     ]
+    ],
+    "coach": [
+     "Pierre-Henry Broncan",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2021",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2021,
+  "fx": "Stade toulousain 18–8 La Rochelle",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Cyril Baille",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Julien Marchand",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Charlie Faumuina",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Rory Arnold",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Richie Arnold",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Rynhardt Elstadt",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "François Cros",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Selevasio Tolofua",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Antoine Dupont",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Thomas Ramos",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Matthis Lebel",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Pita Ahki",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Santiago Chocobares",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Juan Cruz Mallía",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Cheslin Kolbe",
+      []
+     ]
+    ],
+    "coach": [
+     "Ugo Mola",
+     []
+    ]
+   },
+   {
+    "name": "La Rochelle",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Reda Wardi",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Facundo Bosch",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Uini Atonio",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Romain Sazy",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Will Skelton",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Wiaan Liebenberg",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Kevin Gourdon",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Grégory Alldritt",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Tawera Kerr-Barlow",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Ihaia West",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Arthur Retière",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Geoffrey Doumayrou",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Raymond Rhule",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Dillyn Leyds",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Brice Dulin",
+      []
+     ]
+    ],
+    "coach": [
+     "Jono Gibbes",
+     [
+      "Ronan O'Gara"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2019",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2019,
+  "fx": "Stade toulousain 24–18 ASM Clermont",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Cyril Baille",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Peato Mauvaka",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Charlie Faumuina",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Richie Arnold",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Iosefa Tekori",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Rynhardt Elstadt",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "François Cros",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Jérôme Kaino",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Antoine Dupont",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Thomas Ramos",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Maxime Médard",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Pita Ahki",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Sofiane Guitoune",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Yoann Huget",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Cheslin Kolbe",
+      []
+     ]
+    ],
+    "coach": [
+     "Ugo Mola",
+     []
+    ]
+   },
+   {
+    "name": "ASM Clermont",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Étienne Falgoux",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Benjamin Kayser",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Rabah Slimani",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Sitaleki Timani",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Sébastien Vahaamahina",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Judicael Cancoriet",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Alexandre Lapandry",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Fritz Lee",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Greig Laidlaw",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Camille Lopez",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Alivereti Raka",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Wesley Fofana",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "George Moala",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Damian Penaud",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Isaia Toeava",
+      []
+     ]
+    ],
+    "coach": [
+     "Franck Azéma",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2018",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2018,
+  "fx": "Castres olympique 29–13 Montpellier HR",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Castres olympique",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Antoine Tichit",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Marc-Antoine Rallier",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Daniel Kotze",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Loïc Jacquet",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Rodrigo Capo Ortega",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Mathieu Babillot",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Anthony Jelonch",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Alex Tulou",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Rory Kockott",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Benjamín Urdapilleta",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "David Smith",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Afusipa Taumoepeau",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Thomas Combezou",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Armand Batlle",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Julien Dumora",
+      []
+     ]
+    ],
+    "coach": [
+     "Christophe Urios",
+     []
+    ]
+   },
+   {
+    "name": "Montpellier HR",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Mikheil Nariashvili",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Bismarck du Plessis",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Jannie du Plessis",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Nico Janse van Rensburg",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Paul Willemse",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Fulgence Ouedraogo",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Kélian Galletier",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Louis Picamoles",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Ruan Pienaar",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Aaron Cruden",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Nemani Nadolo",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Alexandre Dumoulin",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "François Steyn",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Benjamin Fall",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Jesse Mogg",
+      []
+     ]
+    ],
+    "coach": [
+     "Vern Cotter",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2017",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2017,
+  "fx": "ASM Clermont 22–16 RC Toulon",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "ASM Clermont",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Raphaël Chaume",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Benjamin Kayser",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Davit Zirakashvili",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Arthur Iturria",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Sitaleki Timani",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Damien Chouly",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Judicaël Cancoriet",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Fritz Lee",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Morgan Parra",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Camille Lopez",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Alivereti Raka",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Rémi Lamerat",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Damian Penaud",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "David Strettle",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Nick Abendanon",
+      []
+     ]
+    ],
+    "coach": [
+     "Franck Azéma",
+     []
+    ]
+   },
+   {
+    "name": "RC Toulon",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Laurent Delboulbès",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Guilhem Guirado",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Marcel van der Merwe",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Juandré Kruger",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Romain Taofifénua",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Juan Smith",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Liam Gill",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Duane Vermeulen",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Sébastien Tillous-Borde",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Anthony Belleau",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Drew Mitchell",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Ma'a Nonu",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Mathieu Bastareaud",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Josua Tuisova",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "James O'Connor",
+      []
+     ]
+    ],
+    "coach": [
+     "Richard Cockeril",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2016",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2016,
+  "fx": "Racing 92 29–21 RC Toulon",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Racing 92",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Xavier Chiocci",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Guilhem Guirado",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Levan Chilachava",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Samu Manoa",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Konstantin Mikautadze",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Mamuka Gorgodze",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Juan Martin Fernandez Lobbe",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Steffon Armitage",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Jonathan Pelissié",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Matt Giteau",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Bryan Habana",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Maxime Mermoz",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Mathieu Bastareaud",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Josua Tuisova",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Leigh Halfpenny",
+      []
+     ]
+    ],
+    "coach": [
+     "Bernard Laporte",
+     []
+    ]
+   },
+   {
+    "name": "RC Toulon",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Eddy Ben Arous",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Dimitri Szarzewski",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Ben Tameifuna",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Bernard Le Roux",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Manuel Carizza",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Wenceslas Lauret",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Yannick Nyanga",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Chris Masoe",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Maxime Machenaud",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Daniel Carter",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Juan Imhoff",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Henry Chavancy",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Johan Goosen",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Joe Rokocoko",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Brice Dulin",
+      []
+     ]
+    ],
+    "coach": [
+     "Laurent Labit",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2015",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2015,
+  "fx": "Stade français 38–15 Racing 92",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade français",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Hendrik Schalk Van der Merwe",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Rémy Bonfils",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Rabah Slimani",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Hugh Pyle",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Alexandre Flanquart",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Antoine Burban",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Raphaël Lakafia",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Sergio Parisse",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Julien Dupuy",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Morné Steyn",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Jérémy Sinzelle",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Jonathan Danty",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Waisea Nayacalevu",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Julien Arias",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Djibril Camara",
+      []
+     ]
+    ],
+    "coach": [
+     "Gonzalo Quesada",
+     [
+      "Adrien Buononato",
+      "Jean-Frédéric Dubois",
+      "Simon Raiwalui"
+     ]
+    ]
+   },
+   {
+    "name": "Racing 92",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Thomas Domingo",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "John Ulugia",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Davit Zirakashvili",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Paul Jedrasiak",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Sébastien Vahaamahina",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Damien Chouly",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Julien Bardy",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Fritz Lee",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Morgan Parra",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Camille Lopez",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Napoleoni Vonwale Nalaga",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Benson Stanley",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Aurélien Rougerie",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Jean-Marcellin Buttin",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Nick Abendanon",
+      []
+     ]
+    ],
+    "coach": [
+     "Franck Azéma",
+     [
+      "Jono Gibbes",
+      "Xavier Sadourny"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2014",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2014,
+  "fx": "RC Toulon 18–10 Castres olympique",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "RC Toulon",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Xavier Chiocci",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Craig Burden",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Carl Hayman",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Bakkies Botha",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Ali Williams",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Juan Smith",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Juan Martín Fernández Lobbe",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Steffon Armitage",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Sébastien Tillous-Borde",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Jonny Wilkinson",
+      [
+       "wilko"
+      ]
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Bryan Habana",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Matt Giteau",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Mathieu Bastareaud",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Drew Mitchell",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Delon Armitage",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "Castres olympique",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Yannick Forestier",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Brice Mach",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Ramiro Herrera",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Richie Gray",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Rodrigo Capó Ortega",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Piula Faasalele",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Yannick Caballero",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Antonie Claassen",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Rory Kockott",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Rémi Talès",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Rémy Grosso",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Rémi Lamerat",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Romain Cabannes",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Max Evans",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Brice Dulin",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2013",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2013,
+  "fx": "Castres olympique 19–14 RC Toulon",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Castres olympique",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Saimone Taumoepeau",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Brice Mach",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Karena Wihongi",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Christophe Samson",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Rodrigo Capó Ortega",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Ibrahim Diarra",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Yannick Caballero",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Antonie Claassen",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Rory Kockott",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Rémi Talès",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Marc Andreu",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Seremaia Bai",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Romain Cabannes",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Romain Martial",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Brice Dulin",
+      []
+     ]
+    ],
+    "coach": [
+     "Laurent Travers",
+     [
+      "Laurent Labit"
+     ]
+    ]
+   },
+   {
+    "name": "RC Toulon",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Andrew Sheridan",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Sébastien Bruno",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Carl Hayman",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Bakkies Botha",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Nick Kennedy",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Danie Rossouw",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Juan Martín Fernández Lobbe",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Chris Masoe",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Frédéric Michalak",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Jonny Wilkinson",
+      [
+       "wilko"
+      ]
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Alexis Palisson",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Matt Giteau",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Mathieu Bastareaud",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Rudi Wulf",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Delon Armitage",
+      []
+     ]
+    ],
+    "coach": [
+     "Bernard Laporte",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2012",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2012,
+  "fx": "Stade toulousain 18–12 RC Toulon",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Gurthrö Steenkamp",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "William Servat",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Census Johnston",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Yoann Maestri",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Patricio Albacete",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Jean Bouilhou",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Thierry Dusautoir",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Louis Picamoles",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Jean-Marc Doussain",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Luke McAlister",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Timoci Matanavou",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Florian Fritz",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Yann David",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Vincent Clerc",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Clément Poitrenaud",
+      []
+     ]
+    ],
+    "coach": [
+     "Guy Novès",
+     [
+      "Jean-Baptiste Élissalde",
+      "Yannick Bru"
+     ]
+    ]
+   },
+   {
+    "name": "RC Toulon",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Eifion Lewis-Roberts",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Sébastien Bruno",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Davit Kubriashvili",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Bakkies Botha",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Simon Shaw",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Joe Van Niekerk",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Steffon Armitage",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Juan Martin Fernandez-Lobbe",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Sébastien Tillous-Borde",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Jonny Wilkinson",
+      [
+       "wilko"
+      ]
+     ],
+     [
+      "11",
+      12,
+      73,
+      "David Smith",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Matt Giteau",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Mathieu Bastareaud",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Alexis Palisson",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Benjamin Lapeyre",
+      []
+     ]
+    ],
+    "coach": [
+     "Bernard Laporte",
+     [
+      "Olivier Azam",
+      "Pierre Mignoni"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2011",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2011,
+  "fx": "Stade toulousain 15–10 Montpellier HR",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Daan Human",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "William Servat",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Census Johnston",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Romain Millo-Chluski",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Patricio Albacete",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Jean Bouilhou",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Thierry Dusautoir",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Louis Picamoles",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Jean-Marc Doussain",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "David Skrela",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Rupeni Caucaunibuca",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Clément Poitrenaud",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Yannick Jauzion",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Maxime Médard",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Cédric Heymans",
+      []
+     ]
+    ],
+    "coach": [
+     "Guy Novès",
+     [
+      "Jean-Baptiste Élissalde",
+      "Yannick Bru"
+     ]
+    ]
+   },
+   {
+    "name": "Montpellier HR",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Juan Figallo",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Fabien Rofes",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Giorgi Jgenti",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Drikus Hancke",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Aliki Fakate",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Fulgence Ouedraogo",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Mamuka Gorgodze",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Sakiusa Matadigo",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Julien Tomas",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "François Trinh-Duc",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Martín Bustos Moyano",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Santiago Fernandez",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Sylvain Mirande",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Timoci Nagusa",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Benjamin Thiéry",
+      []
+     ]
+    ],
+    "coach": [
+     "Fabien Galthié",
+     [
+      "Didier Bès",
+      "Éric Béchu"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2009",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2009,
+  "fx": "Perpignan 22–13 ASM Clermont",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Perpignan",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Perry Freshwater",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Marius Tincu",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Nicolas Mas",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Rimas Alvarez-Kairelis",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Olivier Olibeau",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Grégory Le Corvec",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Jean-Pierre Pérez",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Damien Chouly",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Nicolas Durand",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Gavin Hume",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Julien Candelon",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Maxime Mermoz",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "David Marty",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Farid Sid",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Jérôme Porical",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "ASM Clermont",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Thomas Domingo",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Mario Ledesma",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Martin Scelzo",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Julien Pierre",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Thibaut Privat",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Jamie Cudmore",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Julien Bonnaire",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Alexandre Audebert",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Pierre Mignoni",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Brock James",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Napoliani Nalaga",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Gonzalo Canale",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Aurélien Rougerie",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Benoît Baby",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Anthony Floch",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2008",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2008,
+  "fx": "Stade toulousain 26–20 ASM Clermont",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Daan Human",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "William Servat",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Omar Hasan",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Fabien Pelous",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Patricio Albacete",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Jean Bouilhou",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Thierry Dusautoir",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Shaun Sowerby",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Byron Kelleher",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Jean-Baptiste Élissalde",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Cédric Heymans",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Yannick Jauzion",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Maleli Kunavore",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Yves Donguy",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Maxime Médard",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "ASM Clermont",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Laurent Emmanuelli",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Mario Ledesma",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Davit Zirakashvili",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Jamie Cudmore",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Thibaut Privat",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Julien Bonnaire",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Alexandre Audebert",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Elvis Vermeulen",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Pierre Mignoni",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Brock James",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Napolioni Nalaga",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Gonzalo Canale",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Marius Joubert",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Aurélien Rougerie",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Benoît Baby",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2007",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2007,
+  "fx": "Stade français 23–18 ASM Clermont",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade français",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Rodrigo Roncero",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Benjamin Kayser",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Pedro Ledesma",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Arnaud Marchois",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Mike James",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Mauro Bergamasco",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Rémy Martin",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Pierre Rabadan",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Agustín Pichot",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Juan Martín Hernández",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Christophe Dominici",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "David Skrela",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Stéphane Glas",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Julien Arias",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Nicolas Jeanjean",
+      []
+     ]
+    ]
+   },
+   {
+    "name": "ASM Clermont",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Laurent Emmanuelli",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Mario Ledesma",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Martín Scelzo",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Jamie Cudmore",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Thibaut Privat",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Sam Broomhall",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Alexandre Audebert",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Elvis Vermeulen",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Pierre Mignoni",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Brock James",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Julien Malzieu",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Tony Marsh",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Gonzalo Canale",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Aurélien Rougerie",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Anthony Floch",
+      []
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-2004",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 2004,
+  "fx": "Stade français 38–20 Perpignan",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade français",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Sylvain Marconnet",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Mathieu Blin",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Pieter de Villiers",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "David Auradou",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Mike James",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Pierre Rabadan",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Mauro Bergamasco",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Patrick Tabacco",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Agustín Pichot",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Diego Domínguez",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Christophe Dominici",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Brian Liebenberg",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Stéphane Glas",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Juan Martín Hernández",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Ignacio Corleto",
+      []
+     ]
+    ],
+    "coach": [
+     "Nick Mallett",
+     []
+    ]
+   },
+   {
+    "name": "Perpignan",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Nicolas Mas",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Michel Konieck",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Perry Freshwater",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Colin Gaston",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Christophe Porcu",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Grégory Le Corvec",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Bernard Goutta",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Rimas Álvarez Kairelis",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Ludovic Loustau",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Manuel Edmonds",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Dan Luger",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Christophe Manas",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "David Marty",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Pascal Bomati",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Diego Giannantonio",
+      []
+     ]
+    ],
+    "coach": [
+     "Olivier Saïsset",
+     []
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-1997",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 1997,
+  "fx": "Stade toulousain 12–6 CS Bourgoin-Jallieu",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Christian Califano",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Patrick Soula",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Jean-Louis Jordana",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Hugues Miorin",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Franck Belot",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Didier Lacroix",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Régis Sonnes",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Sylvain Dispagne",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Jérôme Cazalbou",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Christophe Deylaud",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "David Berty",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Thomas Castaignède",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Nicolas Martin",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Michel Marfaing",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Stéphane Ougier",
+      []
+     ]
+    ],
+    "coach": [
+     "Guy Novès",
+     [
+      "Serge Laïrle"
+     ]
+    ]
+   },
+   {
+    "name": "CS Bourgoin-Jallieu",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Philippe Vessilier",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Jean-Pierre Sanchez",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "David Morgan",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Marc Cécillon",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Jean Daudé",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Alexandre Chazalet",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Michel Malafosse",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Pierre Raschi",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Dominique Mazille",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Gilles Cassagne",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Ludovic Saunier",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Stéphane Glas",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Alexandre Péclier",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Laurent Leflamand",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Nigel Geany",
+      []
+     ]
+    ],
+    "coach": [
+     "Michel Couturas",
+     [
+      "Alain Revol"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-1995",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 1995,
+  "fx": "Stade toulousain 31–16 Castres olympique",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Stade toulousain",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Christian Califano",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Patrick Soula",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Claude Portolan",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Hugues Miorin",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Franck Belot",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Didier Lacroix",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Régis Sonnes",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Albert Cigagna",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Jérôme Cazalbou",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Christophe Deylaud",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "David Berty",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Thomas Castaignède",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Philippe Carbonneau",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Émile Ntamack",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Stéphane Ougier",
+      []
+     ]
+    ],
+    "coach": [
+     "Guy Novès",
+     [
+      "Serge Laïrle"
+     ]
+    ]
+   },
+   {
+    "name": "Castres olympique",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Laurent Toussaint",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Christian Batut",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Thierry Lafforgue",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Guy Jeannard",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Jean-François Gourragne",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "José Díaz",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Gilbert Pagès",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Jean-Philippe Swiadek",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Frédéric Séguier",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Francis Rui",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Christophe Lucquiaud",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Jean-Marc Aué",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Alain Hyardet",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Philippe Escalle",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Cyril Savy",
+      []
+     ]
+    ],
+    "coach": [
+     "Jean-Marie Barsalou",
+     [
+      "Thierry Merlos"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top14-1993",
+  "sport": "rugby",
+  "comp": "top14",
+  "yr": 1993,
+  "fx": "Castres olympique 14–11 FC Grenoble",
+  "where": "Finale du championnat de France",
+  "teams": [
+   {
+    "name": "Castres olympique",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Laurent Toussaint",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Christophe Urios",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Thierry Lafforgue",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Thierry Bourdet",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Gary Whetton",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "José Díaz",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Gilbert Pagès",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Alain Carminati",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Cédric Tonini",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Francis Rui",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Christophe Lucquiaud",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Nicolas Combes",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Adrian Lungu",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Jean-Bernard Bergès",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Laurent Labit",
+      []
+     ]
+    ],
+    "coach": [
+     "Alain Gaillard",
+     [
+      "Jacques Cauquil"
+     ]
+    ]
+   },
+   {
+    "name": "FC Grenoble",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Philippe Tapié",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Éric Ferruit",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Franck Capdeville",
+      []
+     ],
+     [
+      "4",
+      40,
+      28,
+      "Olivier Merle",
+      []
+     ],
+     [
+      "5",
+      60,
+      28,
+      "Olivier Brouzet",
+      []
+     ],
+     [
+      "6",
+      22,
+      38,
+      "Gregory Kacala",
+      []
+     ],
+     [
+      "7",
+      78,
+      38,
+      "Hervé Chaffardon",
+      []
+     ],
+     [
+      "8",
+      50,
+      38,
+      "Džoni Mandić",
+      []
+     ],
+     [
+      "9",
+      50,
+      49,
+      "Dominique Mazille",
+      []
+     ],
+     [
+      "10",
+      50,
+      58,
+      "Patrick Goirand",
+      []
+     ],
+     [
+      "11",
+      12,
+      73,
+      "Brice Bardou",
+      []
+     ],
+     [
+      "12",
+      30,
+      65,
+      "Frédéric Vélo",
+      []
+     ],
+     [
+      "13",
+      70,
+      65,
+      "Willy Taofifénua",
+      []
+     ],
+     [
+      "14",
+      88,
+      73,
+      "Philippe Meunier",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Cyril Savy",
+      []
+     ]
+    ],
+    "coach": [
+     "Jacques Fouroux",
+     [
+      "Michel Ringeval"
+     ]
     ]
    }
   ]
