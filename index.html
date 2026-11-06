@@ -329,9 +329,16 @@ async function majClassement(trouves,indices){
   let r=null;
   if(ROUND){try{r=await api("submit",{roundId:ROUND,found:trouves,hints:indices});}catch(e){}}
   if(r&&typeof r.points==="number"){           // le serveur fait foi
-    store.set(dailyKey(DAYN),{d:DAYN,f:r.found,n:r.size,h:r.hints,l:r.timeLeft,p:r.points,
-      t:Math.max(0,TIME[M.sport]-r.timeLeft)});
+    const t=Math.max(0,TIME[M.sport]-r.timeLeft);
+    store.set(dailyKey(DAYN),{d:DAYN,f:r.found,n:r.size,h:r.hints,l:r.timeLeft,p:r.points,t});
     $("rbig").textContent=r.points.toLocaleString("fr-FR")+" pts";
+    // La phrase est refaite avec les chiffres du serveur, et le bonus est déduit
+    // de son total au lieu d'être recalculé ici. Elle colle donc au score affiché
+    // même quand les deux côtés n'appliquent pas encore le même barème.
+    const bonus=r.points-Math.round(1000*r.found/r.size)+50*r.hints;
+    $("rtxt").textContent=`${r.found}/${r.size} trouvés en ${fmt(t)}.`
+      +(r.found===r.size&&r.points>0&&bonus>0?` Bonus de ${bonus} points pour ${r.timeLeft} secondes restantes.`:"")
+      +(r.hints?` ${50*r.hints} points retirés pour ${r.hints} indice${r.hints>1?"s":""}.`:"");
   }else if(r&&r.erreur){$("rtxt").textContent+=" Classement : "+r.erreur+".";}
   else if(!ROUND){$("rtxt").textContent+=" Hors ligne : score non classé.";}
   const je=moi();
