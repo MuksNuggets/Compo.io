@@ -372,6 +372,22 @@ $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!foun
   const i=todo[Math.floor(Math.random()*todo.length)];hinted.add(i);const w=P[i].n.split(" "),last=w.length>1?w.slice(1).join(" "):w[0];
   $("pl"+i).querySelector(".nm").textContent=last[0]+"…";$("flash").textContent=`Indice : un nom en ${last[0].toUpperCase()}.`;$("inp").focus();};
 $("giveup").onclick=()=>end();
+// Le partage dessine la compo plutôt que de la raconter : une case par joueur,
+// rangées comme les lignes sur le terrain, l'entraîneur à part sur la dernière.
+// Vert trouvé, jaune trouvé après un indice, rouge manqué. Les noms ne fuitent
+// pas, donc on peut l'envoyer à quelqu'un qui n'a pas encore joué.
+function grilleDuPartage(){
+  const carre=i=>found.has(i)?(hinted.has(i)?"🟨":"🟩"):"🟥";
+  const lignes=[];
+  P.map((p,i)=>({y:p.y,i,coach:!!p.coach})).filter(j=>!j.coach).sort((a,b)=>a.y-b.y)
+   .forEach(j=>{
+     const der=lignes[lignes.length-1];
+     if(der&&j.y-der.y<6)der.cases.push(carre(j.i));   // même ligne sur le terrain
+     else lignes.push({y:j.y,cases:[carre(j.i)]});
+   });
+  const ci=P.findIndex(p=>p.coach);
+  return lignes.map(l=>l.cases.join("")).join("\n")+(ci>=0?"\n"+carre(ci):"");
+}
 function end(){
   if(over)return;over=true;clearInterval(tick);$("inp").disabled=true;
   P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.n;}});
@@ -399,8 +415,9 @@ function end(){
     majClassement(found.size,hinted.size);
     $("share").onclick=async()=>{
       const f=store.get(dailyKey(DAYN,M.sport))||{f:found.size,n:tot,p:pts};
-      const txt=`Compo.io ${nomSport(M.sport)} n° ${DAYN} — ${f.f}/${f.n} — ${f.p.toLocaleString("fr-FR")} pts`
-        +(s>1?` 🔥${s}`:"")+"\n"+location.origin+location.pathname;
+      const txt=`Compo.io ${M.sport==="foot"?"⚽":"🏉"} #${DAYN}\n`
+        +`${f.p.toLocaleString("fr-FR")} pts · ${f.f}/${f.n}`+(s>1?` · 🔥${s}`:"")+"\n\n"
+        +grilleDuPartage()+"\n\n"+location.origin+location.pathname;
       try{await navigator.clipboard.writeText(txt);$("share").textContent="Copié !";
         setTimeout(()=>$("share").textContent="Partager",1800);}
       catch(e){prompt("Copie ce texte :",txt);}
