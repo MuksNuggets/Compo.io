@@ -1,0 +1,11 @@
+# environnement Python local
+.venv/
+__pycache__/
+*.pyc
+
+# sources brutes Wikipédia (volumineuses, regénérables)
+data/raw/
+data/test.json
+
+# macOS
+.DS_Store
