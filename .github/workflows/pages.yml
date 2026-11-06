@@ -35,7 +35,12 @@ jobs:
           cp index.html site/index.html
           cp index.html site/404.html
 
+      # enablement: active GitHub Pages si le depot ne l'a pas encore, depuis le
+      # runner et avec le jeton du workflow (d'ou la permission pages: write
+      # ci-dessus). Evite d'avoir a le faire a la main dans les reglages.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
