@@ -142,7 +142,20 @@ const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : 
     && partage.split('\n').length === 3, partage);
   verifie('ni carre, ni score, ni emoji', !/[🟩🟥🟨⚽🏉🔥]|pts|\d\/\d/u.test(partage), partage);
 
-  // --- 10. pas de debordement horizontal sur un petit telephone
+  // --- 10. aucun champ sous 16 px : en dessous, iOS zoome la page a la mise
+  //         au point et n'en revient pas, ce qui fait deborder le texte du haut
+  await p.evaluate(() => { const m = MATCHES.find(x => x.id === 'cdm-1998'); start(m, 0, false); });
+  await p.waitForTimeout(150);
+  const champs = await p.evaluate(() => [...document.querySelectorAll('input')]
+    .map(i => ({ id: i.id, px: parseFloat(getComputedStyle(i).fontSize) })));
+  verifie('aucun champ sous 16 px', champs.every(c => c.px >= 16), champs);
+
+  // --- 11. la saisie est sous le terrain, au plus pres du clavier
+  const ordre = await p.evaluate(() => [...document.querySelectorAll('#play > *')].map(e => e.id || e.className));
+  verifie('la saisie vient apres le terrain',
+    ordre.indexOf('inp') > ordre.indexOf('pitch'), ordre);
+
+  // --- 12. pas de debordement horizontal sur un petit telephone
   await p.setViewportSize({ width: 320, height: 700 });
   await p.waitForTimeout(100);
   const large = await p.evaluate(() => ({ s: document.documentElement.scrollWidth, c: document.documentElement.clientWidth }));

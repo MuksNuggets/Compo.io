@@ -75,15 +75,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 .back{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-weight:600}
 .title{margin:6px 0 2px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:28px;line-height:1.1}
 .sub{color:var(--muted);margin:0 0 14px;font-size:15px}
-.board{display:flex;align-items:stretch;gap:8px;margin-bottom:10px}
+.chrono{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
 .clock,.count{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:34px;line-height:1;padding:8px 14px;border-radius:8px;background:var(--ink);color:var(--accent);font-variant-numeric:tabular-nums}
 .count{color:var(--bg)}
 .clock.low{color:#FF6B6B}
-.inp{flex:1;min-width:0;font:600 18px Barlow,sans-serif;padding:0 14px;border-radius:8px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
+.inp{display:block;width:100%;margin-top:10px;font:600 18px Barlow,sans-serif;padding:12px 14px;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
 .inp:focus{outline:none;border-color:var(--accent)}
 .inp.shake{animation:sh .3s}
 @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.flash{min-height:22px;font-size:14px;color:var(--muted);margin:0 0 8px}
+.flash{min-height:22px;font-size:14px;color:var(--muted);margin:8px 0 0}
 .pitch{position:relative;width:100%;border-radius:10px;overflow:hidden;
   background:repeating-linear-gradient(to bottom,var(--pitch) 0 8%,var(--stripe) 8% 16%)}
 .pitch.foot{aspect-ratio:68/100}
@@ -102,7 +102,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .daily .pts{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:30px;line-height:1}
 .daily .streak{font-weight:600;font-size:14px;color:var(--muted)}
 .daily .ident{display:flex;flex-wrap:wrap;gap:8px;align-items:center;width:100%}
-.daily input{flex:1;min-width:150px;font:inherit;font-size:15px;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:inherit}
+.daily input{flex:1;min-width:150px;font:inherit;font-size:16px;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:inherit}
 .note{width:100%;font-size:13px;color:var(--muted);margin:-6px 0 18px}
 .note b{color:inherit}
 .note a{color:var(--ink);text-underline-offset:2px}
@@ -112,12 +112,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .board td.n{text-align:right;font-variant-numeric:tabular-nums}
 .board tr.moi td{background:var(--accent);color:var(--accent-ink)}
 .bench{display:flex;justify-content:center;margin-top:8px}
-.coach{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 12px 5px 7px}
-.coach .badge{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 Barlow,sans-serif;background:rgba(255,255,255,.9);color:#13241A}
+/* La pastille est hors du terrain, donc sur le fond clair de la page : ses
+   couleurs sont celles de la page, pas celles de la pelouse. */
+.coach{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 7px}
+.coach .badge{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 Barlow,sans-serif;background:var(--ink);color:var(--bg)}
 .coach .role{font:600 10.5px/1 Barlow,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.coach .nm{font:600 13px/1.15 Barlow,sans-serif;color:#fff;padding:2px 6px;border-radius:4px}
-.coach.todo .nm{color:rgba(255,255,255,.55)}
-.coach.hit .nm{background:#fff;color:#13241A;animation:pop .35s}
+.coach .nm{font:600 13px/1.15 Barlow,sans-serif;color:var(--ink);padding:2px 6px;border-radius:4px}
+.coach.todo .nm{color:var(--muted)}
+.coach.hit .nm{background:var(--ink);color:var(--bg);animation:pop .35s}
 .coach.miss .nm{background:var(--miss);color:#fff}
 @keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
 .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
@@ -142,17 +144,19 @@ button{font:inherit;color:inherit;cursor:pointer}
   <p class="src">Données : Fjelstul World Cup Database (CC BY-SA 4.0), StatsBomb Open Data, Wikipédia.</p>
 </section>
 <section id="play" class="hidden">
-  <div class="top"><button class="back" id="back">Tous les matchs</button><span class="sport" id="psport"></span></div>
+  <div class="top"><button class="back" id="back">Retour</button><span class="sport" id="psport"></span></div>
   <h2 class="title" id="ptitle"></h2>
   <p class="sub" id="psub"></p>
-  <div class="board">
+  <div class="chrono">
     <div class="clock" id="clock">3:00</div>
-    <input class="inp" id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
     <div class="count" id="count">0/11</div>
   </div>
-  <p class="flash" id="flash" aria-live="polite"></p>
   <div class="pitch" id="pitch"></div>
   <div class="bench hidden" id="bench"></div>
+  <!-- La saisie est sous le terrain : clavier ouvert, on voit encore les
+       postes, au lieu de les avoir derrière le clavier. -->
+  <input class="inp" id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
+  <p class="flash" id="flash" aria-live="polite"></p>
   <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="giveup">Abandonner</button></div>
   <div class="result hidden" id="result">
     <div class="big" id="rbig"></div>
