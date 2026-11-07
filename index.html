@@ -85,9 +85,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* Play */
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.top.bas{margin:18px 0 0}
 .back{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-weight:600}
-.title{margin:6px 0 2px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:28px;line-height:1.1}
-.sub{color:var(--muted);margin:0 0 14px;font-size:15px}
+.title{margin:0 0 2px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:28px;line-height:1.1}
+.sub{color:var(--muted);margin:0 0 10px;font-size:15px}
 .barre{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
 .clock,.count{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:26px;line-height:1;padding:7px 11px;border-radius:9px;background:var(--panel);color:var(--accent);font-variant-numeric:tabular-nums}
 .count{color:var(--panel-ink)}
@@ -100,12 +101,17 @@ button{font:inherit;color:inherit;cursor:pointer}
 .flash{min-height:22px;font-size:14px;color:var(--muted);margin:8px 0 0}
 .pitch{position:relative;width:100%;border-radius:10px;overflow:hidden;
   background:repeating-linear-gradient(to bottom,var(--pitch) 0 8%,var(--stripe) 8% 16%)}
-.pitch.foot{aspect-ratio:68/100}
-.pitch.rugby{aspect-ratio:70/112}
+/* Les joueurs n'occupent que la bande 18–90 (foot) et 18–82 (rugby) de la
+   hauteur. On raccourcit donc le terrain : le vide se reduit d'autant, et les
+   traits, dessines sans contrainte de proportion, suivent. */
+.pitch.foot{aspect-ratio:68/78}
+.pitch.rugby{aspect-ratio:70/84}
 .pitch svg.lines{position:absolute;inset:0;width:100%;height:100%}
-.pl{position:absolute;transform:translate(-50%,-30%);display:flex;flex-direction:column;align-items:center;width:84px;pointer-events:none}
+/* 19 % : les deux joueurs les plus proches sont a 20 % l'un de l'autre, donc
+   les etiquettes ne peuvent jamais se toucher, quelle que soit la largeur. */
+.pl{position:absolute;transform:translate(-50%,-30%);display:flex;flex-direction:column;align-items:center;width:19%;pointer-events:none}
 .pl svg{width:36px;height:34px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
-.pl .nm{margin-top:2px;font:600 12px/1.15 Barlow,sans-serif;text-align:center;color:#fff;background:rgba(0,0,0,.42);padding:2px 5px;border-radius:4px;min-width:28px;max-width:84px}
+.pl .nm{margin-top:2px;font:600 12px/1.15 Barlow,sans-serif;text-align:center;color:#fff;background:rgba(0,0,0,.42);padding:2px 5px;border-radius:4px;min-width:28px;max-width:100%}
 .pl.todo .nm{color:rgba(255,255,255,.6)}
 .pl.hit .nm{background:#fff;color:#13241A;animation:pop .35s}
 .pl.miss .nm{background:var(--miss);color:#fff}
@@ -142,9 +148,17 @@ button{font:inherit;color:inherit;cursor:pointer}
 .result{margin-top:14px;padding:16px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
 .result .big{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:44px;line-height:1}
 .hidden{display:none!important}
+/* Sur un ecran de 320 px, les etiquettes de la premiere ligne de melee se
+   chevauchaient de 16 px. A cette taille elles sont plus petites : plus un
+   seul chevauchement, mesure sur foot et rugby. */
 @media (max-width:420px){
-  .pl{width:66px}.pl .nm{font-size:10.5px;max-width:66px}.pl svg{width:28px;height:27px}
+  .pl .nm{font-size:10.5px}.pl svg{width:28px;height:27px}
   .clock,.count{font-size:23px;padding:7px 9px}
+}
+/* Apres le bloc 420, sinon c'est lui qui gagnerait : a egalite de poids,
+   la derniere regle ecrite l'emporte. */
+@media (max-width:360px){
+  .pl .nm{font-size:9.5px;padding:2px 3px}.pl svg{width:23px;height:22px}
 }
 /* Barre d'onglets, collee en bas : c'est la ou le pouce arrive. Elle
    disparait pendant une partie, qui a besoin de toute la hauteur. */
@@ -208,7 +222,6 @@ button{font:inherit;color:inherit;cursor:pointer}
   <div id="profil"></div>
 </section>
 <section id="play" class="hidden">
-  <div class="top"><button class="back" id="back">Retour</button><span class="sport" id="psport"></span></div>
   <h2 class="title" id="ptitle"></h2>
   <p class="sub" id="psub"></p>
   <div class="pitch" id="pitch"></div>
@@ -230,6 +243,9 @@ button{font:inherit;color:inherit;cursor:pointer}
     <div id="board"></div>
     <div class="actions" style="margin:0"><button class="btn primary" id="share" hidden>Partager</button><button class="btn" id="again">Rejouer</button><button class="btn" id="swap">Jouer l’autre équipe</button><button class="btn" id="other">Retour</button></div>
   </div>
+  <!-- Retour et sport en bas : l'ecran s'ouvre directement sur l'affiche du
+       match, et le haut n'est pas mange par une barre de navigation. -->
+  <div class="top bas"><button class="back" id="back">Retour</button><span class="sport" id="psport"></span></div>
 </section>
 </div>
 <nav class="onglets" id="onglets" aria-label="Sections">
@@ -337,6 +353,9 @@ function picksDuJour(){
   SPORTS.forEach(sp=>{const p=dailyPick(DAYN,sp);if(p)out[sp]=p;});
   return out;
 }
+// Pelouse laissee vide au-dessus et au-dessous des joueurs, en %. Plus grande
+// en bas : le nom pend sous le maillot et sortait du terrain.
+const MARGE_HAUT=8,MARGE_BAS=13;
 const TIME={foot:180,rugby:270};
 const BONUS_MAX=360;   // même plafond de rapidité pour les deux sports (voir supabase/functions/compo)
 const $=id=>document.getElementById(id);
@@ -507,7 +526,12 @@ function start(m,ti,ranked,note){
   $("ptitle").textContent=m.fx;$("psub").textContent=`${m.where}, ${m.yr}. Compo à retrouver : ${t.name}${t.coach?", entraîneur compris":""}.`;
   $("psport").textContent=m.sport==="foot"?"Football":"Rugby";$("swap").classList.toggle("hidden",m.teams.length<2);
   const pitch=$("pitch");pitch.className="pitch "+m.sport;pitch.innerHTML=LINES[m.sport];
-  P.forEach((p,i)=>{if(p.coach)return;const d=document.createElement("div");d.className="pl todo";d.id="pl"+i;d.style.left=p.x+"%";d.style.top=p.y+"%";
+  // Les joueurs n'occupent qu'une bande au milieu du terrain (18 a 90 au foot,
+  // 18 a 82 au rugby) : on l'etire pour que le vide en haut et en bas se
+  // reduise, sans toucher aux donnees.
+  const ys=P.filter(p=>!p.coach).map(p=>p.y),y0=Math.min(...ys),y1=Math.max(...ys);
+  const etire=y=>y1>y0?MARGE_HAUT+(y-y0)*(100-MARGE_HAUT-MARGE_BAS)/(y1-y0):50;
+  P.forEach((p,i)=>{if(p.coach)return;const d=document.createElement("div");d.className="pl todo";d.id="pl"+i;d.style.left=p.x+"%";d.style.top=etire(p.y)+"%";
     d.innerHTML=jersey(kitOf(t),p.lab)+`<span class="nm">?</span>`;pitch.appendChild(d);});
   const ci=P.findIndex(p=>p.coach),bench=$("bench");bench.classList.toggle("hidden",ci<0);
   if(ci>=0)bench.innerHTML=`<div class="coach todo" id="pl${ci}"><span class="badge">E</span><span class="role">Entraîneur</span><span class="nm">?</span></div>`;

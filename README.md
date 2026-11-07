@@ -99,6 +99,7 @@ node tools/test_app.js        # le jeu, le partage, les fichiers de l'app
 node tools/test_onglets.js    # onglets, profil, jours d'avant, mystère
 node tools/test_noms.js       # la reconnaissance des noms, sur toute la base
 node tools/test_parcours.js   # une soirée entière, à la souris et au clavier
+node tools/test_terrain.js    # la mise en page du terrain, 10 compos × 6 largeurs
 ```
 `test_parcours.js` est le plus utile des quatre : il n'appelle aucune fonction
 de l'intérieur, il clique et il tape. C'est lui qui attrape les erreurs de
