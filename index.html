@@ -263,12 +263,48 @@ const TIME={foot:180,rugby:270};
 const BONUS_MAX=360;   // même plafond de rapidité pour les deux sports (voir supabase/functions/compo)
 const $=id=>document.getElementById(id);
 const norm=s=>s.toLowerCase().replace(/œ/g,"oe").replace(/ß/g,"ss").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’'`-]/g," ").replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim();
-function lev(a,b){if(Math.abs(a.length-b.length)>1)return 9;const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
-function keysFor(name,al){const k=new Set();
+function lev(a,b,max){if(Math.abs(a.length-b.length)>max)return 99;
+  const d=[...Array(b.length+1).keys()];
+  for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;let mini=d[0];
+    for(let j=1;j<=b.length;j++){const t=d[j];
+      d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t;if(d[j]<mini)mini=d[j];}
+    if(mini>max)return 99;}                       // inutile de finir, c'est deja trop loin
+  return d[b.length]}
+
+// Clé « à l'oreille ». On écrase les différences d'orthographe qui ne
+// s'entendent pas, pour que Schweinsteiger passe écrit Chvainstaiguer. Toutes
+// les règles sont vérifiées contre les 234 compos : aucune ne doit rapprocher
+// deux joueurs d'une même équipe (voir tools/test_noms.js).
+function sonne(x){
+  return x
+    .replace(/ph/g,"f")
+    .replace(/sch/g,"ch").replace(/ch/g,"C")      // C tient lieu du son « ch »
+    .replace(/qu|q/g,"k").replace(/ck/g,"k")
+    .replace(/c(?=[eiy])/g,"s").replace(/c/g,"k")
+    .replace(/g(?=[eiy])/g,"j").replace(/gu(?=[eiy])/g,"g")
+    .replace(/h/g,"")
+    .replace(/eau|au/g,"o").replace(/ou/g,"u").replace(/ai|ei|ay|ey/g,"e")
+    .replace(/y/g,"i").replace(/w/g,"v").replace(/z/g,"s").replace(/x/g,"ks")
+    .replace(/(.)\1+/g,"$1")                      // lettres doublées
+    .replace(/([a-z])[stdpg]\b/g,"$1")            // consonne finale muette
+    .replace(/\s+/g," ").trim();
+}
+
+// Rend les clés d'un nom : l'écriture exacte, et sa version à l'oreille.
+function cles(name,al){
+  const k=new Set();
   [name,...(al||[])].forEach(src=>{const x=norm(src);if(!x)return;k.add(x);
-    const w=x.split(" ");if(w.length>1){k.add(w.slice(1).join(" "));k.add(w[w.length-1]);}});
+    const w=x.split(" ");
+    if(w.length>1){k.add(w.slice(1).join(" "));k.add(w[w.length-1]);
+      k.add([...w].sort().join(" "));}            // « barthez fabien » aussi
+  });
   [...k].forEach(x=>k.add(x.replace(/ /g,"")));
-  ["de","du","le","van","der","di","mac","la","da","dos"].forEach(x=>k.delete(x));return k}
+  ["de","du","le","van","der","di","mac","la","da","dos"].forEach(x=>k.delete(x));
+  const s=new Set();[...k].forEach(x=>{const y=sonne(x.replace(/ /g,""));if(y.length>2)s.add(y)});
+  return {k,s};
+}
+// Combien de fautes on pardonne, selon la longueur de ce qui est tapé.
+const pardon=n=>n<5?0:n<8?1:n<12?2:3;
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
 const bestKey=(m,t)=>"compo:best:"+m.id+":"+t;
@@ -370,8 +406,8 @@ const LINES={
  rugby:`<svg class="lines" viewBox="0 0 70 112" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width=".45" style="color:var(--chalk)"><rect x="3" y="3" width="64" height="106"/><line x1="3" y1="10" x2="67" y2="10" stroke-width=".8"/><line x1="3" y1="102" x2="67" y2="102" stroke-width=".8"/><line x1="3" y1="29" x2="67" y2="29"/><line x1="3" y1="83" x2="67" y2="83"/><line x1="3" y1="56" x2="67" y2="56"/><line x1="3" y1="47" x2="67" y2="47" stroke-dasharray="2 2"/><line x1="3" y1="65" x2="67" y2="65" stroke-dasharray="2 2"/></svg>`
 };
 function start(m,ti,ranked){
-  RANKED=!!ranked;M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,k:keysFor(n,al)}));
-  if(t.coach)P.push({lab:"ENTR",n:t.coach[0],k:keysFor(t.coach[0],t.coach[1]),coach:true});
+  RANKED=!!ranked;M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,...cles(n,al)}));
+  if(t.coach)P.push({lab:"ENTR",n:t.coach[0],...cles(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
   $("home").classList.add("hidden");$("play").classList.remove("hidden");$("result").classList.add("hidden");$("acts").classList.remove("hidden");
   $("ptitle").textContent=m.fx;$("psub").textContent=`${m.where}, ${m.yr}. Compo à retrouver : ${t.name}${t.coach?", entraîneur compris":""}.`;
@@ -388,12 +424,30 @@ function start(m,ti,ranked){
 }
 function upd(){$("clock").textContent=fmt(Math.max(left,0));$("clock").classList.toggle("low",left<=30);$("count").textContent=found.size+"/"+P.length;}
 function hit(i){found.add(i);const d=$("pl"+i);d.className=(P[i].coach?"coach":"pl")+" hit";d.querySelector(".nm").textContent=P[i].n;$("inp").value="";$("flash").textContent=P[i].n+" ✓";upd();if(found.size===P.length)end();}
+// Trois filets, du plus sûr au plus large. Les deux premiers tournent a chaque
+// frappe ; le troisieme, qui pardonne les fautes, attend la touche Entree pour
+// ne pas valider un nom a moitie tape.
+function cherche(q,loose,deja){
+  const n=norm(q);if(n.length<2)return -1;
+  const c=n.replace(/ /g,""),so=sonne(c),tol=pardon(c.length);
+  const vise=(i)=>deja?found.has(i):!found.has(i);
+  let idx=P.findIndex((p,i)=>vise(i)&&(p.k.has(n)||p.k.has(c)));          // ecrit juste
+  if(idx<0&&so.length>2)idx=P.findIndex((p,i)=>vise(i)&&p.s.has(so));     // sonne pareil
+  if(idx<0&&loose&&tol>0){                                                // a quelques fautes pres
+    let mieux=99;
+    P.forEach((p,i)=>{if(!vise(i))return;
+      [...p.k].forEach(k=>{const kk=k.replace(/ /g,"");
+        if(kk.length<5)return;const d=lev(c,kk,tol);if(d<mieux){mieux=d;idx=i}});
+      [...p.s].forEach(k=>{const d=lev(so,k,Math.max(1,tol-1));if(d<mieux){mieux=d;idx=i}});
+    });
+    if(mieux>tol)idx=-1;
+  }
+  return idx;
+}
 function tryMatch(q,loose){
-  const n=norm(q);if(n.length<2)return false;const c=n.replace(/ /g,"");
-  let idx=P.findIndex((p,i)=>!found.has(i)&&(p.k.has(n)||p.k.has(c)));
-  if(idx<0&&loose&&n.length>=5)idx=P.findIndex((p,i)=>!found.has(i)&&[...p.k].some(k=>k.length>=5&&lev(c,k.replace(/ /g,""))<=1));
+  const idx=cherche(q,loose,false);
   if(idx>=0){hit(idx);return true}
-  if(loose&&P.some((p,i)=>found.has(i)&&(p.k.has(n)||p.k.has(c)))){$("flash").textContent="Déjà trouvé.";$("inp").value="";return true}
+  if(loose&&cherche(q,true,true)>=0){$("flash").textContent="Déjà trouvé.";$("inp").value="";return true}
   return false;
 }
 $("inp").addEventListener("input",e=>{if(!over)tryMatch(e.target.value,false)});
