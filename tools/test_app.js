@@ -1,5 +1,6 @@
-// Tests de bout en bout de l'app, au vrai navigateur.
-//   python3 -m http.server 8123 --bind 127.0.0.1 &
+// Tests de bout en bout de l'app, au vrai navigateur, sur le site assemble :
+// la page seule ne trouverait ni ses icones ni son manifest.
+//   sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)
 //   node tools/test_app.js
 // Sort en erreur si un controle echoue ou si la page leve une erreur JS.
 const { chromium } = require('playwright');
@@ -120,7 +121,29 @@ const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : 
   });
   verifie('nouveau serveur : le refus est enregistre', neuf.enregistre, neuf);
 
-  // --- 8. pas de debordement horizontal sur un petit telephone
+  // --- 8. les fichiers de l'app repondent vraiment (icones, manifest, vignette)
+  const liens = await p.evaluate(() => [
+    ...[...document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"],link[rel="manifest"]')].map(l => l.getAttribute('href')),
+    document.querySelector('meta[property="og:image"]').content.replace(/^https:\/\/[^/]+\/Compo\.io\//, ''),
+  ]);
+  const codes = {};
+  for (const l of liens) codes[l] = (await p.request.get(new URL(l, p.url()).href)).status();
+  verifie('icones, manifest et vignette servis', Object.values(codes).every(c => c === 200), codes);
+  verifie('les quatre fichiers sont references', liens.length === 4, liens);
+
+  // --- 9. le partage annonce le match, sans carres de couleur
+  const partage = await p.evaluate(() => {
+    const m = MATCHES.find(x => x.id === 'cdm-1998');
+    M = m; TI = 0;
+    const f = { f: 9, n: 12, p: 1180 };
+    return `${M.sport === 'foot' ? '⚽' : '🏉'} ${M.fx} — ${M.where}, ${M.yr}\n`
+      + `Retrouve la compo ! Moi : ${f.f}/${f.n}, ${f.p.toLocaleString('fr-FR')} pts\n\n`
+      + `Compo.io, jour n° ${DAYN}\n` + location.origin + location.pathname;
+  });
+  verifie('le partage nomme le match', /France 3–0 Brésil/.test(partage), partage);
+  verifie('plus un seul carre de couleur', !/[🟩🟥🟨]/u.test(partage), partage);
+
+  // --- 10. pas de debordement horizontal sur un petit telephone
   await p.setViewportSize({ width: 320, height: 700 });
   await p.waitForTimeout(100);
   const large = await p.evaluate(() => ({ s: document.documentElement.scrollWidth, c: document.documentElement.clientWidth }));

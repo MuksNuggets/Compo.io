@@ -9,3 +9,9 @@ data/test.json
 
 # macOS
 .DS_Store
+
+# dossier assemble par tools/site.sh, regenerable
+site/
+# polices npm utilisees seulement pour fabriquer les images
+tools/node_modules/
+tools/package*.json

@@ -4,6 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Compo.io</title>
+<meta name="description" content="Retrouve les titulaires des grandes finales de football et de rugby. Deux compos par jour, une par sport.">
+<!-- Ajout à l'écran d'accueil : icône, nom court, et ouverture en plein écran
+     sans la barre d'adresse du navigateur. -->
+<link rel="icon" type="image/png" sizes="32x32" href="icone-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icone-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#13241A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Compo.io">
+<!-- La vignette affichée quand on colle le lien dans une messagerie. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Compo.io">
+<meta property="og:title" content="Compo.io — la compo du jour">
+<meta property="og:description" content="France–Brésil 98, Toulouse–Leinster… Retrouve les titulaires des grandes finales. Deux compos par jour, une par sport.">
+<!-- Absolue, et non relative : la plupart des robots de messagerie ignorent un
+     chemin relatif. Donc à changer si le site déménage. -->
+<meta property="og:url" content="https://muksnuggets.github.io/Compo.io/">
+<meta property="og:image" content="https://muksnuggets.github.io/Compo.io/partage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
@@ -375,22 +399,6 @@ $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!foun
   const i=todo[Math.floor(Math.random()*todo.length)];hinted.add(i);const w=P[i].n.split(" "),last=w.length>1?w.slice(1).join(" "):w[0];
   $("pl"+i).querySelector(".nm").textContent=last[0]+"…";$("flash").textContent=`Indice : un nom en ${last[0].toUpperCase()}.`;$("inp").focus();};
 $("giveup").onclick=()=>end();
-// Le partage dessine la compo plutôt que de la raconter : une case par joueur,
-// rangées comme les lignes sur le terrain, l'entraîneur à part sur la dernière.
-// Vert trouvé, jaune trouvé après un indice, rouge manqué. Les noms ne fuitent
-// pas, donc on peut l'envoyer à quelqu'un qui n'a pas encore joué.
-function grilleDuPartage(){
-  const carre=i=>found.has(i)?(hinted.has(i)?"🟨":"🟩"):"🟥";
-  const lignes=[];
-  P.map((p,i)=>({y:p.y,i,coach:!!p.coach})).filter(j=>!j.coach).sort((a,b)=>a.y-b.y)
-   .forEach(j=>{
-     const der=lignes[lignes.length-1];
-     if(der&&j.y-der.y<6)der.cases.push(carre(j.i));   // même ligne sur le terrain
-     else lignes.push({y:j.y,cases:[carre(j.i)]});
-   });
-  const ci=P.findIndex(p=>p.coach);
-  return lignes.map(l=>l.cases.join("")).join("\n")+(ci>=0?"\n"+carre(ci):"");
-}
 function end(){
   if(over)return;over=true;clearInterval(tick);$("inp").disabled=true;
   P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.n;}});
@@ -418,9 +426,10 @@ function end(){
     majClassement(found.size,hinted.size);
     $("share").onclick=async()=>{
       const f=store.get(dailyKey(DAYN,M.sport))||{f:found.size,n:tot,p:pts};
-      const txt=`Compo.io ${M.sport==="foot"?"⚽":"🏉"} #${DAYN}\n`
-        +`${f.p.toLocaleString("fr-FR")} pts · ${f.f}/${f.n}`+(s>1?` · 🔥${s}`:"")+"\n\n"
-        +grilleDuPartage()+"\n\n"+location.origin+location.pathname;
+      const txt=`${M.sport==="foot"?"⚽":"🏉"} ${M.fx} — ${M.where}, ${M.yr}\n`
+        +`Retrouve la compo ! Moi : ${f.f}/${f.n}, ${f.p.toLocaleString("fr-FR")} pts`
+        +(s>1?` 🔥${s}`:"")+"\n\n"
+        +`Compo.io, jour n° ${DAYN}\n`+location.origin+location.pathname;
       try{await navigator.clipboard.writeText(txt);$("share").textContent="Copié !";
         setTimeout(()=>$("share").textContent="Partager",1800);}
       catch(e){prompt("Copie ce texte :",txt);}
