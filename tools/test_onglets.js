@@ -1,4 +1,4 @@
-// Les onglets, le profil, les jours d'avant et le joueur mystere.
+// Les onglets, le profil et les jours d'avant.
 //   sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)
 //   node tools/test_onglets.js
 const { chromium } = require('playwright');
@@ -18,7 +18,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   const vue = () => p.evaluate(() => SECTIONS.filter(s => !document.getElementById(s).classList.contains('hidden')));
 
   // --- onglets
-  for (const [onglet, attendu] of [['mystere','mystere'],['moi','moi'],['home','home']]) {
+  for (const [onglet, attendu] of [['moi','moi'],['home','home']]) {
     await p.click(`[data-onglet="${onglet}"]`); await p.waitForTimeout(250);
     v('onglet ' + onglet, JSON.stringify(await vue()) === JSON.stringify([attendu]), await vue());
   }
@@ -64,25 +64,6 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     v('le retour ramene aux jours d’avant', JSON.stringify(await vue()) === JSON.stringify(['passe']), await vue());
   }
 
-  // --- joueur mystere
-  await p.click('[data-onglet="mystere"]'); await p.waitForTimeout(300);
-  const m1 = await p.evaluate(() => ({ nom: MYST.g.nom, ind: MYST.ind.length, vus: MYST.vus,
-                                       finales: MYST.g.finales.length }));
-  v('un joueur est tire, avec au moins deux finales', m1.finales >= 2, m1);
-  v('un seul indice au depart', m1.vus === 1, m1);
-  v('plusieurs indices en reserve', m1.ind >= 5, m1);
-
-  await p.fill('#qmyst', 'nimportequi'); await p.click('#vmyst'); await p.waitForTimeout(200);
-  v('une erreur devoile un indice', (await p.evaluate(() => MYST.vus)) === 2);
-
-  await p.fill('#qmyst', m1.nom); await p.click('#vmyst'); await p.waitForTimeout(200);
-  const g = await p.evaluate(() => ({ fini: MYST.fini, gagne: MYST.gagne, b: store.get('compo:mystere') }));
-  v('le bon nom gagne', g.fini && g.gagne, g);
-  v('le compteur retient la partie', g.b && g.b.joues === 1 && g.b.trouves === 1, g);
-
-  await p.click('#nmyst'); await p.waitForTimeout(200);
-  v('on peut enchainer', (await p.evaluate(() => MYST.fini)) === false);
-
   // --- la barre d'onglets disparait pendant une partie
   await p.click('[data-onglet="home"]'); await p.waitForTimeout(150);
   await p.evaluate(() => { const m = MATCHES.find(x => x.id === 'cdm-1998'); start(m, 0, false); });
@@ -93,7 +74,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     await p.evaluate(() => getComputedStyle(document.getElementById('onglets')).display === 'none'));
 
   // --- rien ne deborde, sur chaque onglet
-  for (const o of ['home', 'mystere', 'moi', 'passe']) {
+  for (const o of ['home', 'moi', 'passe']) {
     await p.evaluate(n => montre(n), o); await p.waitForTimeout(200);
     await p.setViewportSize({ width: 320, height: 800 }); await p.waitForTimeout(120);
     const d = await p.evaluate(() => ({ s: document.documentElement.scrollWidth, c: document.documentElement.clientWidth }));

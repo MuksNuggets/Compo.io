@@ -171,12 +171,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .wrap{padding-bottom:96px}
 
 /* Fiches du profil et des jours d'avant */
-.filtre{display:flex;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none;
-  border:1px solid var(--line);border-radius:999px;padding:3px;margin:0 0 14px;background:var(--surface)}
-.filtre::-webkit-scrollbar{display:none}
-.filtre button{flex:0 0 auto;white-space:nowrap;border:0;background:none;padding:6px 15px;
-  border-radius:999px;font:600 14px Barlow,sans-serif;color:var(--muted)}
-.filtre button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .bloc{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:14px 16px;margin:0 0 14px}
 .bloc h3{font:700 11px/1 Barlow,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
 .bloc p{margin:0 0 10px;font-size:14.5px}
@@ -212,11 +206,6 @@ button{font:inherit;color:inherit;cursor:pointer}
   <p class="sub">Toutes les compos déjà passées. Hors classement : seul le jour en cours compte.</p>
   <div id="listepasse"></div>
 </section>
-<section id="mystere" class="hidden">
-  <h2 class="title">Joueur mystère</h2>
-  <p class="sub">Un joueur, pris au hasard dans les 117 finales. À toi de dire qui c’est. Chaque erreur dévoile un indice de plus.</p>
-  <div id="myst"></div>
-</section>
 <section id="moi" class="hidden">
   <h2 class="title">Moi</h2>
   <div id="profil"></div>
@@ -250,7 +239,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 </div>
 <nav class="onglets" id="onglets" aria-label="Sections">
   <button data-onglet="home" aria-current="page">Compos</button>
-  <button data-onglet="mystere" aria-current="false">Mystère</button>
   <button data-onglet="moi" aria-current="false">Moi</button>
 </nav>
 <script>
@@ -639,118 +627,8 @@ function renderPasse(){
   if($("plusjours"))$("plusjours").onclick=()=>{PASSE_VU+=40;renderPasse()};
 }
 
-// ---- joueur mystere ----------------------------------------------------
-// Le jeu principal demande de se souvenir ; celui-ci demande de deduire. Il ne
-// coute aucune donnee de plus : tout sort des 117 finales deja en base.
-let GENS=null;
-function tousLesGens(){
-  if(GENS)return GENS;
-  const par=new Map();
-  MATCHES.forEach(m=>m.teams.forEach(t=>t.p.forEach(([lab,,,nom,al])=>{
-    const k=norm(nom);if(!k)return;
-    if(!par.has(k))par.set(k,{nom,al:al||[],sport:m.sport,postes:new Set(),finales:[]});
-    const g=par.get(k);g.postes.add(lab);
-    g.finales.push({yr:m.yr,where:m.where,equipe:t.name});
-  })));
-  GENS=[...par.values()].map(g=>({...g,postes:[...g.postes],...cles(g.nom,g.al)}));
-  return GENS;
-}
-// On tire parmi ceux qui ont au moins deux finales : il faut de quoi donner
-// des indices, et ce sont aussi les joueurs qu'on a une chance de retrouver.
-const CLE_MSPORT="compo:mystere:sport";
-const sportMystere=()=>store.get(CLE_MSPORT)||"tous";
-function tireUnGens(){
-  const sp=sportMystere();
-  let bons=tousLesGens().filter(g=>g.finales.length>=2&&(sp==="tous"||g.sport===sp));
-  if(!bons.length)bons=tousLesGens().filter(g=>g.finales.length>=2);   // filet, au cas ou
-  return bons[Math.floor(Math.random()*bons.length)];
-}
-// Les codes des compos (G, MDC, 9, 10...) ne parlent qu'au code. Ici on dit
-// le poste en toutes lettres.
-const POSTES={G:"gardien",LIB:"libéro",DC:"défenseur central",DD:"arrière droit",DG:"arrière gauche",
-  PD:"piston droit",PG:"piston gauche",MDC:"milieu défensif",MC:"milieu central",MD:"milieu droit",
-  MG:"milieu gauche",MOC:"meneur de jeu",SA:"second attaquant",AD:"ailier droit",AG:"ailier gauche",
-  BU:"buteur","1":"pilier gauche","2":"talonneur","3":"pilier droit","4":"deuxième ligne",
-  "5":"deuxième ligne","6":"troisième ligne aile","7":"troisième ligne aile","8":"numéro 8",
-  "9":"demi de mêlée","10":"ouvreur","11":"ailier","12":"premier centre","13":"deuxième centre",
-  "14":"ailier","15":"arrière"};
-function indicesDe(g){
-  const f=[...g.finales].sort((a,b)=>a.yr-b.yr);
-  const postes=[...new Set(g.postes.map(x=>POSTES[x]||x))];
-  const out=[`${nomSport(g.sport)}, ${postes.join(" ou ")}. ${f.length} finales dans cette base.`,
-             `La première : ${f[0].where}, ${f[0].yr}`,
-             `Il la joue avec ${f[0].equipe}`];
-  if(f.length>1)out.push(`Les autres : ${f.slice(1).map(x=>x.equipe+" "+x.yr).join(", ")}`);
-  const w=g.nom.split(" ");
-  out.push(`Son nom de famille commence par ${w[w.length-1][0].toUpperCase()}`);
-  if(w.length>1)out.push(`Son prénom : ${w[0]}`);
-  return out;
-}
-// Reconnait une saisie contre un seul nom, avec les memes filets que le jeu.
-function colle(q,c){
-  const n=norm(q);if(n.length<2)return false;
-  const x=n.replace(/ /g,""),so=sonne(x),tol=pardon(x.length);
-  if(c.k.has(n)||c.k.has(x))return true;
-  if(so.length>2&&c.s.has(so))return true;
-  if(tol>0){
-    if([...c.k].some(k=>{const kk=k.replace(/ /g,"");return kk.length>=5&&lev(x,kk,tol)<=tol}))return true;
-    if([...c.s].some(k=>lev(so,k,Math.max(1,tol-1))<=Math.max(1,tol-1)))return true;
-  }
-  return false;
-}
-const CLE_MYST="compo:mystere";
-let MYST=null;
-function nouveauMystere(){
-  const g=tireUnGens();
-  MYST={g,ind:indicesDe(g),vus:1,fini:false,gagne:false};
-  renderMystere();
-}
-function renderMystere(){
-  if(!MYST){nouveauMystere();return}
-  const {g,ind,vus,fini,gagne}=MYST,b=store.get(CLE_MYST)||{joues:0,trouves:0},sp=sportMystere();
-  $("myst").innerHTML=
-    `<div class="filtre">`+[["tous","Les deux"],["foot","Football"],["rugby","Rugby"]]
-      .map(([k,l])=>`<button data-sp="${k}" aria-pressed="${k===sp}">${l}</button>`).join("")+`</div>`
-    +
-    `<div class="bloc"><h3>Indices</h3>`
-    +ind.slice(0,vus).map((x,i)=>`<p style="margin:0 0 8px"><b>${i+1}.</b> ${esc(x)}</p>`).join("")
-    +(fini?"":`<p style="margin:10px 0 0;color:var(--muted)">Encore ${ind.length-vus} indice${ind.length-vus>1?"s":""} en réserve.</p>`)
-    +`</div>`
-    +(fini
-      ? `<div class="bloc"><h3>${gagne?"Trouvé":"C’était"}</h3>`
-        +`<p style="font:700 22px/1.2 Barlow,sans-serif;margin:0 0 10px">${esc(g.nom)}</p>`
-        +`<p style="margin:0">${g.finales.sort((a,b)=>a.yr-b.yr).map(f=>esc(f.equipe+" — "+f.where+", "+f.yr)).join("<br>")}</p></div>`
-      : `<div class="bloc"><h3>Ta réponse</h3>
-           <div class="ligne"><input id="qmyst" placeholder="Nom du joueur" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false">
-           <button class="btn primary" id="vmyst">Valider</button></div>
-           <p id="dmyst" style="margin:10px 0 0;color:var(--muted)"></p></div>`)
-    +`<div class="ligne"><button class="btn${fini?" primary":""}" id="nmyst">${fini?"Un autre joueur":"Passer à un autre"}</button>`
-    +(fini?"":`<button class="btn" id="amyst">Je donne ma langue au chat</button>`)+`</div>`
-    +`<p class="sub" style="margin-top:14px">${b.trouves} trouvés sur ${b.joues} joués`
-      +(b.trouves?`, ${(b.ind/b.trouves).toFixed(1).replace(".",",")} indices en moyenne`:"")+`.</p>`;
-
-  $("myst").querySelectorAll("[data-sp]").forEach(x=>x.onclick=()=>{
-    store.set(CLE_MSPORT,x.dataset.sp);nouveauMystere();});
-  $("nmyst").onclick=nouveauMystere;
-  if($("amyst"))$("amyst").onclick=()=>{MYST.fini=true;MYST.vus=ind.length;
-    store.set(CLE_MYST,{joues:b.joues+1,trouves:b.trouves});renderMystere()};
-  if($("vmyst")){
-    const tente=()=>{
-      const v=$("qmyst").value.trim();if(!v)return;
-      if(colle(v,g)){MYST.fini=true;MYST.gagne=true;
-        store.set(CLE_MYST,{joues:b.joues+1,trouves:b.trouves+1,ind:(b.ind||0)+MYST.vus});renderMystere();return}
-      if(MYST.vus<ind.length){MYST.vus++;renderMystere();
-        $("dmyst").textContent="Raté. Un indice de plus.";$("qmyst").focus();return}
-      MYST.fini=true;store.set(CLE_MYST,{joues:b.joues+1,trouves:b.trouves});renderMystere();
-    };
-    $("vmyst").onclick=tente;
-    $("qmyst").onkeydown=e=>{if(e.key==="Enter")tente()};
-    if(vus>1)$("qmyst").focus();   // pas au premier affichage, pour ne pas ouvrir le clavier d'office
-  }
-}
-
 // ---- navigation entre les sections ------------------------------------
-const SECTIONS=["home","passe","mystere","moi","play"];
+const SECTIONS=["home","passe","moi","play"];
 let ONGLET="home";                       // l'onglet ou l'on revient apres une partie
 function montre(nom){
   if(nom!=="play")ONGLET=nom;
@@ -761,7 +639,6 @@ function montre(nom){
   window.scrollTo(0,0);
   if(nom==="home")renderDaily();
   if(nom==="passe")renderPasse();
-  if(nom==="mystere")renderMystere();
   if(nom==="moi")renderMoi();
 }
 const home=()=>{clearInterval(tick);over=true;montre(ONGLET==="play"?"home":ONGLET);};

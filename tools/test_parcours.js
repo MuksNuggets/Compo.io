@@ -99,27 +99,13 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.click('#other'); await p.waitForTimeout(300);
   v('le retour ramene aux jours d’avant', await p.isVisible('#listepasse'));
 
-  // --- 7. le joueur mystere, jusqu'a epuisement des indices
-  await p.click('[data-onglet="mystere"]'); await p.waitForTimeout(400);
-  const nbInd = await p.evaluate(() => MYST.ind.length);
-  for (let i = 0; i < nbInd + 1; i++) {
-    if (!(await p.isVisible('#qmyst'))) break;
-    await p.fill('#qmyst', 'zzzzzzzz'); await p.click('#vmyst'); await p.waitForTimeout(150);
-  }
-  v('les indices s’epuisent et la reponse tombe', await p.evaluate(() => MYST.fini === true));
-  v('le nom est revele', (await p.textContent('#myst')).includes(await p.evaluate(() => MYST.g.nom)));
-  await p.click('#nmyst'); await p.waitForTimeout(300);
-  const g2 = await p.evaluate(() => MYST.g.nom);
-  await p.fill('#qmyst', g2); await p.click('#vmyst'); await p.waitForTimeout(250);
-  v('le bon nom gagne', await p.evaluate(() => MYST.gagne === true));
-
-  // --- 8. le profil a enregistre la soiree
+  // --- 7. le profil a enregistre la soiree
   await p.click('[data-onglet="moi"]'); await p.waitForTimeout(400);
   const txt = await p.textContent('#profil');
   v('le profil compte les compos jouees', /compos jouées/.test(txt));
   v('le code de reprise est affiche', /[0-9a-f]{8}-[0-9a-f]{4}/.test(await p.textContent('#moncode')));
 
-  // --- 9. ce que raconte le panneau du classement, selon ce que repond le
+  // --- 8. ce que raconte le panneau du classement, selon ce que repond le
   //         serveur. Un blanc se confond avec une panne : il doit parler.
   for (const [cas, rep, attendu] of [
     ['serveur pas a jour', { code: 'groupe', erreur: 'code de groupe invalide' }, /indisponible/],
@@ -145,7 +131,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     await q.close();
   }
 
-  // --- 10. navigation privee : localStorage leve a chaque acces. L'app doit
+  // --- 9. navigation privee : localStorage leve a chaque acces. L'app doit
   //          rester jouable, et surtout garder la meme identite d'un appel a
   //          l'autre, sinon le classement interroge quelqu'un d'autre.
   const w = await b.newPage({ viewport: { width: 390, height: 844 } });

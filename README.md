@@ -52,20 +52,18 @@ Google : une dépendance de moins, et surtout **ce qui est testé est exactement
 ce qui est livré** — tant que les polices venaient d'ailleurs, les captures de
 test mentaient sur la mise en page réelle.
 
-# Les trois onglets
+# Les deux onglets
 
 **Compos** — les deux compos du jour, et un bouton vers *Les jours d'avant*,
 qui rejoue n'importe quelle journée écoulée. Ces parties-là sont hors
 classement : le serveur n'accepte qu'une partie classée par jour et par sport,
 celle du jour même.
 
-**Mystère** — un joueur tiré au hasard parmi les 680 qui ont disputé au moins
-deux finales de la base. Chaque erreur dévoile un indice de plus : sport et
-poste, nombre de finales, la première, l'équipe, les autres, l'initiale, le
-prénom. Rien de nouveau n'est stocké : tout sort des 117 finales déjà là.
-Filtrable par sport.
-
 **Moi** — pseudo, chiffres par sport, et le **code de reprise**.
+
+Un troisième onglet « joueur mystère » a existé une nuit : deviner un joueur
+à partir d'indices dévoilés un à un. Retiré, pas assez bon. Il est dans
+l'historique git si l'idée revient.
 
 ## Le code de reprise
 
@@ -96,7 +94,7 @@ tolérance trop large validerait le mauvais nom et fausserait une partie classé
 ```
 sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)
 node tools/test_app.js        # le jeu, le partage, les fichiers de l'app
-node tools/test_onglets.js    # onglets, profil, jours d'avant, mystère
+node tools/test_onglets.js    # onglets, profil, jours d'avant
 node tools/test_noms.js       # la reconnaissance des noms, sur toute la base
 node tools/test_parcours.js   # une soirée entière, à la souris et au clavier
 node tools/test_terrain.js    # la mise en page du terrain, 10 compos × 6 largeurs
