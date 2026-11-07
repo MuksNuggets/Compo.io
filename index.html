@@ -210,7 +210,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   </div>
   <!-- La saisie est sous le terrain : clavier ouvert, on voit encore les
        postes, au lieu de les avoir derrière le clavier. -->
-  <input class="inp" id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
+  <input class="inp" id="inp" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
   <p class="flash" id="flash" aria-live="polite"></p>
   <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="giveup">Abandonner</button></div>
   <div class="result hidden" id="result">
@@ -602,7 +602,8 @@ const CLE_MSPORT="compo:mystere:sport";
 const sportMystere=()=>store.get(CLE_MSPORT)||"tous";
 function tireUnGens(){
   const sp=sportMystere();
-  const bons=tousLesGens().filter(g=>g.finales.length>=2&&(sp==="tous"||g.sport===sp));
+  let bons=tousLesGens().filter(g=>g.finales.length>=2&&(sp==="tous"||g.sport===sp));
+  if(!bons.length)bons=tousLesGens().filter(g=>g.finales.length>=2);   // filet, au cas ou
   return bons[Math.floor(Math.random()*bons.length)];
 }
 // Les codes des compos (G, MDC, 9, 10...) ne parlent qu'au code. Ici on dit
@@ -661,7 +662,7 @@ function renderMystere(){
         +`<p style="font:700 22px/1.2 Barlow,sans-serif;margin:0 0 10px">${esc(g.nom)}</p>`
         +`<p style="margin:0">${g.finales.sort((a,b)=>a.yr-b.yr).map(f=>esc(f.equipe+" — "+f.where+", "+f.yr)).join("<br>")}</p></div>`
       : `<div class="bloc"><h3>Ta réponse</h3>
-           <div class="ligne"><input id="qmyst" placeholder="Nom du joueur" autocomplete="off" spellcheck="false">
+           <div class="ligne"><input id="qmyst" placeholder="Nom du joueur" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false">
            <button class="btn primary" id="vmyst">Valider</button></div>
            <p id="dmyst" style="margin:10px 0 0;color:var(--muted)"></p></div>`)
     +`<div class="ligne"><button class="btn${fini?" primary":""}" id="nmyst">${fini?"Un autre joueur":"Passer à un autre"}</button>`
@@ -684,6 +685,7 @@ function renderMystere(){
     };
     $("vmyst").onclick=tente;
     $("qmyst").onkeydown=e=>{if(e.key==="Enter")tente()};
+    if(vus>1)$("qmyst").focus();   // pas au premier affichage, pour ne pas ouvrir le clavier d'office
   }
 }
 
