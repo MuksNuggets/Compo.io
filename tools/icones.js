@@ -38,9 +38,9 @@ const vignette = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"
   <text x="80" y="300" font-family="Barlow Condensed" font-weight="800" font-size="168"
         letter-spacing="-3" fill="${CLAIR}">Compo<tspan fill="${J}">.io</tspan></text>
   <text x="86" y="395" font-family="Barlow" font-weight="600" font-size="40" fill="${CLAIR}" opacity=".9"
-    >Retrouve les titulaires des grandes finales.</text>
+    >Peux-tu refaire la compo ?</text>
   <text x="86" y="455" font-family="Barlow" font-weight="400" font-size="34" fill="${CLAIR}" opacity=".66"
-    >Deux compos par jour, une par sport. Foot et rugby, 1990–2026.</text></svg>`;
+    >Les titulaires des grandes finales. Deux par jour, foot et rugby.</text></svg>`;
 
 // Les polices sont embarquees en base64 : Chromium refuse de charger un
 // file:// depuis une page posee par setContent, et la fonte retombait alors

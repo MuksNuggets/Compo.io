@@ -134,14 +134,13 @@ const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : 
   // --- 9. le partage annonce le match, sans carres de couleur
   const partage = await p.evaluate(() => {
     const m = MATCHES.find(x => x.id === 'cdm-1998');
-    M = m; TI = 0;
-    const f = { f: 9, n: 12, p: 1180 };
-    return `${M.sport === 'foot' ? '⚽' : '🏉'} ${M.fx} — ${M.where}, ${M.yr}\n`
-      + `Retrouve la compo ! Moi : ${f.f}/${f.n}, ${f.p.toLocaleString('fr-FR')} pts\n\n`
-      + `Compo.io, jour n° ${DAYN}\n` + location.origin + location.pathname;
+    return affiche(m) + "\nPeux-tu refaire la compo ?\n" + location.origin + location.pathname;
   });
-  verifie('le partage nomme le match', /France 3–0 Brésil/.test(partage), partage);
-  verifie('plus un seul carre de couleur', !/[🟩🟥🟨]/u.test(partage), partage);
+  verifie('le partage est exactement les trois lignes voulues',
+    partage.split('\n')[0] === 'FRANCE - BRÉSIL 98'
+    && partage.split('\n')[1] === 'Peux-tu refaire la compo ?'
+    && partage.split('\n').length === 3, partage);
+  verifie('ni carre, ni score, ni emoji', !/[🟩🟥🟨⚽🏉🔥]|pts|\d\/\d/u.test(partage), partage);
 
   // --- 10. pas de debordement horizontal sur un petit telephone
   await p.setViewportSize({ width: 320, height: 700 });

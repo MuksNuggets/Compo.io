@@ -18,8 +18,8 @@
 <!-- La vignette affichée quand on colle le lien dans une messagerie. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Compo.io">
-<meta property="og:title" content="Compo.io — la compo du jour">
-<meta property="og:description" content="France–Brésil 98, Toulouse–Leinster… Retrouve les titulaires des grandes finales. Deux compos par jour, une par sport.">
+<meta property="og:title" content="Compo.io">
+<meta property="og:description" content="Peux-tu refaire la compo ? Les titulaires des grandes finales de foot et de rugby, deux par jour.">
 <!-- Absolue, et non relative : la plupart des robots de messagerie ignorent un
      chemin relatif. Donc à changer si le site déménage. -->
 <meta property="og:url" content="https://muksnuggets.github.io/Compo.io/">
@@ -399,6 +399,9 @@ $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!foun
   const i=todo[Math.floor(Math.random()*todo.length)];hinted.add(i);const w=P[i].n.split(" "),last=w.length>1?w.slice(1).join(" "):w[0];
   $("pl"+i).querySelector(".nm").textContent=last[0]+"…";$("flash").textContent=`Indice : un nom en ${last[0].toUpperCase()}.`;$("inp").focus();};
 $("giveup").onclick=()=>end();
+// L'affiche du match pour le partage : FRANCE - BRESIL 98. Pas de score, il
+// n'apporte rien a quelqu'un qu'on invite a jouer.
+const affiche=m=>m.teams.map(t=>t.name).join(" - ").toUpperCase()+" "+String(m.yr).slice(-2);
 function end(){
   if(over)return;over=true;clearInterval(tick);$("inp").disabled=true;
   P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.n;}});
@@ -421,15 +424,10 @@ function end(){
     $("rtxt").textContent=`${found.size}/${tot} trouvés en ${fmt(t)}.`
       +(found.size===tot?` Bonus de ${bonus} points pour ${reste} secondes restantes.`:"")
       +(hinted.size?` ${50*hinted.size} points retirés pour ${hinted.size} indice${hinted.size>1?"s":""}.`:"");
-    const s=streakOf(DAYN,M.sport);
     $("share").hidden=false;
     majClassement(found.size,hinted.size);
     $("share").onclick=async()=>{
-      const f=store.get(dailyKey(DAYN,M.sport))||{f:found.size,n:tot,p:pts};
-      const txt=`${M.sport==="foot"?"⚽":"🏉"} ${M.fx} — ${M.where}, ${M.yr}\n`
-        +`Retrouve la compo ! Moi : ${f.f}/${f.n}, ${f.p.toLocaleString("fr-FR")} pts`
-        +(s>1?` 🔥${s}`:"")+"\n\n"
-        +`Compo.io, jour n° ${DAYN}\n`+location.origin+location.pathname;
+      const txt=affiche(M)+"\nPeux-tu refaire la compo ?\n"+location.origin+location.pathname;
       try{await navigator.clipboard.writeText(txt);$("share").textContent="Copié !";
         setTimeout(()=>$("share").textContent="Partager",1800);}
       catch(e){prompt("Copie ce texte :",txt);}
