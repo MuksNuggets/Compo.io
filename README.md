@@ -98,7 +98,12 @@ sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)
 node tools/test_app.js        # le jeu, le partage, les fichiers de l'app
 node tools/test_onglets.js    # onglets, profil, jours d'avant, mystère
 node tools/test_noms.js       # la reconnaissance des noms, sur toute la base
+node tools/test_parcours.js   # une soirée entière, à la souris et au clavier
 ```
+`test_parcours.js` est le plus utile des quatre : il n'appelle aucune fonction
+de l'intérieur, il clique et il tape. C'est lui qui attrape les erreurs de
+branchement que les autres laissent passer. Le serveur du classement y est
+simulé par interception de requête, donc rien ne part vers Supabase.
 Chacun sort en erreur si un contrôle échoue ou si la page lève une erreur JS.
 
 # Pipeline de données

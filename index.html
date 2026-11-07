@@ -451,8 +451,11 @@ async function lancerJour(m,ti,classe,sp,b){
   ROUND=r&&r.roundId?r.roundId:null;        // sans réseau on joue quand même, score local
   start(m,ti,true);
 }
+const motBoard=t=>`<p class="sub" style="margin:14px 0 0">${t}</p>`;
 function afficherBoard(b){
   const je=moi();
+  if(!b.classement||!b.classement.length){
+    $("board").innerHTML=motBoard("Personne d’autre n’a encore joué cette compo aujourd’hui.");return}
   $("board").innerHTML=(b.classement&&b.classement.length)
     ?`<table class="board"><thead><tr><th>#</th><th>Joueur</th><th class="n">Score</th><th class="n">Trouvés</th><th class="n">Temps</th></tr></thead><tbody>`
      +b.classement.map(l=>`<tr class="${l.playerId===je.id?"moi":""}"><td>${l.rang}</td><td>${esc(l.pseudo)}</td>`
@@ -478,6 +481,10 @@ async function majClassement(trouves,indices){
   // Classement global : un par sport et par jour, tout le monde dedans.
   let tab=null;try{tab=await api("board",{playerId:moi().id,sport:M.sport});}catch(e){}
   if(tab&&tab.classement)afficherBoard(tab);
+  // Sans un mot, un classement vide se confond avec un classement casse. Tant
+  // que la fonction Edge n'est pas redeployee, elle refuse un appel sans code
+  // de groupe : il faut le dire plutot que de laisser un blanc.
+  else $("board").innerHTML=motBoard("Classement indisponible pour l’instant.");
 }
 let M,TI,P,found,hinted,left,tick,over,startT,RANKED=false,ROUND=null,NOTE_FIN="";
 const jersey=(k,lab)=>`<svg viewBox="0 0 40 38" aria-hidden="true"><path d="M13 2 L4 7 L0 16 L7 19 L8 15 L8 37 L32 37 L32 15 L33 19 L40 16 L36 7 L27 2 Q20 7 13 2Z" fill="${k.bg}" stroke="rgba(0,0,0,.35)" stroke-width="1"/>${k.stripe?`<rect x="17" y="6" width="6" height="31" fill="${k.stripe}" opacity=".9"/>`:""}<text x="20" y="${lab.length>2?26:27}" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="${lab.length>2?10:13}" fill="${k.fg}" ${k.stripe?'stroke="'+k.bg+'" stroke-width="2.5" paint-order="stroke"':""}>${lab}</text></svg>`;
