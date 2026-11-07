@@ -28,10 +28,21 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
+/* Polices servies par le site lui-meme, plus par Google : une requete de moins,
+   aucun tiers, et surtout ce qui est teste est exactement ce qui est livre.
+   Barlow est sous licence SIL OFL 1.1, voir polices/OFL.txt. 110 Ko en tout. */
+@font-face{font-family:Barlow;font-style:normal;font-weight:400;font-display:swap;
+  src:url(polices/barlow-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Barlow;font-style:normal;font-weight:600;font-display:swap;
+  src:url(polices/barlow-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Barlow;font-style:normal;font-weight:700;font-display:swap;
+  src:url(polices/barlow-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:700;font-display:swap;
+  src:url(polices/barlow-condensed-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:800;font-display:swap;
+  src:url(polices/barlow-condensed-latin-800-normal.woff2) format("woff2")}
+
 :root{
   --bg:#E8EDE5; --surface:#F6F8F4; --ink:#13241A; --muted:#5A6B5E; --line:#C7D2C3;
   --pitch:#2E7D4F; --stripe:#33895A; --chalk:rgba(255,255,255,.82);
@@ -370,6 +381,15 @@ const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
 const bestKey=(m,t)=>"compo:best:"+m.id+":"+t;
 
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// Temps restant avant la compo suivante, c'est-a-dire avant minuit a Paris.
+// Approximation connue : les deux jours de changement d'heure, c'est faux
+// d'une heure. Personne n'en mourra, et le vrai calcul couterait bien plus.
+function versDemain(){
+  const t=new Intl.DateTimeFormat("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",
+    minute:"2-digit",hour12:false}).format(new Date()).split(":").map(Number);
+  const min=24*60-(t[0]*60+t[1]);
+  return min>=60?`${Math.floor(min/60)} h ${String(min%60).padStart(2,"0")}`:`${min} min`;
+}
 function renderDaily(){
   const el=$("daily"),je=moi(),picks=picksDuJour();
   if(!Object.keys(picks).length){el.hidden=true;return}
@@ -401,6 +421,8 @@ function renderDaily(){
       +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
       +`<button class="btn primary" data-jour="${sp}">${fait?"Rejouer hors classement":"Jouer"}</button></div>`;
   }).join("")
+    +(SPORTS.every(sp=>!picks[sp]||store.get(dailyKey(DAYN,sp)))
+        ? `<p class="note">Les deux compos du jour sont faites. La suivante dans ${versDemain()}.</p>`:"")
     +`<p class="note">${esc(je.pseudo)} · <a href="#" id="chpseudo">changer de pseudo</a></p>`;
   el.querySelectorAll("[data-jour]").forEach(b=>{
     const sp=b.dataset.jour,{m,ti}=picks[sp];
@@ -409,8 +431,7 @@ function renderDaily(){
   $("chpseudo").onclick=e=>{e.preventDefault();majMoi({pseudo:""});renderDaily()};
 }
 async function lancerJour(m,ti,classe,sp,b){
-  NOTE_FIN="";
-  if(!classe)return start(m,ti,false);
+  if(!classe)return start(m,ti,false," Hors classement : tu as déjà joué celle du jour.");
   const t=m.teams[ti],tot=t.p.length+(t.coach?1:0),je=moi(),libelle=b.textContent;
   b.disabled=true;b.textContent="…";
   let r=null;
@@ -425,8 +446,7 @@ async function lancerJour(m,ti,classe,sp,b){
     // Serveur pas encore redéployé : il ne compte qu'une partie classée par jour,
     // les deux sports confondus, et ne sait pas dire laquelle. On joue sans
     // classer plutôt que d'inscrire un zéro sur une compo jamais jouée.
-    NOTE_FIN=" Partie non classée : le classement n’accepte encore qu’un sport par jour.";
-    ROUND=null;return start(m,ti,false);
+    ROUND=null;return start(m,ti,false," Partie non classée : le classement n’accepte encore qu’un sport par jour.");
   }
   ROUND=r&&r.roundId?r.roundId:null;        // sans réseau on joue quand même, score local
   start(m,ti,true);
@@ -465,8 +485,8 @@ const LINES={
  foot:`<svg class="lines" viewBox="0 0 68 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width=".45" style="color:var(--chalk)"><rect x="3" y="3" width="62" height="94"/><line x1="3" y1="50" x2="65" y2="50"/><ellipse cx="34" cy="50" rx="8.5" ry="8.5"/><rect x="15" y="3" width="38" height="15"/><rect x="25" y="3" width="18" height="5"/><rect x="15" y="82" width="38" height="15"/><rect x="25" y="92" width="18" height="5"/></svg>`,
  rugby:`<svg class="lines" viewBox="0 0 70 112" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width=".45" style="color:var(--chalk)"><rect x="3" y="3" width="64" height="106"/><line x1="3" y1="10" x2="67" y2="10" stroke-width=".8"/><line x1="3" y1="102" x2="67" y2="102" stroke-width=".8"/><line x1="3" y1="29" x2="67" y2="29"/><line x1="3" y1="83" x2="67" y2="83"/><line x1="3" y1="56" x2="67" y2="56"/><line x1="3" y1="47" x2="67" y2="47" stroke-dasharray="2 2"/><line x1="3" y1="65" x2="67" y2="65" stroke-dasharray="2 2"/></svg>`
 };
-function start(m,ti,ranked){
-  RANKED=!!ranked;M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,...cles(n,al)}));
+function start(m,ti,ranked,note){
+  NOTE_FIN=note||"";RANKED=!!ranked;M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,...cles(n,al)}));
   if(t.coach)P.push({lab:"ENTR",n:t.coach[0],...cles(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
   montre("play");$("result").classList.add("hidden");$("acts").classList.remove("hidden");
@@ -556,7 +576,8 @@ function end(){
   // a l'impression qu'il ne s'est rien passe.
   setTimeout(()=>$("result").scrollIntoView({behavior:"smooth",block:"end"}),60);
 }
-$("again").onclick=()=>start(M,TI,false);$("swap").onclick=()=>start(M,1-TI,false);
+// on rejoue : la raison de ne pas etre classe, elle, ne change pas
+$("again").onclick=()=>start(M,TI,false,NOTE_FIN);$("swap").onclick=()=>start(M,1-TI,false,NOTE_FIN);
 // ---- les jours d'avant -------------------------------------------------
 // Hors classement : le serveur n'accepte qu'une partie classee par jour et par
 // sport, celle du jour meme. Ces parties-la servent a rattraper et a s'entrainer.
@@ -576,7 +597,7 @@ function renderPasse(){
   if(fin>1)html+=`<div class="ligne" style="margin-top:14px"><button class="btn" id="plusjours">Voir plus loin</button></div>`;
   el.innerHTML=html;
   el.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{
-    const pk=dailyPick(+b.dataset.d,b.dataset.sp);if(pk){NOTE_FIN=" Hors classement : ce jour est passé.";start(pk.m,pk.ti,false)}});
+    const pk=dailyPick(+b.dataset.d,b.dataset.sp);if(pk)start(pk.m,pk.ti,false," Hors classement : ce jour est passé.")});
   if($("plusjours"))$("plusjours").onclick=()=>{PASSE_VU+=40;renderPasse()};
 }
 

@@ -44,6 +44,14 @@ accède pas librement, sinon la compo du jour ne serait qu'un bouton parmi 234.
 Le classement est global : un par sport et par jour, tout le monde dedans. Il
 n'y a ni compte ni code de groupe, seulement un pseudo gardé sur l'appareil.
 
+## Polices
+
+Barlow et Barlow Condensed sont servies par le site lui-même, depuis
+`public/polices/` (110 Ko, licence SIL OFL 1.1 incluse). Plus de requête vers
+Google : une dépendance de moins, et surtout **ce qui est testé est exactement
+ce qui est livré** — tant que les polices venaient d'ailleurs, les captures de
+test mentaient sur la mise en page réelle.
+
 # Les trois onglets
 
 **Compos** — les deux compos du jour, et un bouton vers *Les jours d'avant*,
