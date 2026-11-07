@@ -28,7 +28,9 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     if (c.action === 'start') corps = { roundId: '11111111-1111-1111-1111-111111111111', day: 2, sport: c.sport };
     else if (c.action === 'submit') { dernierSubmit = c;
       corps = { day: 2, sport: 'foot', found: c.found, size: 12, hints: c.hints, timeLeft: 150, points: 1300 }; }
-    else corps = { day: 2, sport: c.sport, serie: 1, classement: [] };
+    else corps = { day: 2, sport: c.sport, serie: 1, classement: [
+      { rang: 1, playerId: 'zz', pseudo: 'marco', points: 1350, found: 12, size: 12, seconds: 70, hints: 0 },
+      { rang: 2, playerId: c.playerId, pseudo: 'leo', points: 1300, found: 12, size: 12, seconds: 90, hints: 0 }] };
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(corps) });
   });
 
@@ -72,8 +74,22 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     /^[A-ZÀ-Ü' .-]+ - [A-ZÀ-Ü' .-]+ \d\d$/.test(lignes[0]) && lignes[1] === 'Peux-tu refaire la compo ?', lignes);
   v('le partage ne porte aucun carre', !/[🟩🟥🟨]/u.test(copie), copie);
 
+  // --- 3bis. de retour a l'accueil, la compo jouee porte son classement
+  await p.click('#other'); await p.waitForTimeout(600);
+  const cl = await p.evaluate(() => ({
+    surCarteJouee: document.querySelectorAll('[data-cl="foot"] table tbody tr').length,
+    surCarteNonJouee: document.querySelectorAll('[data-cl="rugby"]').length,
+    moiSurligne: !!document.querySelector('#daily .classement tr.moi'),
+  }));
+  v('la compo jouee affiche son classement', cl.surCarteJouee > 0, cl);
+  v('la compo pas encore jouee n’en a pas', cl.surCarteNonJouee === 0, cl);
+  v('le joueur est surligne dedans', cl.moiSurligne, cl);
+  v('le tableau tient dans la carte', await p.evaluate(() => {
+    const t = document.querySelector('#daily table'), c = t.closest('.daily');
+    const cs = getComputedStyle(c), rc = c.getBoundingClientRect();
+    return t.getBoundingClientRect().right <= rc.right - parseFloat(cs.paddingRight) + 1; }));
+
   // --- 4. retour : la carte a change d'etat
-  await p.click('#other'); await p.waitForTimeout(300);
   v('on revient sur les compos', await p.isVisible('#daily'));
   v('la carte de foot propose de rejouer',
     (await p.textContent('[data-jour="foot"]')) === 'Rejouer');
