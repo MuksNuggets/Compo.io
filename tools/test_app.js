@@ -88,7 +88,7 @@ const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : 
   await p.waitForTimeout(150);
   const cartes2 = await p.evaluate(() => [...document.querySelectorAll('#daily .daily')]
     .map(c => c.querySelector('button').textContent));
-  verifie('carte foot passee en rejouer', cartes2[0] === 'Rejouer hors classement', cartes2);
+  verifie('carte foot passee en rejouer', cartes2[0] === 'Rejouer', cartes2);
   verifie('carte rugby encore a jouer', cartes2[1] === 'Jouer', cartes2);
 
   // --- 6. vieux serveur : deja_joue SANS sport -> hors classement, pas de zero

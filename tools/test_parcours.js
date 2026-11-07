@@ -76,7 +76,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.click('#other'); await p.waitForTimeout(300);
   v('on revient sur les compos', await p.isVisible('#daily'));
   v('la carte de foot propose de rejouer',
-    (await p.textContent('[data-jour="foot"]')) === 'Rejouer hors classement');
+    (await p.textContent('[data-jour="foot"]')) === 'Rejouer');
   v('la carte de rugby attend toujours', (await p.textContent('[data-jour="rugby"]')) === 'Jouer');
 
   // --- 5. le rugby, abandonne en cours

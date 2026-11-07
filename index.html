@@ -184,6 +184,10 @@ button{font:inherit;color:inherit;cursor:pointer}
   background:rgba(0,0,0,.45);color:rgba(255,255,255,.9);font:700 8.5px/12px Barlow,sans-serif;
   text-align:center;font-style:normal}
 .carte .droite{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+/* Le bloc de texte garde un min-width herite de l'ancienne carte : dans une
+   colonne il forcait sa largeur et faisait deborder les boutons a 320 px. */
+.carte .what{min-width:0}
+.duo{display:flex;gap:8px;flex-wrap:wrap}
 @media (max-width:360px){.mini{flex-basis:80px}.mini i{width:10px;height:10px;font-size:7.5px;line-height:10px}}
 
 /* Fiches du profil et des jours d'avant */
@@ -454,7 +458,8 @@ function renderDaily(){
       +`<span class="what">${esc(m.fx)}`
       +`<small>${m.where}, ${m.yr} · compo à retrouver : ${esc(t.name)} · ${tot} réponses</small></span>`
       +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
-      +`<button class="btn primary" data-jour="${sp}">${fait?"Rejouer hors classement":"Jouer"}</button>`
+      +`<div class="duo"><button class="btn primary" data-jour="${sp}">${fait?"Rejouer":"Jouer"}</button>`
+      +`<button class="btn" data-part="${sp}">Partager</button></div>`
       +`</div></div></div>`;
   }).join("")
     +(SPORTS.every(sp=>!picks[sp]||store.get(dailyKey(DAYN,sp)))
@@ -462,6 +467,10 @@ function renderDaily(){
   el.querySelectorAll("[data-jour]").forEach(b=>{
     const sp=b.dataset.jour,{m,ti}=picks[sp];
     b.onclick=()=>lancerJour(m,ti,!store.get(dailyKey(DAYN,sp)),sp,b);
+  });
+  // On peut lancer le defi sans avoir joue : le message ne livre que l'affiche.
+  el.querySelectorAll("[data-part]").forEach(b=>{
+    b.onclick=()=>copier(texteDefi(picks[b.dataset.part].m),b,"Partager");
   });
 }
 
@@ -596,6 +605,14 @@ $("giveup").onclick=()=>end();
 // L'affiche du match pour le partage : FRANCE - BRESIL 98. Pas de score, il
 // n'apporte rien a quelqu'un qu'on invite a jouer.
 const affiche=m=>m.teams.map(t=>t.name).join(" - ").toUpperCase()+" "+String(m.yr).slice(-2);
+// Le meme defi, qu'on parte de la carte du jour ou de la fin d'une partie.
+const texteDefi=m=>affiche(m)+"\nPeux-tu refaire la compo ?\n"+location.origin+location.pathname;
+// Copie dans le presse-papier, et le dit sur le bouton lui-meme.
+async function copier(txt,b,libelle){
+  try{await navigator.clipboard.writeText(txt);b.textContent="Copié !";
+    setTimeout(()=>{b.textContent=libelle},1800);}
+  catch(e){prompt("Copie ce texte :",txt)}
+}
 function end(){
   if(over)return;over=true;clearInterval(tick);$("inp").disabled=true;$("inp").hidden=true;
   P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.coach?p.n:nomCourt(p.n);}});
@@ -625,10 +642,7 @@ function end(){
     $("share").hidden=false;
     majClassement(found.size,hinted.size);
     $("share").onclick=async()=>{
-      const txt=affiche(M)+"\nPeux-tu refaire la compo ?\n"+location.origin+location.pathname;
-      try{await navigator.clipboard.writeText(txt);$("share").textContent="Copié !";
-        setTimeout(()=>$("share").textContent="Partager",1800);}
-      catch(e){prompt("Copie ce texte :",txt);}
+      copier(texteDefi(M),$("share"),"Partager");
     };
   } else {$("share").hidden=true;$("board").innerHTML="";}
   $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";

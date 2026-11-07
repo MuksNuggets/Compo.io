@@ -42,6 +42,19 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('l’accueil ne porte plus la ligne du pseudo',
     !/changer de pseudo/.test(await p.textContent('#home')));
 
+  // --- chaque compo du jour se partage sans y avoir joue
+  const duo = await p.evaluate(() => [...document.querySelectorAll('#daily .duo')]
+    .map(d => [...d.querySelectorAll('button')].map(x => x.textContent)));
+  v('Jouer et Partager cote a cote sur chaque compo',
+    duo.length === 2 && duo.every(x => x[0] === 'Jouer' && x[1] === 'Partager'), duo);
+  await p.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await p.click('[data-part="foot"]'); await p.waitForTimeout(200);
+  const defi = (await p.evaluate(() => navigator.clipboard.readText())).split('\n');
+  v('le defi copie tient en deux lignes et un lien',
+    /^[A-ZÀ-Ü' .-]+ - [A-ZÀ-Ü' .-]+ \d\d$/.test(defi[0])
+    && defi[1] === 'Peux-tu refaire la compo ?' && defi.length === 3, defi);
+  v('le bouton dit qu’il a copie', (await p.textContent('[data-part="foot"]')) === 'Copié !');
+
   // --- profil : code de reprise
   await p.click('#versmoi'); await p.waitForTimeout(200);
   const avant = await p.evaluate(() => moi().id);
