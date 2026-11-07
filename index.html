@@ -111,8 +111,10 @@ button{font:inherit;color:inherit;cursor:pointer}
    les etiquettes ne peuvent jamais se toucher, quelle que soit la largeur. */
 .pl{position:absolute;transform:translate(-50%,-30%);display:flex;flex-direction:column;align-items:center;width:19%;pointer-events:none}
 .pl svg{width:36px;height:34px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
-.pl .nm{margin-top:2px;font:600 12px/1.15 Barlow,sans-serif;text-align:center;color:#fff;background:rgba(0,0,0,.42);padding:2px 5px;border-radius:4px;min-width:28px;max-width:100%}
-.pl.todo .nm{color:rgba(255,255,255,.6)}
+.pl .nm{margin-top:3px;font:600 13px/1.15 Barlow,sans-serif;text-align:center;color:#fff;background:rgba(0,0,0,.42);padding:2px 5px;border-radius:4px;min-width:28px;max-width:100%}
+/* Les cases vides doivent se lire : on voit ainsi d'un coup d'oeil ce qui
+   reste a trouver, sans qu'elles concurrencent les noms deja places. */
+.pl.todo .nm{color:rgba(255,255,255,.85);background:rgba(0,0,0,.55)}
 .pl.hit .nm{background:#fff;color:#13241A;animation:pop .35s}
 .pl.miss .nm{background:var(--miss);color:#fff}
 .daily{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 18px;background:var(--surface);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
@@ -138,6 +140,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .coach .badge{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 Barlow,sans-serif;background:var(--ink);color:var(--bg)}
 .coach .role{font:600 10px/1 Barlow,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 .coach .nm{font:600 13px/1.15 Barlow,sans-serif;color:var(--ink);padding:2px 6px;border-radius:4px}
+/* Une fois le nom la, le mot ENTRAINEUR ne sert plus : il lui cede la place,
+   sinon le nom passe sur deux lignes et la barre grandit. */
+.coach.hit .role,.coach.miss .role{display:none}
+.coach .nm{white-space:nowrap}
 .coach.todo .nm{color:var(--muted)}
 .coach.hit .nm{background:var(--ink);color:var(--bg);animation:pop .35s}
 .coach.miss .nm{background:var(--miss);color:#fff}
@@ -152,13 +158,13 @@ button{font:inherit;color:inherit;cursor:pointer}
    chevauchaient de 16 px. A cette taille elles sont plus petites : plus un
    seul chevauchement, mesure sur foot et rugby. */
 @media (max-width:420px){
-  .pl .nm{font-size:10.5px}.pl svg{width:28px;height:27px}
+  .pl .nm{font-size:12px}.pl svg{width:28px;height:27px}
   .clock,.count{font-size:23px;padding:7px 9px}
 }
 /* Apres le bloc 420, sinon c'est lui qui gagnerait : a egalite de poids,
    la derniere regle ecrite l'emporte. */
 @media (max-width:360px){
-  .pl .nm{font-size:9.5px;padding:2px 3px}.pl svg{width:23px;height:22px}
+  .pl .nm{font-size:11px;padding:2px 4px}.pl svg{width:23px;height:22px}
 }
 /* Barre d'onglets, collee en bas : c'est la ou le pouce arrive. Elle
    disparait pendant une partie, qui a besoin de toute la hauteur. */
@@ -228,7 +234,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="giveup">Abandonner</button></div>
   <div class="result hidden" id="result">
     <div class="big" id="rbig"></div>
-    <p id="rtxt" style="margin:6px 0 12px;color:var(--muted)"></p>
+    <p id="rtxt" style="margin:6px 0 10px;color:var(--muted)"></p>
+    <p id="rmiss" style="margin:0 0 12px;font-size:14.5px"></p>
     <div id="board"></div>
     <div class="actions" style="margin:0"><button class="btn primary" id="share" hidden>Partager</button><button class="btn" id="again">Rejouer</button><button class="btn" id="swap">Jouer l’autre équipe</button><button class="btn" id="other">Retour</button></div>
   </div>
@@ -393,6 +400,11 @@ const pardon=n=>n<5?0:n<8?1:n<12?2:3;
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
 const bestKey=(m,t)=>"compo:best:"+m.id+":"+t;
+// Sur le terrain on n'affiche que le nom de famille. Mesure sur les 1535
+// joueurs de la base : le nom complet ne tient sur une ligne que dans 25 %
+// des cas, le nom de famille dans 98 %. Le prenom n'est pas perdu : il
+// s'affiche sous la saisie a chaque trouvaille, et dans la liste de fin.
+const nomCourt=n=>{const w=n.split(" ");return w.length>1?w.slice(1).join(" "):n};
 
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 // Temps restant avant la compo suivante, c'est-a-dire avant minuit a Paris.
@@ -529,7 +541,7 @@ function start(m,ti,ranked,note){
   window.scrollTo(0,0);setTimeout(()=>$("inp").focus(),50);
 }
 function upd(){$("clock").textContent=fmt(Math.max(left,0));$("clock").classList.toggle("low",left<=30);$("count").textContent=found.size+"/"+P.length;}
-function hit(i){found.add(i);const d=$("pl"+i);d.className=(P[i].coach?"coach":"pl")+" hit";d.querySelector(".nm").textContent=P[i].n;$("inp").value="";$("flash").textContent=P[i].n+" ✓";upd();if(found.size===P.length)end();}
+function hit(i){found.add(i);const d=$("pl"+i);d.className=(P[i].coach?"coach":"pl")+" hit";d.querySelector(".nm").textContent=P[i].coach?P[i].n:nomCourt(P[i].n);$("inp").value="";$("flash").textContent=P[i].n+" ✓";upd();if(found.size===P.length)end();}
 // Trois filets, du plus sûr au plus large. Les deux premiers tournent a chaque
 // frappe ; le troisieme, qui pardonne les fautes, attend la touche Entree pour
 // ne pas valider un nom a moitie tape.
@@ -568,7 +580,7 @@ $("giveup").onclick=()=>end();
 const affiche=m=>m.teams.map(t=>t.name).join(" - ").toUpperCase()+" "+String(m.yr).slice(-2);
 function end(){
   if(over)return;over=true;clearInterval(tick);$("inp").disabled=true;$("inp").hidden=true;
-  P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.n;}});
+  P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.coach?p.n:nomCourt(p.n);}});
   const t=Math.round((Date.now()-startT)/1000),tot=P.length,key=bestKey(M,TI),b=store.get(key);
   const better=found.size>0&&(!b||found.size>b.f||(found.size===b.f&&t<b.t));if(better)store.set(key,{f:found.size,t});
   const miss=tot-found.size,coachOut=P.some((p,i)=>p.coach&&!found.has(i));
@@ -576,6 +588,10 @@ function end(){
   const nj=miss-(coachOut?1:0),bits=[];
   if(nj)bits.push(`${nj} joueur${nj>1?"s":""}`);
   if(coachOut)bits.push("l’entraîneur");
+  // Le terrain ne porte que les noms de famille : la liste de fin rend les
+  // prenoms, qui sont souvent la moitie du plaisir.
+  const oublies=P.filter((_,i)=>!found.has(i)).map(p=>p.n);
+  $("rmiss").textContent=oublies.length?"Il manquait : "+oublies.join(", ")+".":"";
   $("rtxt").textContent=(miss?`${bits.join(" et ")} manquant${miss>1?"s":""}, en rouge.`:`Compo complète en ${fmt(t)}.`)
     +(hinted.size?` ${hinted.size} indice${hinted.size>1?"s":""} utilisé${hinted.size>1?"s":""}.`:"")+(better&&b?" Nouveau record.":(!better&&b?` Record : ${b.f}/${tot}.`:""))+NOTE_FIN;
   if(RANKED&&!store.get(dailyKey(DAYN,M.sport))){

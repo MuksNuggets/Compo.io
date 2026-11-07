@@ -21,7 +21,9 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
   let pire = 0, nb = 0;
 
   for (const id of COMPOS) for (const w of LARGEURS) {
-    const p = await b.newPage({ viewport: { width: w, height: 1000 } });
+    // Sans ca on mesure pendant l'animation d'apparition, qui part a scale(.6) :
+    // les boites rendues sont alors fausses, et le test ment.
+    const p = await b.newPage({ viewport: { width: w, height: 1000 }, reducedMotion: 'reduce' });
     await p.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
     await p.waitForTimeout(200);
     const existe = await p.evaluate(m => !!MATCHES.find(x => x.id === m), id);
