@@ -34,6 +34,16 @@ mises à la fin, jamais mélangées au reste : sinon le numéro du jour ne dési
 plus la même compo et l'historique des joueurs se décale. L'outil s'en charge,
 il suffit de ne pas réécrire ces fichiers à la main.
 
+Cette règle a été enfreinte **une fois, volontairement**, au jour 2 : la
+première semaine de rugby ouvrait sur le XV du Leinster 2026 et celui de
+Clermont 2017, injouables pour commencer. Elle ouvre maintenant sur Toulouse
+2024, la France de 2011 et Toulouse 2026. C'était possible sans dégât parce
+qu'il n'y avait presque pas d'historique ; passé quelques semaines, ça ne le
+sera plus.
+
+Au passage, deux jours de suite ne tombent plus sur la même équipe — sauf un
+cas en football, aux jours 108 et 109, que l'échange ne pouvait pas dénouer.
+
 Aujourd'hui : 110 compos de football et 124 de rugby, donc pas de répétition
 avant 110 jours côté foot.
 
