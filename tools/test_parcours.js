@@ -88,7 +88,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.click('#other'); await p.waitForTimeout(300);
 
   // --- 6. les jours d'avant
-  await p.click('#versjours'); await p.waitForTimeout(300);
+  await p.click('#versmoi'); await p.waitForTimeout(300);
   const nbJours = await p.locator('#listepasse .jour').count();
   v('les jours passes sont listes', nbJours > 0, nbJours);
   await p.locator('#listepasse .jour').first().click(); await p.waitForTimeout(400);
@@ -97,10 +97,10 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('la raison est dite au joueur', /Hors classement/.test(await p.textContent('#rtxt')),
     await p.textContent('#rtxt'));
   await p.click('#other'); await p.waitForTimeout(300);
-  v('le retour ramene aux jours d’avant', await p.isVisible('#listepasse'));
+  v('le retour ramene au profil', await p.isVisible('#listepasse'));
 
-  // --- 7. le profil a enregistre la soiree
-  await p.click('[data-onglet="moi"]'); await p.waitForTimeout(400);
+  // --- 7. le profil a enregistre la soiree (on y est deja : le retour d'un
+  //        jour passe ramene ici, et le portrait est cache avec l'accueil)
   const txt = await p.textContent('#profil');
   v('le profil compte les compos jouees', /compos jouées/.test(txt));
   v('le code de reprise est affiche', /[0-9a-f]{8}-[0-9a-f]{4}/.test(await p.textContent('#moncode')));

@@ -17,14 +17,33 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
 
   const vue = () => p.evaluate(() => SECTIONS.filter(s => !document.getElementById(s).classList.contains('hidden')));
 
-  // --- onglets
-  for (const [onglet, attendu] of [['moi','moi'],['home','home']]) {
-    await p.click(`[data-onglet="${onglet}"]`); await p.waitForTimeout(250);
-    v('onglet ' + onglet, JSON.stringify(await vue()) === JSON.stringify([attendu]), await vue());
-  }
+  // --- le profil se range derriere le portrait, en haut a droite
+  v('le portrait porte l’initiale du pseudo', (await p.textContent('#versmoi')) === 'L',
+    await p.textContent('#versmoi'));
+  await p.click('#versmoi'); await p.waitForTimeout(250);
+  v('le portrait ouvre le profil', JSON.stringify(await vue()) === JSON.stringify(['moi']), await vue());
+  await p.click('#moi .back'); await p.waitForTimeout(250);
+  v('le retour ramene a l’accueil', JSON.stringify(await vue()) === JSON.stringify(['home']), await vue());
+
+  // --- un apercu du terrain sur chaque compo du jour
+  const mini = await p.evaluate(() => [...document.querySelectorAll('#daily .mini')]
+    .map(m => ({ sport: m.className.split(' ')[1], points: m.querySelectorAll('i').length })));
+  v('chaque compo montre un petit terrain', mini.length === 2, mini);
+  v('un point d’interrogation par joueur',
+    mini.every(x => x.points === (x.sport === 'foot' ? 11 : 15)), mini);
+  v('aucun point ne se chevauche', await p.evaluate(() =>
+    [...document.querySelectorAll('.mini')].every(mini => {
+      const el = [...mini.querySelectorAll('i')].map(e => e.getBoundingClientRect());
+      for (let i = 0; i < el.length; i++) for (let j = i + 1; j < el.length; j++) {
+        const ox = Math.min(el[i].right, el[j].right) - Math.max(el[i].left, el[j].left);
+        const oy = Math.min(el[i].bottom, el[j].bottom) - Math.max(el[i].top, el[j].top);
+        if (ox > 0 && oy > 0) return false;
+      } return true; })));
+  v('l’accueil ne porte plus la ligne du pseudo',
+    !/changer de pseudo/.test(await p.textContent('#home')));
 
   // --- profil : code de reprise
-  await p.click('[data-onglet="moi"]'); await p.waitForTimeout(200);
+  await p.click('#versmoi'); await p.waitForTimeout(200);
   const avant = await p.evaluate(() => moi().id);
   const codeAffiche = (await p.textContent('#moncode')).trim();
   v('le code affiche est bien l’identifiant', codeAffiche === avant, { codeAffiche, avant });
@@ -45,10 +64,8 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.fill('#mpseudo', 'leopold'); await p.click('#mvalide'); await p.waitForTimeout(100);
   v('le pseudo se change depuis le profil', (await p.evaluate(() => moi().pseudo)) === 'leopold');
 
-  // --- jours d'avant
-  await p.click('[data-onglet="home"]'); await p.waitForTimeout(150);
-  await p.click('#versjours'); await p.waitForTimeout(250);
-  v('la section des jours d’avant s’ouvre', JSON.stringify(await vue()) === JSON.stringify(['passe']));
+  // --- les jours d'avant, ranges dans le profil
+  v('les jours d’avant sont dans le profil', await p.isVisible('#moi #listepasse'));
   const jours = await p.evaluate(() => ({
     jourN: DAYN,
     lignes: document.querySelectorAll('#listepasse .jour').length,
@@ -61,20 +78,16 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     v('on peut jouer un jour passe', JSON.stringify(await vue()) === JSON.stringify(['play']), await vue());
     v('la partie n’est pas classee', (await p.evaluate(() => RANKED)) === false);
     await p.click('#back'); await p.waitForTimeout(200);
-    v('le retour ramene aux jours d’avant', JSON.stringify(await vue()) === JSON.stringify(['passe']), await vue());
+    v('le retour ramene au profil', JSON.stringify(await vue()) === JSON.stringify(['moi']), await vue());
   }
 
-  // --- la barre d'onglets disparait pendant une partie
-  await p.click('[data-onglet="home"]'); await p.waitForTimeout(150);
+  // --- une partie occupe l'ecran, seule
   await p.evaluate(() => { const m = MATCHES.find(x => x.id === 'cdm-1998'); start(m, 0, false); });
   await p.waitForTimeout(200);
-  // on verifie qu'elle est vraiment invisible, pas seulement marquee hidden :
-  // un display:flex l'emporte sur l'attribut, et la barre restait affichee.
-  v('la barre s’efface pendant la partie',
-    await p.evaluate(() => getComputedStyle(document.getElementById('onglets')).display === 'none'));
+  v('la partie est seule a l’ecran', JSON.stringify(await vue()) === JSON.stringify(['play']), await vue());
 
   // --- rien ne deborde, sur chaque onglet
-  for (const o of ['home', 'moi', 'passe']) {
+  for (const o of ['home', 'moi']) {
     await p.evaluate(n => montre(n), o); await p.waitForTimeout(200);
     await p.setViewportSize({ width: 320, height: 800 }); await p.waitForTimeout(120);
     const d = await p.evaluate(() => ({ s: document.documentElement.scrollWidth, c: document.documentElement.clientWidth }));
