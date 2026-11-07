@@ -145,6 +145,25 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     await q.close();
   }
 
+  // --- 10. navigation privee : localStorage leve a chaque acces. L'app doit
+  //          rester jouable, et surtout garder la meme identite d'un appel a
+  //          l'autre, sinon le classement interroge quelqu'un d'autre.
+  const w = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await w.addInitScript(() => { Object.defineProperty(window, 'localStorage',
+    { get() { throw new Error('bloque'); } }); });
+  const errPrive = [];
+  w.on('pageerror', e => errPrive.push(e.message));
+  await w.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
+  await w.waitForTimeout(300);
+  v('en navigation privee, l’identite ne bouge pas',
+    await w.evaluate(() => moi().id === moi().id));
+  await w.fill('#pseudo', 'leo'); await w.click('#valide'); await w.waitForTimeout(250);
+  v('en navigation privee, le pseudo tient', await w.evaluate(() => moi().pseudo === 'leo'));
+  v('en navigation privee, les compos s’affichent',
+    (await w.locator('#daily .daily').count()) === 2);
+  v('en navigation privee, rien ne casse', errPrive.length === 0, errPrive);
+  await w.close();
+
   console.log('REUSSIS\n  ' + ok.join('\n  '));
   if (ko.length) console.log('ECHECS\n  ' + ko.join('\n  '));
   console.log('ERREURS JS : ' + (err.length ? JSON.stringify(err, null, 1) : 'aucune'));

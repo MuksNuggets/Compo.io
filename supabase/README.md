@@ -1,5 +1,27 @@
 # Supabase — classement de Compo.io
 
+## À faire : deux commandes, dans cet ordre
+
+Le code de l'app est en avance sur le serveur. Tant que ces deux étapes ne sont
+pas passées, **le classement n'affiche rien** (l'app le dit à l'écran plutôt que
+de laisser un blanc), et le barème appliqué reste l'ancien.
+
+```
+# 1. la migration : ajoute la colonne sport et change la clé du classement
+supabase db push          # ou coller supabase/migrations/0003_sport.sql dans l'éditeur SQL
+
+# 2. la fonction, APRÈS la migration
+supabase functions deploy compo
+```
+
+L'ordre compte. Le défaut `'foot'` posé par la migration existe précisément
+pour que l'ancienne fonction continue de tourner entre les deux.
+
+Ne pas éditer la fonction depuis le tableau de bord : son éditeur abîme l'UTF-8
+au collage. C'est pour ça que toutes les chaînes renvoyées sont sans accents, et
+que l'app ne teste que les codes d'erreur, jamais le texte.
+
+
 Projet : `compo-io` (organisation Compo.io, plan gratuit, région Londres).
 
 - URL : `https://raqseqflxmjfseyarlpx.supabase.co`

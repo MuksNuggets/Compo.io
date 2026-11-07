@@ -308,12 +308,19 @@ async function api(action,corps){
   return r.json();
 }
 const CLE_MOI="compo:moi";
+// L'identite est gardee en memoire autant que sur le disque. En navigation
+// privee, localStorage leve a chaque acces : sans ce cache, moi() rendait un
+// identifiant different a chaque appel, le pseudo ne tenait pas et le
+// classement interrogeait quelqu'un d'autre que celui qui venait de jouer.
+let MOI=null;
 function moi(){
+  if(MOI)return MOI;
   let m=store.get(CLE_MOI);
-  if(!m||!m.id){m={id:(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)),pseudo:""};store.set(CLE_MOI,m);}
-  return m;
+  if(!m||!m.id)m={id:(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)),pseudo:""};
+  store.set(CLE_MOI,m);
+  return MOI=m;
 }
-const majMoi=p=>{const m={...moi(),...p};store.set(CLE_MOI,m);return m};
+const majMoi=p=>{MOI={...moi(),...p};store.set(CLE_MOI,MOI);return MOI};
 function dailyPick(n,sp){
   const ordre=DAY_ORDER[sp]||[];
   for(let k=0;k<ordre.length;k++){                            // saute une compo retirée des données
