@@ -44,6 +44,55 @@ accède pas librement, sinon la compo du jour ne serait qu'un bouton parmi 234.
 Le classement est global : un par sport et par jour, tout le monde dedans. Il
 n'y a ni compte ni code de groupe, seulement un pseudo gardé sur l'appareil.
 
+# Les trois onglets
+
+**Compos** — les deux compos du jour, et un bouton vers *Les jours d'avant*,
+qui rejoue n'importe quelle journée écoulée. Ces parties-là sont hors
+classement : le serveur n'accepte qu'une partie classée par jour et par sport,
+celle du jour même.
+
+**Mystère** — un joueur tiré au hasard parmi les 680 qui ont disputé au moins
+deux finales de la base. Chaque erreur dévoile un indice de plus : sport et
+poste, nombre de finales, la première, l'équipe, les autres, l'initiale, le
+prénom. Rien de nouveau n'est stocké : tout sort des 117 finales déjà là.
+Filtrable par sport.
+
+**Moi** — pseudo, chiffres par sport, et le **code de reprise**.
+
+## Le code de reprise
+
+Il n'y a ni compte ni mot de passe : le classement est tenu par un identifiant
+tiré au hasard à la première visite et gardé sur l'appareil. Le code de reprise
+*est* cet identifiant. Le recopier sur un autre téléphone y ramène le profil,
+les scores et la série. C'est le prix du zéro inscription, et l'écran le dit.
+
+Conséquence à connaître : qui possède le code possède le profil. Pour un jeu
+entre amis c'est le bon compromis ; pour autre chose, il faudrait de vrais
+comptes.
+
+## Les noms mal écrits
+
+Trois filets, du plus sûr au plus large : l'écriture exacte, une clé « à
+l'oreille » qui écrase ce qui ne s'entend pas (ph/f, qu/k, h muet, lettres
+doublées, consonne finale muette…), puis la distance d'édition avec une
+tolérance qui suit la longueur de ce qui est tapé. Les deux premiers tournent à
+chaque frappe, le troisième attend la touche Entrée.
+
+`tools/test_noms.js` tape le nom de famille puis le nom complet des 3 299
+joueurs de la base, chacun dans sa compo : **6 598 saisies, zéro non reconnue,
+zéro qui tombe sur un autre joueur**. C'est ce second chiffre qui compte : une
+tolérance trop large validerait le mauvais nom et fausserait une partie classée.
+
+# Tests
+
+```
+sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)
+node tools/test_app.js        # le jeu, le partage, les fichiers de l'app
+node tools/test_onglets.js    # onglets, profil, jours d'avant, mystère
+node tools/test_noms.js       # la reconnaissance des noms, sur toute la base
+```
+Chacun sort en erreur si un contrôle échoue ou si la page lève une erreur JS.
+
 # Pipeline de données
 
 ## Installation
