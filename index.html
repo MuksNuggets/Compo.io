@@ -66,7 +66,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .brand h1{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:clamp(56px,14vw,88px);line-height:.9;margin:0;letter-spacing:-.01em}
 .brand .dot{color:var(--pitch)}
 .lede{color:var(--muted);margin:6px 0 24px;max-width:46ch}
-.src{color:var(--muted);font-size:13px;margin-top:28px}
 .best.full{color:var(--ok)}
 .sport{font-size:13px;color:var(--muted)}
 
@@ -75,8 +74,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .back{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-weight:600}
 .title{margin:6px 0 2px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:28px;line-height:1.1}
 .sub{color:var(--muted);margin:0 0 14px;font-size:15px}
-.chrono{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
-.clock,.count{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:34px;line-height:1;padding:8px 14px;border-radius:8px;background:var(--ink);color:var(--accent);font-variant-numeric:tabular-nums}
+.barre{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.clock,.count{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:26px;line-height:1;padding:7px 11px;border-radius:9px;background:var(--ink);color:var(--accent);font-variant-numeric:tabular-nums}
 .count{color:var(--bg)}
 .clock.low{color:#FF6B6B}
 .inp{display:block;width:100%;margin-top:10px;font:600 18px Barlow,sans-serif;padding:12px 14px;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
@@ -111,12 +110,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .board th{font:700 11px/1 Barlow,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 .board td.n{text-align:right;font-variant-numeric:tabular-nums}
 .board tr.moi td{background:var(--accent);color:var(--accent-ink)}
-.bench{display:flex;justify-content:center;margin-top:8px}
+.bench{flex:1;min-width:0;display:flex;justify-content:center}
 /* La pastille est hors du terrain, donc sur le fond clair de la page : ses
    couleurs sont celles de la page, pas celles de la pelouse. */
-.coach{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 7px}
-.coach .badge{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 Barlow,sans-serif;background:var(--ink);color:var(--bg)}
-.coach .role{font:600 10.5px/1 Barlow,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.coach{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 10px 5px 6px}
+.coach .badge{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 Barlow,sans-serif;background:var(--ink);color:var(--bg)}
+.coach .role{font:600 10px/1 Barlow,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 .coach .nm{font:600 13px/1.15 Barlow,sans-serif;color:var(--ink);padding:2px 6px;border-radius:4px}
 .coach.todo .nm{color:var(--muted)}
 .coach.hit .nm{background:var(--ink);color:var(--bg);animation:pop .35s}
@@ -130,7 +129,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .hidden{display:none!important}
 @media (max-width:420px){
   .pl{width:66px}.pl .nm{font-size:10.5px;max-width:66px}.pl svg{width:28px;height:27px}
-  .clock,.count{font-size:28px;padding:8px 10px}
+  .clock,.count{font-size:23px;padding:7px 9px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
@@ -139,20 +138,21 @@ button{font:inherit;color:inherit;cursor:pointer}
 <div class="wrap">
 <section id="home">
   <div class="brand"><h1>Compo<span class="dot">.</span>io</h1></div>
-  <p class="lede">Retrouve les titulaires des finales qui ont marqué l’histoire. Deux compos par jour, une par sport, les mêmes pour tout le monde. Un nom de famille suffit.</p>
+  <p class="lede">Sauras-tu refaire les compos des grandes finales ?</p>
   <div id="daily"></div>
-  <p class="src">Données : Fjelstul World Cup Database (CC BY-SA 4.0), StatsBomb Open Data, Wikipédia.</p>
 </section>
 <section id="play" class="hidden">
   <div class="top"><button class="back" id="back">Retour</button><span class="sport" id="psport"></span></div>
   <h2 class="title" id="ptitle"></h2>
   <p class="sub" id="psub"></p>
-  <div class="chrono">
+  <div class="pitch" id="pitch"></div>
+  <!-- Chrono et compteur encadrent l'entraineur : tout ce qui bouge pendant la
+       partie est reuni sous le terrain, juste au-dessus de la saisie. -->
+  <div class="barre">
     <div class="clock" id="clock">3:00</div>
+    <div class="bench hidden" id="bench"></div>
     <div class="count" id="count">0/11</div>
   </div>
-  <div class="pitch" id="pitch"></div>
-  <div class="bench hidden" id="bench"></div>
   <!-- La saisie est sous le terrain : clavier ouvert, on voit encore les
        postes, au lieu de les avoir derrière le clavier. -->
   <input class="inp" id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">

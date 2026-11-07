@@ -80,7 +80,12 @@ Chaque lancement s’ajoute à `data/compos.json` sans effacer le reste.
 python build_compos.py --only cdm --html index.html
 ```
 
-## Sources
+## Sources et attribution
+
+L'app n'affiche plus ces mentions : l'attribution exigée par la licence
+CC BY-SA 4.0 de la Fjelstul World Cup Database vit donc **ici**. Si le jeu
+devait être publié ailleurs que dans ce dépôt, il faudrait l'y emporter.
+
 - Coupe du monde 1990-2022 : Fjelstul World Cup Database (GitHub, CC BY-SA 4.0).
 - Ligue des champions (14 finales entre 2004 et 2019), Euro 2020 et 2024 : StatsBomb Open Data (GitHub).
 - Tout le reste : Wikipédia, via son API (code source des pages).
