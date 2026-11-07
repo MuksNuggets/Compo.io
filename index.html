@@ -702,7 +702,8 @@ function renderMystere(){
            <p id="dmyst" style="margin:10px 0 0;color:var(--muted)"></p></div>`)
     +`<div class="ligne"><button class="btn${fini?" primary":""}" id="nmyst">${fini?"Un autre joueur":"Passer à un autre"}</button>`
     +(fini?"":`<button class="btn" id="amyst">Je donne ma langue au chat</button>`)+`</div>`
-    +`<p class="sub" style="margin-top:14px">${b.trouves} trouvés sur ${b.joues} joués.</p>`;
+    +`<p class="sub" style="margin-top:14px">${b.trouves} trouvés sur ${b.joues} joués`
+      +(b.trouves?`, ${(b.ind/b.trouves).toFixed(1).replace(".",",")} indices en moyenne`:"")+`.</p>`;
 
   $("myst").querySelectorAll("[data-sp]").forEach(x=>x.onclick=()=>{
     store.set(CLE_MSPORT,x.dataset.sp);nouveauMystere();});
@@ -713,7 +714,7 @@ function renderMystere(){
     const tente=()=>{
       const v=$("qmyst").value.trim();if(!v)return;
       if(colle(v,g)){MYST.fini=true;MYST.gagne=true;
-        store.set(CLE_MYST,{joues:b.joues+1,trouves:b.trouves+1});renderMystere();return}
+        store.set(CLE_MYST,{joues:b.joues+1,trouves:b.trouves+1,ind:(b.ind||0)+MYST.vus});renderMystere();return}
       if(MYST.vus<ind.length){MYST.vus++;renderMystere();
         $("dmyst").textContent="Raté. Un indice de plus.";$("qmyst").focus();return}
       MYST.fini=true;store.set(CLE_MYST,{joues:b.joues+1,trouves:b.trouves});renderMystere();
