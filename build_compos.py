@@ -40,7 +40,11 @@ SB = {'Goalkeeper':('G',50,90),'Right Back':('DD',85,72),'Right Center Back':('D
  'Left Midfield':('MG',15,48),'Right Wing':('AD',82,27),'Left Wing':('AG',18,27),'Right Attacking Midfield':('MOC',66,37),
  'Center Attacking Midfield':('MOC',50,37),'Left Attacking Midfield':('MOC',34,37),'Right Center Forward':('BU',62,19),
  'Center Forward':('BU',50,18),'Left Center Forward':('BU',38,19),'Secondary Striker':('SA',50,30)}
-RPOS = [[30,18],[50,18],[70,18],[40,28],[60,28],[22,38],[78,38],[50,38],[50,49],[50,58],[12,73],[30,65],[70,65],[88,73],[50,82]]
+# Le 9 et le 10 sont cote a cote, et non empiles au centre : ca libere une
+# rangee entiere sur les huit, donc de l'air pour toutes les autres. Le 9 a
+# gauche, le 10 a droite, comme une sortie de ruck.
+RPOS = [[30,18],[50,18],[70,18],[40,29],[60,29],[22,40],[78,40],[50,40],
+        [35,53],[65,53],[12,72],[30,64],[70,64],[88,72],[50,82]]
 
 def place_foot(rows):
     """rows : [(code, nom)] dans l’ordre de la feuille de match -> joueurs placés."""
