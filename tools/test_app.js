@@ -51,6 +51,35 @@ const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : 
     !disparus.liste && !disparus.filtres && !disparus.voirtout, disparus);
   verifie('plus un mot de groupe a l’ecran', !disparus.groupe, disparus);
   verifie('la carte du jour ne se repete pas', !disparus.bavard, disparus);
+
+  // Deux defauts de mise en page, mesures plutot que juges a l'oeil.
+  const page = await p.evaluate(() => {
+    const e = document.querySelector('.daily .what');
+    const c = document.createElement('canvas').getContext('2d');
+    c.font = getComputedStyle(e).font;
+    const dispo = e.getBoundingClientRect().width;
+    // L'affiche doit tenir sur une ligne : a cote du mini terrain il ne lui
+    // restait que 179 px, et 92 des 117 affiches passaient a la ligne.
+    const trop = [...new Set(MATCHES.map(m => afficheCourte(m)))]
+      .filter(s => c.measureText(s).width > dispo);
+    // Et le titre ne doit pas toucher les onglets : son interligne de .9 fait
+    // depasser ses jambages de sa boite.
+    const t = document.querySelector('#home .brand h1').getBoundingClientRect();
+    const o = document.querySelector('#home .onglets').getBoundingClientRect();
+    return { trop: trop.length, pire: trop[0] || null, ecart: Math.round(o.top - t.bottom) };
+  });
+  verifie('aucune affiche ne passe a la ligne', page.trop === 0, page);
+  verifie('les onglets ne touchent pas le titre', page.ecart >= 6, page);
+
+  // Les onglets doivent tomber au meme endroit des deux cotes, sinon la page
+  // saute au changement.
+  const posOnglets = async () => p.evaluate(() =>
+    Math.round(document.querySelector('section:not(.hidden) .onglets').getBoundingClientRect().top));
+  const yHome = await posOnglets();
+  await p.click('#home [data-va="archives"]'); await p.waitForTimeout(250);
+  const yArch = await posOnglets();
+  await p.click('#archives [data-va="home"]'); await p.waitForTimeout(250);
+  verifie('les onglets ne sautent pas d’un onglet a l’autre', yHome === yArch, { yHome, yArch });
   verifie('identite reduite a id + pseudo', disparus.moi === 'id,pseudo', disparus);
 
   // --- 4. jouer le foot : seul le foot est enregistre, et le classement est global

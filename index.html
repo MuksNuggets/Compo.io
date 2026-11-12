@@ -82,7 +82,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .brand{display:flex;align-items:baseline;gap:10px;margin:8px 0 4px}
 .brand h1{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:clamp(56px,14vw,88px);line-height:.9;margin:0;letter-spacing:-.01em}
 .brand .dot{color:var(--pitch)}
-.lede{color:var(--muted);margin:6px 0 24px;max-width:46ch}
+.lede{color:var(--muted);margin:0 0 20px;max-width:46ch}
 .best.full{color:var(--ok)}
 .sport{font-size:13px;color:var(--muted)}
 
@@ -182,9 +182,14 @@ body.enjeu .wrap{padding:0;height:100%}
 .pl.todo .nm{color:rgba(255,255,255,.85);background:rgba(0,0,0,.55)}
 .pl.hit .nm{background:#fff;color:#13241A;animation:pop .35s}
 .pl.miss .nm{background:var(--miss);color:#fff}
-.daily{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 18px;background:var(--surface);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.daily{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 18px;
+  background:var(--surface);display:flex;flex-direction:column;gap:9px}
 .daily .tag{font:700 11px/1 Barlow,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent);padding:5px 9px;border-radius:999px}
-.daily .what{flex:1;min-width:190px;font-weight:700;font-size:19px;line-height:1.2}
+.daily .what{min-width:0;font-weight:700;font-size:19px;line-height:1.2}
+/* Les affiches les plus longues font 308 px : on descend d'un cran plutot que
+   de les laisser se couper en deux sur un petit ecran. */
+@media (max-width:400px){.daily .what{font-size:17.5px}}
+@media (max-width:340px){.daily .what{font-size:16px}}
 .daily .what small{display:block;font-weight:400;font-size:13.5px;color:var(--muted);margin-top:4px}
 /* Le sport, en tout petit au-dessus de l'affiche : il situe la carte sans
    prendre la vedette. */
@@ -258,7 +263,7 @@ body.enjeu .wrap{padding:0;height:100%}
 
 /* Apercu du terrain sur la carte du jour : la forme de la compo se devine,
    les noms restent caches. */
-.carte{display:flex;gap:14px;align-items:flex-start}
+.carte{display:flex;gap:14px;align-items:center}
 .mini{flex:0 0 96px;border-radius:8px;position:relative;overflow:hidden;
   background:repeating-linear-gradient(to bottom,var(--pitch) 0 8%,var(--stripe) 8% 16%)}
 .mini.foot{aspect-ratio:68/78}
@@ -301,7 +306,10 @@ body.enjeu .wrap{padding:0;height:100%}
 .jour .res.full{color:var(--ok)}
 
 /* Deux onglets, en haut, sans barre fixe : la place en bas sert au jeu. */
-.onglets{display:flex;gap:6px;margin:0 0 20px}
+/* La marge du haut est a nous : le titre a une interligne de .9, donc ses
+   jambages depassent de sa boite et venaient se poser sur les onglets des que
+   l'accroche a cesse de faire tampon. */
+.onglets{display:flex;gap:6px;margin:16px 0 18px}
 .onglets button{flex:1;border:1px solid var(--line);background:none;border-radius:999px;
   padding:9px 10px;font:600 14.5px Barlow,sans-serif;color:var(--muted)}
 .onglets button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
@@ -377,10 +385,12 @@ body.enjeu .wrap{padding:0;height:100%}
 <section id="home">
   <div class="brand"><h1>Compo<span class="dot">.</span>io</h1>
     <button class="portrait" id="versmoi" data-va="moi" aria-label="Mon profil"></button></div>
-  <p class="lede">Sauras-tu refaire les compos des grandes finales ?</p>
-  <!-- Deux onglets, et rien d'autre : la compo du jour, ou toute la liste. -->
+  <!-- Les onglets suivent la marque immediatement, ici comme dans l'autre
+       section : toute ligne intercalee d'un seul cote les faisait sauter de
+       cinquante pixels au changement d'onglet. -->
   <nav class="onglets"><button class="on" data-va="home">Aujourd’hui</button>
     <button data-va="archives">Toutes les finales</button></nav>
+  <p class="lede">Sauras-tu refaire les compos des grandes finales ?</p>
   <div id="daily"></div>
 </section>
 <section id="archives" class="hidden">
@@ -388,7 +398,7 @@ body.enjeu .wrap{padding:0;height:100%}
     <button class="portrait" id="versmoi2" data-va="moi" aria-label="Mon profil"></button></div>
   <nav class="onglets"><button data-va="home">Aujourd’hui</button>
     <button class="on" data-va="archives">Toutes les finales</button></nav>
-  <p class="sub">Toutes les finales de la base. Hors classement : seule la compo du jour compte.</p>
+  <p class="lede">Hors classement : seule la compo du jour compte.</p>
   <div id="arch"></div>
 </section>
 <section id="moi" class="hidden">
@@ -817,10 +827,14 @@ function renderDaily(){
     // Trois niveaux de lecture, et pas un de plus : le sport, l'affiche, puis
     // ce qu'il y a a faire. Tout le reste — jour n°, « finale de », « compo a
     // retrouver » — disait la meme chose en plus long.
-    return `<div class="daily"><div class="carte">${miniTerrain(m,ti)}<div class="droite">`
+    // L'affiche prend toute la largeur. A cote du mini terrain il ne lui
+    // restait que 179 px sur un telephone, et 92 des 117 affiches de la base
+    // passaient a la ligne — souvent en coupant le score en deux.
+    return `<div class="daily">`
       +`<span class="quel">${nomSport(sp)}</span>`
       +`<span class="what">${esc(afficheCourte(m))}`
       +`<small>${compet(m)} ${m.yr}</small></span>`
+      +`<div class="carte">${miniTerrain(m,ti)}<div class="droite">`
       +`<span class="task"><b>${tot} noms</b> · `
       +`<span class="eq">${marque(t.name)}${esc(nomCourtEquipe(t.name,sp))}</span></span>`
       +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")

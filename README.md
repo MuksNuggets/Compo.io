@@ -66,7 +66,14 @@ test mentaient sur la mise en page réelle.
 
 **Aujourd'hui** — les deux compos du jour, une par sport. Chaque carte tient en
 trois niveaux de lecture et pas un de plus : le sport, l'affiche du match, puis
-ce qu'il y a à faire. L'ancienne carte disait trois fois la même chose —
+ce qu'il y a à faire. L'affiche prend toute la largeur de la carte : à côté du
+mini terrain il ne lui restait que 179 px, et **92 des 117 affiches** de la
+base passaient à la ligne, souvent en coupant le score en deux.
+
+Les deux onglets suivent la marque immédiatement, des deux côtés. Toute ligne
+intercalée d'un seul côté les faisait sauter de cinquante pixels au changement
+d'onglet. `tools/test_app.js` mesure les deux : aucune affiche qui déborde, et
+des onglets à la même hauteur dans les deux sections. L'ancienne carte disait trois fois la même chose —
 « jour n° 7 », « Finale de la Coupe du monde, 1998 », « compo à retrouver » —
 et se lisait d'autant moins bien.
 
