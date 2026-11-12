@@ -77,22 +77,42 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.fill('#mpseudo', 'leopold'); await p.click('#mvalide'); await p.waitForTimeout(100);
   v('le pseudo se change depuis le profil', (await p.evaluate(() => moi().pseudo)) === 'leopold');
 
-  // --- les jours d'avant, ranges dans le profil
-  v('les jours d’avant sont dans le profil', await p.isVisible('#moi #listepasse'));
-  const jours = await p.evaluate(() => ({
-    jourN: DAYN,
-    lignes: document.querySelectorAll('#listepasse .jour').length,
-    attendu: Math.max(0, (DAYN - 1) * 2),
+  // --- toutes les finales, dans leur onglet : sport, competition, annees
+  await p.click('#moi [data-va="home"]'); await p.waitForTimeout(200);
+  await p.click('#home [data-va="archives"]'); await p.waitForTimeout(300);
+  v('l’onglet des finales s’ouvre', JSON.stringify(await vue()) === JSON.stringify(['archives']), await vue());
+  const arch = await p.evaluate(() => ({
+    competitions: [...document.querySelectorAll('#arch .comp summary b')].map(e => e.textContent),
+    finales: document.querySelectorAll('#arch .fin').length,
+    attendu: MATCHES.filter(m => m.sport === 'foot').length,
   }));
-  v('une ligne par sport et par jour passe', jours.lignes === jours.attendu, jours);
+  v('les competitions de foot sont la',
+    JSON.stringify(arch.competitions) === JSON.stringify(['Coupe du monde', 'Euro', 'Ligue des champions']),
+    arch.competitions);
+  v('toutes les finales de foot sont listees', arch.finales === arch.attendu, arch);
 
-  if (jours.lignes) {
-    await p.click('#listepasse .jour'); await p.waitForTimeout(300);
-    v('on peut jouer un jour passe', JSON.stringify(await vue()) === JSON.stringify(['play']), await vue());
-    v('la partie n’est pas classee', (await p.evaluate(() => RANKED)) === false);
-    await p.click('#back'); await p.waitForTimeout(200);
-    v('le retour ramene au profil', JSON.stringify(await vue()) === JSON.stringify(['moi']), await vue());
-  }
+  await p.click('#arch [data-sa="rugby"]'); await p.waitForTimeout(250);
+  const rug = await p.evaluate(() => ({
+    competitions: [...document.querySelectorAll('#arch .comp summary b')].map(e => e.textContent),
+    finales: document.querySelectorAll('#arch .fin').length,
+    attendu: MATCHES.filter(m => m.sport === 'rugby').length,
+  }));
+  v('le rugby a ses competitions',
+    JSON.stringify(rug.competitions) === JSON.stringify(['Coupe du monde', 'Coupe d’Europe', 'Top 14']),
+    rug.competitions);
+  v('toutes les finales de rugby sont listees', rug.finales === rug.attendu, rug);
+
+  // Les annees descendent : on cherche d'abord la derniere.
+  const annees = await p.evaluate(() =>
+    [...document.querySelectorAll('#arch .comp:first-of-type .fin .an')].map(e => +e.textContent));
+  v('les annees vont de la plus recente a la plus ancienne',
+    annees.every((a, i) => i === 0 || annees[i - 1] >= a), annees);
+
+  await p.click('#arch .fin'); await p.waitForTimeout(350);
+  v('une finale se joue depuis la liste', JSON.stringify(await vue()) === JSON.stringify(['play']), await vue());
+  v('elle n’est pas classee', (await p.evaluate(() => RANKED)) === false);
+  await p.click('#back'); await p.waitForTimeout(250);
+  v('le retour ramene a la liste', JSON.stringify(await vue()) === JSON.stringify(['archives']), await vue());
 
   // --- une partie occupe l'ecran, seule
   await p.evaluate(() => { const m = MATCHES.find(x => x.id === 'cdm-1998'); start(m, 0, false); });

@@ -103,20 +103,21 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('les manquants sont en rouge', (await p.locator('#pitch .pl.miss').count()) === 15);
   await p.click('#other'); await p.waitForTimeout(300);
 
-  // --- 6. les jours d'avant
-  await p.click('#versmoi'); await p.waitForTimeout(300);
-  const nbJours = await p.locator('#listepasse .jour').count();
-  v('les jours passes sont listes', nbJours > 0, nbJours);
-  await p.locator('#listepasse .jour').first().click(); await p.waitForTimeout(400);
-  v('un jour passe se joue hors classement', (await p.evaluate(() => RANKED)) === false);
+  // --- 6. toutes les finales
+  await p.click('#home [data-va="archives"]'); await p.waitForTimeout(300);
+  const nbFinales = await p.locator('#arch .fin').count();
+  v('les finales sont listees', nbFinales > 0, nbFinales);
+  await p.locator('#arch .fin').first().click(); await p.waitForTimeout(400);
+  v('une finale se joue hors classement', (await p.evaluate(() => RANKED)) === false);
   await p.click('#giveup'); await p.waitForTimeout(400);
   v('la raison est dite au joueur', /Hors classement/.test(await p.textContent('#rtxt')),
     await p.textContent('#rtxt'));
   await p.click('#other'); await p.waitForTimeout(300);
-  v('le retour ramene au profil', await p.isVisible('#listepasse'));
+  v('le retour ramene a la liste', await p.isVisible('#arch'));
+  await p.click('#archives [data-va="home"]'); await p.waitForTimeout(200);
+  await p.click('#versmoi'); await p.waitForTimeout(300);
 
-  // --- 7. le profil a enregistre la soiree (on y est deja : le retour d'un
-  //        jour passe ramene ici, et le portrait est cache avec l'accueil)
+  // --- 7. le profil a enregistre la soiree
   const txt = await p.textContent('#profil');
   v('le profil compte les compos jouees', /compos jouées/.test(txt));
   v('le code de reprise est affiche', /[0-9a-f]{8}-[0-9a-f]{4}/.test(await p.textContent('#moncode')));
@@ -292,7 +293,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('le refus ne casse rien', demandes > 0, demandes);
 
   ADMIN = await a.evaluate(() => moi().id);
-  await a.click('[data-va="home"]'); await a.waitForTimeout(200);
+  await a.click('#moi [data-va="home"]'); await a.waitForTimeout(200);
   await a.click('#versmoi'); await a.waitForTimeout(500);
   const bord = await a.textContent('#admin');
   v('le proprietaire voit le tableau de bord', /Tableau de bord/.test(bord || ''), (bord || '').slice(0, 60));

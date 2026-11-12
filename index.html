@@ -184,8 +184,14 @@ body.enjeu .wrap{padding:0;height:100%}
 .pl.miss .nm{background:var(--miss);color:#fff}
 .daily{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 18px;background:var(--surface);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
 .daily .tag{font:700 11px/1 Barlow,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent);padding:5px 9px;border-radius:999px}
-.daily .what{flex:1;min-width:190px;font-weight:600;font-size:16px;line-height:1.3}
-.daily .what small{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:2px}
+.daily .what{flex:1;min-width:190px;font-weight:700;font-size:19px;line-height:1.2}
+.daily .what small{display:block;font-weight:400;font-size:13.5px;color:var(--muted);margin-top:4px}
+/* Le sport, en tout petit au-dessus de l'affiche : il situe la carte sans
+   prendre la vedette. */
+.quel{font:700 10.5px/1 Barlow,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+/* Ce qu'il y a a faire, dit une seule fois et en clair. */
+.task{font-size:14px;color:var(--muted)}
+.task b{color:var(--ink)}
 .daily .pts{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:30px;line-height:1}
 .daily .streak{font-weight:600;font-size:14px;color:var(--muted)}
 .daily .ident{display:flex;flex-wrap:wrap;gap:8px;align-items:center;width:100%}
@@ -286,6 +292,34 @@ body.enjeu .wrap{padding:0;height:100%}
 .jour .quoi small{display:block;font-weight:400;color:var(--muted);font-size:13px}
 .jour .res{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:17px;color:var(--muted)}
 .jour .res.full{color:var(--ok)}
+
+/* Deux onglets, en haut, sans barre fixe : la place en bas sert au jeu. */
+.onglets{display:flex;gap:6px;margin:0 0 20px}
+.onglets button{flex:1;border:1px solid var(--line);background:none;border-radius:999px;
+  padding:9px 10px;font:600 14.5px Barlow,sans-serif;color:var(--muted)}
+.onglets button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* Toutes les finales : sport, puis competition, puis les annees. */
+.sports{display:flex;gap:6px;margin:0 0 16px}
+.sports button{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:10px;
+  padding:10px;font:700 15px Barlow,sans-serif}
+.sports button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.comp{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:0 0 12px;overflow:hidden}
+.comp>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:baseline;gap:10px}
+.comp>summary::-webkit-details-marker{display:none}
+.comp>summary b{font:700 16px Barlow,sans-serif}
+.comp>summary span{margin-left:auto;font-size:13px;color:var(--muted)}
+.comp .dedans{padding:0 16px 6px}
+/* Une finale : l'annee a gauche, l'affiche a droite. Rien d'autre — c'est une
+   liste qu'on parcourt, pas une fiche qu'on lit. */
+.fin{width:100%;display:flex;align-items:baseline;gap:12px;text-align:left;color:inherit;font:inherit;
+  background:none;border:0;border-top:1px solid var(--line);padding:11px 2px}
+.comp .dedans .fin:first-child{border-top:0}
+.fin .an{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:20px;min-width:42px;color:var(--muted)}
+.fin .aff{flex:1;min-width:0;font-weight:600;font-size:15px;line-height:1.25}
+.fin .nb{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.fin.fait .an{color:var(--ok)}
+.fin:hover .aff{color:var(--pitch)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -295,18 +329,26 @@ body.enjeu .wrap{padding:0;height:100%}
   <div class="brand"><h1>Compo<span class="dot">.</span>io</h1>
     <button class="portrait" id="versmoi" data-va="moi" aria-label="Mon profil"></button></div>
   <p class="lede">Sauras-tu refaire les compos des grandes finales ?</p>
+  <!-- Deux onglets, et rien d'autre : la compo du jour, ou toute la liste. -->
+  <nav class="onglets"><button class="on" data-va="home">Aujourd’hui</button>
+    <button data-va="archives">Toutes les finales</button></nav>
   <div id="daily"></div>
+</section>
+<section id="archives" class="hidden">
+  <div class="brand"><h1>Compo<span class="dot">.</span>io</h1>
+    <button class="portrait" id="versmoi2" data-va="moi" aria-label="Mon profil"></button></div>
+  <nav class="onglets"><button data-va="home">Aujourd’hui</button>
+    <button class="on" data-va="archives">Toutes les finales</button></nav>
+  <p class="sub">Toutes les finales de la base. Hors classement : seule la compo du jour compte.</p>
+  <div id="arch"></div>
 </section>
 <section id="moi" class="hidden">
   <div class="top"><button class="back" data-va="home">Retour</button></div>
   <h2 class="title">Moi</h2>
-  <div id="profil"></div>
-  <h2 class="title" style="margin-top:26px">Les jours d’avant</h2>
-  <p class="sub">Toutes les compos déjà passées. Hors classement : seul le jour en cours compte.</p>
   <!-- Tableau de bord : vide pour tout le monde, rempli seulement si le
        serveur reconnait le code de reprise comme celui du proprietaire. -->
   <div id="admin"></div>
-  <div id="listepasse"></div>
+  <div id="profil"></div>
   <!-- La date de mise en ligne, posee par tools/site.sh. Elle dit d'un coup
        d'oeil si l'app ouverte est bien la derniere, cache compris. -->
   <p class="sub" style="margin-top:26px;font-size:12.5px">Version du __VERSION__</p>
@@ -512,6 +554,11 @@ const pardon=n=>n<5?0:n<8?1:n<12?2:3;
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
 const bestKey=(m,t)=>"compo:best:"+m.id+":"+t;
+// « Coupe du monde 1998 » plutot que « Finale de la Coupe du monde, 1998 » :
+// sur une carte, « finale de » ne distingue rien, toutes le sont.
+const NOM_COMPET={cdm:"Coupe du monde",euro:"Euro",ldc:"Ligue des champions",
+  rwc:"Coupe du monde",hcup:"Coupe d’Europe",top14:"Top 14"};
+const compet=m=>NOM_COMPET[m.comp]||m.where;
 // Sur le terrain on n'affiche que le nom de famille. Mesure sur les 1535
 // joueurs de la base : le nom complet ne tient sur une ligne que dans 25 %
 // des cas, le nom de famille dans 98 %. Le prenom n'est pas perdu : il
@@ -559,10 +606,14 @@ function renderDaily(){
     // Le match est annoncé franchement : il est de toute façon dévoilé dès
     // qu'on appuie sur Jouer, donc le cacher ne protégeait rien et rendait la
     // carte muette. Ce qui reste à trouver, ce sont les noms.
-    return `<div class="daily"><span class="tag">${nomSport(sp)} · jour n° ${DAYN}</span>`
-      +`<div class="carte">${miniTerrain(m,ti)}<div class="droite">`
+    // Trois niveaux de lecture, et pas un de plus : le sport, l'affiche, puis
+    // ce qu'il y a a faire. Tout le reste — jour n°, « finale de », « compo a
+    // retrouver » — disait la meme chose en plus long.
+    return `<div class="daily"><div class="carte">${miniTerrain(m,ti)}<div class="droite">`
+      +`<span class="quel">${nomSport(sp)}</span>`
       +`<span class="what">${esc(m.fx)}`
-      +`<small>${m.where}, ${m.yr} · compo à retrouver : ${esc(t.name)} · ${tot} réponses</small></span>`
+      +`<small>${compet(m)} ${m.yr}</small></span>`
+      +`<span class="task"><b>${tot} noms</b> à retrouver, côté ${esc(t.name)}</span>`
       +(fait?`<span class="pts">${fait.p.toLocaleString("fr-FR")} pts</span><span class="streak">${fait.f}/${fait.n}${s>1?` · série de ${s} jours`:""}</span>`:"")
       +`<div class="duo"><button class="btn primary" data-jour="${sp}">${fait?"Rejouer":"Jouer"}</button>`
       +`<button class="btn" data-part="${sp}">Partager</button></div>`
@@ -895,27 +946,43 @@ function end(){
 // on rejoue : la raison de ne pas etre classe, elle, ne change pas
 $("again").onclick=e=>{e.preventDefault();start(M,TI,false,NOTE_FIN)};
 $("swap").onclick=e=>{e.preventDefault();start(M,1-TI,false,NOTE_FIN)};
-// ---- les jours d'avant -------------------------------------------------
-// Hors classement : le serveur n'accepte qu'une partie classee par jour et par
-// sport, celle du jour meme. Ces parties-la servent a rattraper et a s'entrainer.
-let PASSE_VU=40;
-function renderPasse(){
-  const el=$("listepasse");
-  if(DAYN<2){el.innerHTML='<p class="sub">C’est le premier jour : il n’y a pas encore de jours d’avant.</p>';return}
-  const fin=Math.max(1,DAYN-PASSE_VU);let html="";
-  for(let d=DAYN-1;d>=fin;d--)SPORTS.forEach(sp=>{
-    const pk=dailyPick(d,sp);if(!pk)return;
-    const {m,ti}=pk,t=m.teams[ti],tot=t.p.length+(t.coach?1:0),f=store.get(dailyKey(d,sp));
-    html+=`<button class="jour" data-d="${d}" data-sp="${sp}">`
-      +`<span class="n">${d}</span>`
-      +`<span class="quoi">${esc(m.fx)}<small>${nomSport(sp)} · ${m.where}, ${m.yr} · ${esc(t.name)}</small></span>`
-      +`<span class="res ${f&&f.f===f.n?"full":""}">${f?f.f+"/"+f.n:tot+" à trouver"}</span></button>`;
+// ---- toutes les finales ------------------------------------------------
+// Rangees par sport puis par competition, et non par jour : on vient y chercher
+// un match precis, pas « ce qui est tombe le 12 ». Hors classement, parce que
+// le serveur n'accepte qu'une partie classee par jour et par sport, celle du
+// jour meme.
+const COMPETS={
+  foot:[["cdm","Coupe du monde"],["euro","Euro"],["ldc","Ligue des champions"]],
+  rugby:[["rwc","Coupe du monde"],["hcup","Coupe d’Europe"],["top14","Top 14"]],
+};
+let SPORT_ARCH="foot";
+function renderArchives(){
+  const el=$("arch");
+  el.innerHTML=`<div class="sports">`
+    +SPORTS.map(sp=>`<button data-sa="${sp}"${sp===SPORT_ARCH?' class="on"':""}>${nomSport(sp)}</button>`).join("")
+    +`</div>`
+    +COMPETS[SPORT_ARCH].map(([cp,nom],i)=>{
+      const liste=MATCHES.filter(m=>m.comp===cp).sort((a,b)=>b.yr-a.yr);
+      if(!liste.length)return "";
+      return `<details class="comp"${i===0?" open":""}>`
+        +`<summary><b>${nom}</b><span>${liste.length} finales</span></summary>`
+        +`<div class="dedans">`
+        +liste.map(m=>{
+          // Le meilleur resultat deja obtenu sur cette compo, s'il existe :
+          // bestKey est deja rempli a chaque fin de partie, classee ou non.
+          const t=m.teams[0],tot=t.p.length+(t.coach?1:0),f=store.get(bestKey(m,0));
+          return `<button class="fin${f?" fait":""}" data-id="${m.id}">`
+            +`<span class="an">${m.yr}</span>`
+            +`<span class="aff">${esc(m.fx)}</span>`
+            +`<span class="nb">${f?f.f+"/"+tot:tot+" noms"}</span></button>`;
+        }).join("")
+        +`</div></details>`;
+    }).join("");
+  el.querySelectorAll("[data-sa]").forEach(b=>b.onclick=()=>{SPORT_ARCH=b.dataset.sa;renderArchives()});
+  el.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{
+    const m=MATCHES.find(x=>x.id===b.dataset.id);
+    if(m)start(m,0,false," Hors classement : seule la compo du jour compte.");
   });
-  if(fin>1)html+=`<div class="ligne" style="margin-top:14px"><button class="btn" id="plusjours">Voir plus loin</button></div>`;
-  el.innerHTML=html;
-  el.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{
-    const pk=dailyPick(+b.dataset.d,b.dataset.sp);if(pk)start(pk.m,pk.ti,false," Hors classement : ce jour est passé.")});
-  if($("plusjours"))$("plusjours").onclick=()=>{PASSE_VU+=40;renderPasse()};
 }
 
 // ---- navigation entre les sections ------------------------------------
@@ -979,7 +1046,7 @@ if(window.visualViewport){
 addEventListener("resize",hauteurVisible);
 hauteurVisible();
 
-const SECTIONS=["home","moi","play"];
+const SECTIONS=["home","archives","moi","play"];
 let ONGLET="home";                       // l'onglet ou l'on revient apres une partie
 // ---- mesure d'audience -------------------------------------------------
 // GoatCounter : gratuit pour un usage non commercial, sans cookie — donc pas
@@ -1010,7 +1077,8 @@ function montre(nom){
   SECTIONS.forEach(s=>$(s).classList.toggle("hidden",s!==nom));
   window.scrollTo(0,0);
   if(nom==="home"){renderDaily();renderPortrait();}
-  if(nom==="moi"){renderMoi();renderPasse();renderAdmin();compte("/profil","Profil");}
+  if(nom==="archives"){renderArchives();compte("/finales","Toutes les finales");}
+  if(nom==="moi"){renderMoi();renderAdmin();compte("/profil","Profil");}
 }
 const home=()=>{clearInterval(tick);over=true;montre(ONGLET==="play"?"home":ONGLET);};
 $("other").onclick=home;$("back").onclick=home;
@@ -1058,8 +1126,9 @@ async function renderAdmin(){
 }
 // Le portrait porte l'initiale du pseudo, ou un trait tant qu'il n'y en a pas.
 function renderPortrait(){
-  const n=(moi().pseudo||"").trim();
-  $("versmoi").textContent=n?n[0].toUpperCase():"·";
+  const n=(moi().pseudo||"").trim(),l=n?n[0].toUpperCase():"·";
+  // Les deux en-tetes portent le meme portrait : accueil et liste des finales.
+  document.querySelectorAll(".portrait").forEach(b=>b.textContent=l);
 }
 
 // ---- profil : pseudo, code de reprise, chiffres ------------------------

@@ -64,12 +64,23 @@ test mentaient sur la mise en page réelle.
 
 # Les deux onglets
 
-**Compos** — les deux compos du jour, et un bouton vers *Les jours d'avant*,
-qui rejoue n'importe quelle journée écoulée. Ces parties-là sont hors
-classement : le serveur n'accepte qu'une partie classée par jour et par sport,
-celle du jour même.
+**Aujourd'hui** — les deux compos du jour, une par sport. Chaque carte tient en
+trois niveaux de lecture et pas un de plus : le sport, l'affiche du match, puis
+ce qu'il y a à faire. L'ancienne carte disait trois fois la même chose —
+« jour n° 7 », « Finale de la Coupe du monde, 1998 », « compo à retrouver » —
+et se lisait d'autant moins bien.
 
-**Moi** — pseudo, chiffres par sport, et le **code de reprise**.
+**Toutes les finales** — rangées par sport, puis par compétition (Coupe du
+monde, Euro, Ligue des champions ; Coupe du monde, Coupe d'Europe, Top 14),
+puis par année, de la plus récente à la plus ancienne. On vient y chercher un
+match précis, pas « ce qui est tombé le 12 » : c'est pour ça que la liste
+chronologique des jours passés a disparu, elle rangeait les mêmes finales dans
+un ordre dont personne n'a l'usage. Ces parties sont hors classement — le
+serveur n'accepte qu'une partie classée par jour et par sport, celle du jour
+même.
+
+Le profil reste derrière le portrait, en haut à droite : pseudo, chiffres par
+sport, **code de reprise**, et le tableau de bord pour le propriétaire.
 
 Un troisième onglet « joueur mystère » a existé une nuit : deviner un joueur
 à partir d'indices dévoilés un à un. Retiré, pas assez bon. Il est dans
@@ -177,7 +188,7 @@ trouvée. Si elle change, c'est qu'elle regarde le terrain.
 ```
 sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)
 node tools/test_app.js        # le jeu, le partage, les fichiers de l'app
-node tools/test_onglets.js    # onglets, profil, jours d'avant
+node tools/test_onglets.js    # onglets, profil, toutes les finales
 node tools/test_noms.js       # la reconnaissance des noms, sur toute la base
 node tools/test_parcours.js   # une soirée entière, à la souris et au clavier
 node tools/test_terrain.js    # la mise en page du terrain, 10 compos × 6 largeurs

@@ -31,22 +31,26 @@ const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : 
 
   // --- 2. deux cartes, une par sport
   const cartes = await p.evaluate(() => [...document.querySelectorAll('#daily .daily')]
-    .map(c => ({ tag: c.querySelector('.tag').textContent, bouton: c.querySelector('button').dataset.jour })));
+    .map(c => ({ sport: c.querySelector('.quel').textContent, bouton: c.querySelector('button').dataset.jour })));
   verifie('deux cartes, foot puis rugby',
     cartes.length === 2 && cartes[0].bouton === 'foot' && cartes[1].bouton === 'rugby', cartes);
 
-  // --- 3. plus de catalogue, plus de groupe
+  // --- 3. la carte du jour ne dit que l'essentiel, et plus un mot de groupe
+  // L'ancien catalogue (list / filters / voirtout) a ete remplace par l'onglet
+  // « Toutes les finales » : ce qui doit rester disparu, c'est lui.
   const disparus = await p.evaluate(() => ({
-    archive: !!document.getElementById('archive'),
     liste: !!document.getElementById('list'),
     filtres: !!document.getElementById('filters'),
     voirtout: !!document.getElementById('voirtout'),
     groupe: /groupe/i.test(document.getElementById('daily').textContent),
     moi: Object.keys(moi()).sort().join(','),
+    // Trois niveaux et pas un de plus sur la carte.
+    bavard: /jour n°|Finale de|compo à retrouver/i.test(document.getElementById('daily').textContent),
   }));
-  verifie('plus de liste de finales',
-    !disparus.archive && !disparus.liste && !disparus.filtres && !disparus.voirtout, disparus);
+  verifie('l’ancien catalogue n’est pas revenu',
+    !disparus.liste && !disparus.filtres && !disparus.voirtout, disparus);
   verifie('plus un mot de groupe a l’ecran', !disparus.groupe, disparus);
+  verifie('la carte du jour ne se repete pas', !disparus.bavard, disparus);
   verifie('identite reduite a id + pseudo', disparus.moi === 'id,pseudo', disparus);
 
   // --- 4. jouer le foot : seul le foot est enregistre, et le classement est global
