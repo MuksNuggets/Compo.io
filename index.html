@@ -189,10 +189,10 @@ body.enjeu .wrap{padding:0;height:100%}
 /* Le sport, en tout petit au-dessus de l'affiche : il situe la carte sans
    prendre la vedette. */
 /* Pastille deux tons aux couleurs du club, et drapeau pour les nations. */
-.rond{width:22px;height:22px;flex:0 0 22px;border-radius:50%;overflow:hidden;
-  display:inline-flex;align-items:center;justify-content:center;
-  font-size:19px;line-height:1;border:1px solid rgba(0,0,0,.18)}
-.rond.club{background:linear-gradient(135deg,var(--c1) 0 50%,var(--c2) 50% 100%)}
+/* Un rond plein, peint aux couleurs : le drapeau pour une nation, les deux
+   couleurs du club sinon. Rien d'autre dedans — ni emoji, ni image. */
+.rond{width:22px;height:22px;flex:0 0 22px;border-radius:50%;display:inline-block;
+  border:1px solid rgba(0,0,0,.18);vertical-align:-1px}
 .quel{font:700 10.5px/1 Barlow,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
 /* Ce qu'il y a a faire, dit une seule fois et en clair. */
 .task{font-size:14px;color:var(--muted)}
@@ -327,18 +327,35 @@ body.enjeu .wrap{padding:0;height:100%}
 .fin{width:100%;display:flex;align-items:center;gap:10px;text-align:left;color:inherit;font:inherit;
   background:none;border:0;border-top:1px solid var(--line);padding:10px 2px}
 .comp .dedans .fin:first-child{border-top:0}
-.fin .an{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;min-width:38px;color:var(--muted)}
+.fin .an{flex:0 0 40px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;
+  color:var(--muted);line-height:1.05}
+.fin .an em{display:block;font:400 10px/1.2 Barlow,sans-serif;font-style:normal}
 .fin.fait .an{color:var(--ok)}
-.duel{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
-.cote{flex:1;min-width:0;display:flex;align-items:center;gap:6px}
-.cote.droite{justify-content:flex-end}
+.duel{flex:1;min-width:0;display:flex;align-items:center;gap:7px}
+/* Les deux camps se serrent contre le score. */
+.cote{flex:1;min-width:0;display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.cote.droite{justify-content:flex-start}
 .cote b{font:700 15px/1 Barlow,sans-serif}
 .score{display:flex;gap:3px;flex:0 0 auto}
 .score i{font:800 16px/1 "Barlow Condensed",sans-serif;font-style:normal;
   background:var(--panel);color:var(--panel-ink);
   min-width:25px;text-align:center;padding:5px 3px;border-radius:5px}
-.sup{flex:0 0 34px;font-size:11px;color:var(--muted);white-space:nowrap;text-align:right}
-.fin .nb{font-size:12px;color:var(--ok);white-space:nowrap}
+/* Largeur fixe, meme vide : le resultat ne doit rien bouger en apparaissant. */
+.fin .nb{flex:0 0 34px;font:600 12px Barlow,sans-serif;color:var(--ok);
+  white-space:nowrap;text-align:right}
+/* Sur un ecran etroit, les sigles longs — USAP, MHR — debordaient de leur
+   moitie et passaient par-dessus l'annee. On resserre tout d'un cran plutot
+   que de tronquer un sigle, qui est deja une abreviation. */
+@media (max-width:365px){
+  .fin{gap:6px}
+  .fin .an{flex-basis:34px;font-size:17px}
+  .duel{gap:5px}
+  .cote{gap:5px}
+  .cote b{font-size:13.5px}
+  .rond{width:18px;height:18px;flex-basis:18px}
+  .score i{min-width:22px;font-size:15px;padding:4px 2px}
+  .fin .nb{flex-basis:30px;font-size:11px}
+}
 .fin:hover .cote b{color:var(--pitch)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
@@ -580,12 +597,25 @@ const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
 // elles, portent leur drapeau : un emoji, donc zero octet et zero fichier.
 // « c » : le nom court, celui qu'on affiche partout.
 const EQUIPES={
- // --- nations
- "Allemagne":{f:"🇩🇪"},"Angleterre":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},"Argentine":{f:"🇦🇷"},"Australie":{f:"🇦🇺"},
- "Afrique du Sud":{f:"🇿🇦"},"Brésil":{f:"🇧🇷"},"Croatie":{f:"🇭🇷"},"Danemark":{f:"🇩🇰"},
- "Espagne":{f:"🇪🇸"},"France":{f:"🇫🇷"},"Grèce":{f:"🇬🇷"},"Italie":{f:"🇮🇹"},
- "Nouvelle-Zélande":{f:"🇳🇿"},"Pays-Bas":{f:"🇳🇱"},"Portugal":{f:"🇵🇹"},
- "RFA":{f:"🇩🇪"},"Tchéquie":{f:"🇨🇿"},
+ // --- nations : le drapeau peint dans le rond, en CSS. Plus d'emoji — il
+ // etait rectangulaire, et sur Windows il ne s'affichait meme pas.
+ "France":{g:"linear-gradient(90deg,#0055A4 0 33.3%,#fff 33.3% 66.6%,#EF4135 66.6%)"},
+ "Italie":{g:"linear-gradient(90deg,#008C45 0 33.3%,#fff 33.3% 66.6%,#CD212A 66.6%)"},
+ "Portugal":{g:"linear-gradient(90deg,#046A38 0 40%,#DA291C 40%)"},
+ "Allemagne":{g:"linear-gradient(180deg,#000 0 33.3%,#DD0000 33.3% 66.6%,#FFCE00 66.6%)"},
+ "RFA":{g:"linear-gradient(180deg,#000 0 33.3%,#DD0000 33.3% 66.6%,#FFCE00 66.6%)"},
+ "Pays-Bas":{g:"linear-gradient(180deg,#AE1C28 0 33.3%,#fff 33.3% 66.6%,#21468B 66.6%)"},
+ "Croatie":{g:"linear-gradient(180deg,#FF0000 0 33.3%,#fff 33.3% 66.6%,#171796 66.6%)"},
+ "Argentine":{g:"linear-gradient(180deg,#74ACDF 0 33.3%,#fff 33.3% 66.6%,#74ACDF 66.6%)"},
+ "Espagne":{g:"linear-gradient(180deg,#AA151B 0 25%,#F1BF00 25% 75%,#AA151B 75%)"},
+ "Grèce":{g:"linear-gradient(180deg,#0D5EAF 0 20%,#fff 20% 40%,#0D5EAF 40% 60%,#fff 60% 80%,#0D5EAF 80%)"},
+ "Brésil":{g:"linear-gradient(135deg,#009C3B 0 38%,#FFDF00 38% 72%,#002776 72%)"},
+ "Afrique du Sud":{g:"linear-gradient(135deg,#007A4D 0 40%,#FFB612 40% 60%,#000 60%)"},
+ "Nouvelle-Zélande":{g:"linear-gradient(135deg,#00247D 0 55%,#CC142B 55% 78%,#fff 78%)"},
+ "Australie":{g:"linear-gradient(135deg,#00247D 0 55%,#fff 55% 78%,#00247D 78%)"},
+ "Tchéquie":{g:"linear-gradient(135deg,#11457E 0 36%,transparent 36%),linear-gradient(180deg,#fff 0 50%,#D7141A 50%)"},
+ "Angleterre":{g:"linear-gradient(#CE1124,#CE1124) 50%/100% 30% no-repeat,linear-gradient(#CE1124,#CE1124) 50%/30% 100% no-repeat,#fff"},
+ "Danemark":{g:"linear-gradient(#fff,#fff) 50%/100% 28% no-repeat,linear-gradient(#fff,#fff) 36%/28% 100% no-repeat,#C8102E"},
  // --- clubs de football
  "AS Monaco":{c:"Monaco",a:"#E63329",b:"#fff"},
  "Ajax":{c:"Ajax",a:"#D2122E",b:"#fff"},
@@ -667,8 +697,8 @@ const nomCourtEquipe=(n,sport)=>(sport==="rugby"&&SURNOMS[n])||(EQUIPES[n]&&EQUI
 // Pour un club, ses deux couleurs en diagonale.
 function marque(n){
   const e=EQUIPES[n];if(!e)return "";
-  if(e.f)return `<span class="rond" aria-hidden="true">${e.f}</span>`;
-  return `<span class="rond club" aria-hidden="true" style="--c1:${e.a};--c2:${e.b}"></span>`;
+  const fond=e.g||`linear-gradient(135deg,${e.a} 0 50%,${e.b} 50%)`;
+  return `<span class="rond" aria-hidden="true" style="background:${fond}"></span>`;
 }
 // Le score, tel qu'il est ecrit dans l'affiche. Le premier couple de chiffres
 // est le score du match ; ce qui suit entre parentheses — « (4–2 t.a.b.) » —
@@ -676,14 +706,19 @@ function marque(n){
 function duel(m){
   const [a,b]=m.teams.map(t=>t.name);
   const sc=m.fx.match(/(\d+)\s*[–-]\s*(\d+)/);
-  const sup=m.fx.match(/\(([^)]+)\)\s*$/);
+  // Les deux camps se serrent contre le score : le cote gauche pousse a droite,
+  // le droit a gauche. Sans ca ils partaient aux deux bords et le regard devait
+  // traverser toute la ligne.
   return `<span class="duel">`
     +`<span class="cote">${marque(a)}<b>${esc(sigle(a))}</b></span>`
     +`<span class="score"><i>${sc?sc[1]:"–"}</i><i>${sc?sc[2]:"–"}</i></span>`
-    +`<span class="cote droite"><b>${esc(sigle(b))}</b>${marque(b)}</span></span>`
-    // Toujours pose, meme vide : sinon le score se decale d'une ligne a
-    // l'autre selon qu'il y a eu prolongation ou non.
-    +`<span class="sup">${sup?esc(sup[1].replace(/^\d+–\d+\s*/,"")):""}</span>`;
+    +`<span class="cote droite"><b>${esc(sigle(b))}</b>${marque(b)}</span></span>`;
+}
+// « a.p. », « t.a.b. » : la maniere dont le score s'est decide. Elle se range
+// sous l'annee, a gauche, ou la colonne est deja de largeur fixe.
+function supDe(m){
+  const s=m.fx.match(/\(([^)]+)\)\s*$/);
+  return s?s[1].replace(/^\d+–\d+\s*/,""):"";
 }
 // L'affiche avec les noms courts. Les 117 fixtures commencent toutes par
 // teams[0] et finissent par teams[1], ce qui permet de remplacer sans risque
@@ -1116,9 +1151,14 @@ function renderArchives(){
           // Le meilleur resultat deja obtenu sur cette compo, s'il existe :
           // bestKey est deja rempli a chaque fin de partie, classee ou non.
           const t=m.teams[0],tot=t.p.length+(t.coach?1:0),f=store.get(bestKey(m,0));
+          // Les deux colonnes de bord sont de largeur fixe et toujours la,
+          // meme vides : le resultat qui apparait apres une partie decalait
+          // toute la ligne, et on le voyait aussitot a cote des autres.
+          const sup=supDe(m);
           return `<button class="fin${f?" fait":""}" data-id="${m.id}">`
-            +`<span class="an">${m.yr}</span>${duel(m)}`
-            +(f?`<span class="nb">${f.f}/${tot}</span>`:"")+`</button>`;
+            +`<span class="an">${m.yr}${sup?`<em>${esc(sup)}</em>`:""}</span>`
+            +duel(m)
+            +`<span class="nb">${f?f.f+"/"+tot:""}</span></button>`;
         }).join("")
         +`</div></details>`;
     }).join("");

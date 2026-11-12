@@ -85,11 +85,15 @@ sport, **code de reprise**, et le tableau de bord pour le propriétaire.
 ## Les équipes : noms courts, drapeaux, couleurs
 
 **Pas de blasons de clubs.** Ce sont des marques déposées, et les poser sur un
-site publié n'est pas une question technique. À la place, les couleurs du
-club, en pastille deux tons : gratuit, reconnaissable, et deux déclarations de
-CSS. Les nations, elles, portent leur drapeau — un emoji, donc zéro octet et
-zéro fichier. Sur Windows les drapeaux s'affichent en deux lettres ; sur
-mobile, partout, ils s'affichent.
+site publié n'est pas une question technique.
+
+Chaque équipe est donc **un rond plein, peint en CSS** : le drapeau pour une
+nation, les deux couleurs du club sinon. Ni image, ni emoji — un emoji de
+drapeau est rectangulaire, se recadre mal en rond, et sur Windows ne s'affiche
+pas du tout. Un dégradé par drapeau coûte une ligne et s'affiche partout
+pareil. Quelques-uns sont des simplifications assumées : l'Afrique du Sud est
+en vert et or, ses couleurs de maillot, plutôt qu'en six couleurs illisibles
+dans 22 pixels.
 
 Chaque équipe a un **nom court** : *Stade toulousain* → Toulouse, *Paris
 Saint-Germain* → PSG, *Étoile rouge de Belgrade* → Étoile rouge. Et les
@@ -100,8 +104,10 @@ All Blacks, Springboks, Wallabies. Pas *XV de France*, qui est plus long que
 Dans la liste des finales, chaque ligne se lit comme un **tableau
 d'affichage** : l'année, puis les deux camps de part et d'autre du score, en
 sigles — `1998 · FRA [3] [0] BRA`. Les deux côtés pèsent le même espace, et la
-mention de prolongation garde sa place même quand il n'y en a pas, sans quoi le
-score se décalerait d'une ligne à l'autre. Les nations portent les codes
+mention de prolongation se range sous l'année, et la colonne du résultat est
+réservée même vide : les deux colonnes de bord sont de largeur fixe, sinon la
+ligne se décalait dès qu'un résultat apparaissait, ce qui se voyait aussitôt à
+côté des lignes voisines. Les nations portent les codes
 internationaux, ceux des écrans de télé ; les clubs leur abréviation usuelle.
 
 Les cartes du jour, elles, gardent les noms en toutes lettres : c'est la

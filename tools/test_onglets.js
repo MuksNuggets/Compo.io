@@ -119,9 +119,13 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('chaque equipe de la base a son entree', eq.manque.length === 0, eq.manque.slice(0, 8));
   v('les clubs portent un nom court', /^Toulouse /.test(eq.toulouse || ''), eq.toulouse);
   v('les nations de rugby portent leur surnom', /All Blacks/.test(eq.allblacks || ''), eq.allblacks);
-  v('une nation a un rond avec son drapeau', /class="rond"/.test(eq.drapeau), eq.drapeau);
-  v('un club a un rond de couleur, pas un blason',
-    /rond club/.test(eq.pastille) && !/<img/.test(eq.pastille), eq.pastille);
+  // Le rond est peint, pas rempli d'une image ni d'un emoji : un emoji de
+  // drapeau est rectangulaire, et sur Windows il ne s'affiche pas du tout.
+  v('une nation est un rond peint aux couleurs du drapeau',
+    /class="rond"/.test(eq.drapeau) && /linear-gradient/.test(eq.drapeau)
+    && !/<img/.test(eq.drapeau) && !/[\u{1F1E6}-\u{1F1FF}]/u.test(eq.drapeau), eq.drapeau);
+  v('un club est un rond a ses deux couleurs',
+    /class="rond"/.test(eq.pastille) && /linear-gradient/.test(eq.pastille), eq.pastille);
   v('une equipe inconnue ne casse rien', eq.inconnu === '', eq.inconnu);
 
   // --- la ligne facon tableau d'affichage
@@ -137,6 +141,9 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
       noir: getComputedStyle(l.querySelector('.score i')).backgroundColor,
       texte: l.textContent,
       colonne: new Set(scores).size,
+      // Les deux camps doivent se serrer contre le score, pas partir aux bords.
+      ecartGauche: Math.round(l.querySelector('.score').getBoundingClientRect().left
+        - l.querySelector('.cote b').getBoundingClientRect().right),
       entete: document.querySelector('#arch .comp summary').textContent,
     };
   });
@@ -147,10 +154,44 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('plus de « noms » en bout de ligne', !/noms/.test(lig.texte), lig.texte);
   v('le score reste dans la meme colonne d’une ligne a l’autre', lig.colonne === 1, lig.colonne);
   v('l’entete dit « Finales »', /Finales/.test(lig.entete), lig.entete);
+  v('les camps sont serres contre le score', lig.ecartGauche >= 0 && lig.ecartGauche <= 14, lig.ecartGauche);
+
+  // Le resultat apparait apres une partie : il ne doit rien decaler.
+  const colAvant = await p.evaluate(() =>
+    [...document.querySelectorAll('#arch .fin .score')].map(e => Math.round(e.getBoundingClientRect().left)));
+  await p.evaluate(() => { const m = MATCHES.find(x => x.sport === 'rugby');
+    store.set(bestKey(m, 0), { f: 9, t: 120 }); renderArchives(); });
+  await p.waitForTimeout(200);
+  const colApres = await p.evaluate(() =>
+    [...document.querySelectorAll('#arch .fin .score')].map(e => Math.round(e.getBoundingClientRect().left)));
+  v('un resultat affiche ne decale pas la ligne',
+    JSON.stringify(colAvant) === JSON.stringify(colApres),
+    { avant: colAvant.slice(0, 3), apres: colApres.slice(0, 3) });
+
+  // Rien ne doit se chevaucher, meme avec les sigles les plus longs et un
+  // resultat affiche, et meme sur le plus petit ecran.
+  for (const large of [430, 390, 360, 320]) {
+    await p.setViewportSize({ width: large, height: 820 });
+    await p.waitForTimeout(200);
+    const chevauche = await p.evaluate(() => {
+      const mauvais = [];
+      document.querySelectorAll('#arch .fin').forEach(f => {
+        const bouts = [f.querySelector('.an'), f.querySelector('.cote .rond'),
+                       f.querySelector('.score'), f.querySelector('.cote.droite .rond'),
+                       f.querySelector('.nb')].filter(Boolean).map(e => e.getBoundingClientRect());
+        for (let i = 1; i < bouts.length; i++)
+          if (bouts[i].left < bouts[i - 1].right - 0.5) mauvais.push(f.textContent.trim().slice(0, 18));
+      });
+      return mauvais;
+    });
+    v(`rien ne se chevauche a ${large} px`, chevauche.length === 0, chevauche.slice(0, 4));
+  }
+  await p.setViewportSize({ width: 390, height: 820 });
 
   // Les annees descendent : on cherche d'abord la derniere.
   const annees = await p.evaluate(() =>
-    [...document.querySelectorAll('#arch .comp:first-of-type .fin .an')].map(e => +e.textContent));
+    // firstChild : la cellule porte aussi « a.p. » ou « t.a.b. » en dessous.
+    [...document.querySelectorAll('#arch .comp:first-of-type .fin .an')].map(e => +e.firstChild.textContent));
   v('les annees vont de la plus recente a la plus ancienne',
     annees.every((a, i) => i === 0 || annees[i - 1] >= a), annees);
 
