@@ -83,9 +83,15 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
 
   // Pendant la partie la page est bloquee : rien ne doit pouvoir defiler
   // sous le panneau, sinon le terrain part sous le clavier.
-  const bloque = await q.evaluate(() => getComputedStyle(document.body).overflow === 'hidden'
-    && getComputedStyle(document.getElementById('play')).position === 'fixed');
+  const bloque = await q.evaluate(() => getComputedStyle(document.body).position === 'fixed');
   if (!bloque) ennuis.push('en partie : la page n’est pas bloquee');
+  // Mais le panneau, lui, doit pouvoir glisser : c'est la soupape quand la
+  // place manque au point de rogner le haut du terrain.
+  const soupape = await q.evaluate(() => {
+    const s = getComputedStyle(document.getElementById('play')).overflowY;
+    return s === 'auto' || s === 'scroll';
+  });
+  if (!soupape) ennuis.push('en partie : le panneau ne peut pas defiler');
 
   // Et il faut une sortie : quand la place manque, « Abandonner » et « Retour »
   // disparaissent ; toucher le terrain doit rendre la main.
@@ -93,15 +99,33 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
   await q.waitForTimeout(150);
   if (await q.evaluate(() => document.activeElement.id !== 'inp'))
     ennuis.push('la saisie ne prend pas le focus');
+  // Un glissement, lui, ne doit RIEN fermer : sinon poser le doigt pour faire
+  // defiler le panneau fait disparaitre le clavier.
+  // Evenements fabriques a la main, et non une vraie souris : sous Chromium un
+  // mousedown hors d'un champ le quitte tout seul, ce qui masquerait notre
+  // gestionnaire. Ce qu'on veut verifier, c'est lui.
+  await q.focus('#inp');
+  await q.waitForTimeout(150);
+  const glisse = await q.evaluate(() => {
+    const p = document.getElementById('pitch'), r = p.getBoundingClientRect();
+    const ev = (t, y) => p.dispatchEvent(new PointerEvent(t,
+      { bubbles: true, clientX: r.left + r.width / 2, clientY: y }));
+    ev('pointerdown', r.top + 20);
+    ev('pointerup', r.top + 90);
+    return document.activeElement.id;
+  });
+  if (glisse !== 'inp')
+    ennuis.push('un glissement ferme le clavier : on ne peut plus faire defiler');
+
   await q.tap('#pitch');
   await q.waitForTimeout(200);
   if (await q.evaluate(() => document.activeElement.id === 'inp'))
-    ennuis.push('toucher le terrain ne ferme pas le clavier : on est pris au piege');
+    ennuis.push('taper le terrain ne ferme pas le clavier : on est pris au piege');
 
   // Une fois la partie finie, la page redevient normale.
   await q.click('#giveup');
   await q.waitForTimeout(500);
-  if (await q.evaluate(() => getComputedStyle(document.body).overflow === 'hidden'))
+  if (await q.evaluate(() => getComputedStyle(document.body).position === 'fixed'))
     ennuis.push('apres la partie : la page reste bloquee');
   await q.close();
 

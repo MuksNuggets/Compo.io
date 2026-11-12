@@ -99,21 +99,28 @@ button{font:inherit;color:inherit;cursor:pointer}
 .inp.shake{animation:sh .3s}
 @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .flash{min-height:22px;font-size:14px;color:var(--muted);margin:8px 0 0}
-/* Pendant une partie, l'ecran de jeu est un PANNEAU FIXE cale sur la zone
-   reellement visible. C'est la seule facon qui tienne sur iOS : le clavier n'y
-   retrecit pas la page, il la recouvre, et Safari fait defiler pour amener la
-   saisie au-dessus du clavier — ce qui emporte le terrain hors de l'ecran.
-   Borner la hauteur ne suffisait pas : Safari defile avant que le JS ne reagisse.
-   Un panneau fixe, lui, n'a rien a faire defiler.
-   --vue et --haut viennent de visualViewport, seule API qui sache ce qui reste
-   visible sous le clavier et de combien Safari a decale la vue. */
-body.enjeu{overflow:hidden}
-#play.enjeu{position:fixed;left:0;right:0;top:var(--haut,0px);height:var(--vue,100dvh);
-  z-index:10;background:var(--bg);overflow:hidden;
+/* Pendant une partie, la PAGE est verrouillee et le panneau de jeu tient dans
+   ce qui reste visible. Sur iOS le clavier ne retrecit pas la page, il la
+   recouvre, et Safari fait defiler pour amener la saisie au-dessus du clavier —
+   ce qui emportait le terrain hors de l'ecran.
+   Le verrou porte sur body, pas sur le panneau : body fixe, le document n'a
+   plus rien a faire defiler, donc Safari ne peut plus rien emporter. Un panneau
+   en position:fixed, lui, se retrouvait mal place des que Safari avait deja
+   decale la vue : on perdait le haut du terrain.
+   Le panneau, en revanche, defile a l'interieur. Si la place manque vraiment on
+   peut remonter voir le haut du terrain, et c'est le panneau qui bouge, pas la
+   page. --vue vient de visualViewport, seule API qui sache ce qui reste visible
+   sous le clavier. */
+body.enjeu{position:fixed;inset:0;width:100%;overflow:hidden}
+body.enjeu .wrap{padding:0;height:100%}
+#play.enjeu{height:var(--vue,100dvh);
   display:flex;flex-direction:column;
-  padding:14px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  /* body fixe sort du flux, donc le padding de :root qui reserve l'encoche ne
+     s'applique plus : le titre passait sous la barre d'etat. On le reprend ici. */
+  padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(10px + env(safe-area-inset-bottom,0px))}
 #play.enjeu > *{flex:0 0 auto}
-#play.enjeu > .pitch{flex:1 1 auto;min-height:120px}
+#play.enjeu > .pitch{flex:1 1 auto;min-height:150px}
 /* Quand il ne reste presque rien, on enleve ce qui n'aide pas a jouer. Les
    etiquettes partent aussi : onze noms ne tiennent pas dans 270 px sans se
    chevaucher. Le maillot allume suffit a voir la compo se remplir, et le nom
@@ -665,14 +672,22 @@ function tryMatch(q,loose){
   if(loose&&cherche(q,true,true)>=0){$("flash").textContent="Déjà trouvé.";$("inp").value="";return true}
   return false;
 }
-// Toucher le terrain referme le clavier. Sans ca on est pris au piege : quand
-// la place manque, « Abandonner » et « Retour » se cachent, et plus rien ne
-// permet de sortir de la saisie.
+// Taper le terrain referme le clavier : sans ca, quand la place manque, plus
+// rien ne permet de sortir de la saisie.
+// Une TAPE, pas un glissement : sur pointerdown seul, le simple fait de poser
+// le doigt pour faire defiler le panneau fermait le clavier.
+let tapeX=0,tapeY=0,tapeVa=false;
 $("play").addEventListener("pointerdown",e=>{
-  if(!$("play").classList.contains("enjeu"))return;
-  if(e.target.closest("input,button,a"))return;
+  tapeVa=$("play").classList.contains("enjeu")&&!e.target.closest("input,button,a");
+  tapeX=e.clientX;tapeY=e.clientY;
+});
+$("play").addEventListener("pointerup",e=>{
+  if(!tapeVa)return;
+  tapeVa=false;
+  if(Math.abs(e.clientX-tapeX)>12||Math.abs(e.clientY-tapeY)>12)return;  // c'etait un glissement
   $("inp").blur();
 });
+$("play").addEventListener("pointercancel",()=>{tapeVa=false});
 $("inp").addEventListener("input",e=>{if(!over)tryMatch(e.target.value,false)});
 $("inp").addEventListener("keydown",e=>{if(e.key!=="Enter"||over)return;
   if(!tryMatch(e.target.value,true)&&e.target.value.trim()){const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");$("flash").textContent="Pas dans cette compo.";}});
@@ -760,10 +775,8 @@ function renderPasse(){
 // savoir sur iOS, ou le clavier recouvre la page sans la retrecir.
 function hauteurVisible(){
   const v=window.visualViewport;
-  const px=v?v.height:innerHeight,haut=v?v.offsetTop:0;
-  const st=document.documentElement.style;
-  st.setProperty("--vue",px+"px");
-  st.setProperty("--haut",haut+"px");
+  const px=v?v.height:innerHeight;
+  document.documentElement.style.setProperty("--vue",px+"px");
   $("play").classList.toggle("court",px<620);
 }
 if(window.visualViewport){
