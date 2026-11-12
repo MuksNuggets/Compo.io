@@ -99,6 +99,23 @@ button{font:inherit;color:inherit;cursor:pointer}
 .inp.shake{animation:sh .3s}
 @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .flash{min-height:22px;font-size:14px;color:var(--muted);margin:8px 0 0}
+/* Pendant une partie, l'ecran tient exactement dans ce qui reste visible : le
+   terrain se retrecit quand le clavier monte, au lieu que la page remonte et
+   l'emporte hors de vue au moment meme ou l'on veut le voir se remplir.
+   --vue est posee en JS, parce que le clavier d'iOS ne retrecit pas la page :
+   il la recouvre, et ni 100dvh ni les requetes media ne s'en apercoivent. */
+#play.enjeu{display:flex;flex-direction:column;height:calc(var(--vue,100dvh) - 68px)}
+#play.enjeu > *{flex:0 0 auto}
+#play.enjeu > .pitch{flex:1 1 auto;min-height:120px}
+/* Quand il ne reste presque rien, on enleve ce qui n'aide pas a jouer. Les
+   etiquettes partent aussi : onze noms ne tiennent pas dans 270 px sans se
+   chevaucher. Le maillot allume suffit a voir la compo se remplir, et le nom
+   trouve s'affiche sous la saisie. */
+#play.enjeu.court .sub,#play.enjeu.court #acts,#play.enjeu.court .top.bas{display:none}
+#play.enjeu.court .title{font-size:21px}
+#play.enjeu.court .pl .nm{display:none}
+#play.enjeu.court .pl.todo svg{opacity:.4}
+#play.enjeu.court .pl.miss svg{opacity:.4;filter:grayscale(1)}
 .pitch{position:relative;width:100%;border-radius:10px;overflow:hidden;
   background:repeating-linear-gradient(to bottom,var(--pitch) 0 8%,var(--stripe) 8% 16%)}
 /* Les joueurs n'occupent que la bande 18–90 (foot) et 18–82 (rugby) de la
@@ -149,6 +166,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .coach.miss .nm{background:var(--miss);color:#fff}
 @keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
 .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+/* Deux boutons suffisent a la fin d'une partie : partager, et revenir. Rejouer
+   et changer d'equipe sont des envies rares, elles passent en liens. */
+.apres{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0 0;font-size:14px}
+.apres a{color:var(--muted);text-underline-offset:2px}
+.apres a:hover{color:var(--ink)}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 16px;font-weight:600}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .result{margin-top:14px;padding:16px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
@@ -256,7 +278,8 @@ button{font:inherit;color:inherit;cursor:pointer}
     <p id="rtxt" style="margin:6px 0 10px;color:var(--muted)"></p>
     <p id="rmiss" style="margin:0 0 12px;font-size:14.5px"></p>
     <div id="board"></div>
-    <div class="actions" style="margin:0"><button class="btn primary" id="share" hidden>Partager</button><button class="btn" id="again">Rejouer</button><button class="btn" id="swap">Jouer l’autre équipe</button><button class="btn" id="other">Retour</button></div>
+    <div class="actions" style="margin:0"><button class="btn primary" id="share" hidden>Partager</button><button class="btn" id="other">Retour</button></div>
+    <p class="apres"><a href="#" id="again">Rejouer cette compo</a><a href="#" id="swap">Jouer l’autre équipe</a></p>
   </div>
   <!-- Retour et sport en bas : l'ecran s'ouvre directement sur l'affiche du
        match, et le haut n'est pas mange par une barre de navigation. -->
@@ -572,7 +595,8 @@ function start(m,ti,ranked,note){
   NOTE_FIN=note||"";RANKED=!!ranked;M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,...cles(n,al)}));
   if(t.coach)P.push({lab:"ENTR",n:t.coach[0],...cles(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
-  montre("play");$("result").classList.add("hidden");$("acts").classList.remove("hidden");
+  montre("play");$("play").classList.add("enjeu");hauteurVisible();
+  $("result").classList.add("hidden");$("acts").classList.remove("hidden");
   $("ptitle").textContent=m.fx;$("psub").textContent=`${m.where}, ${m.yr}. Compo à retrouver : ${t.name}${t.coach?", entraîneur compris":""}.`;
   $("psport").textContent=m.sport==="foot"?"Football":"Rugby";$("swap").classList.toggle("hidden",m.teams.length<2);
   const pitch=$("pitch");pitch.className="pitch "+m.sport;pitch.innerHTML=LINES[m.sport];
@@ -638,6 +662,7 @@ async function copier(txt,b,libelle){
 }
 function end(){
   if(over)return;over=true;clearInterval(tick);$("inp").disabled=true;$("inp").hidden=true;
+  $("play").classList.remove("enjeu");   // le bilan a le droit de depasser et de defiler
   P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.coach?p.n:nomCourt(p.n);}});
   const t=Math.round((Date.now()-startT)/1000),tot=P.length,key=bestKey(M,TI),b=store.get(key);
   const better=found.size>0&&(!b||found.size>b.f||(found.size===b.f&&t<b.t));if(better)store.set(key,{f:found.size,t});
@@ -674,7 +699,8 @@ function end(){
   setTimeout(()=>$("result").scrollIntoView({behavior:"smooth",block:"end"}),60);
 }
 // on rejoue : la raison de ne pas etre classe, elle, ne change pas
-$("again").onclick=()=>start(M,TI,false,NOTE_FIN);$("swap").onclick=()=>start(M,1-TI,false,NOTE_FIN);
+$("again").onclick=e=>{e.preventDefault();start(M,TI,false,NOTE_FIN)};
+$("swap").onclick=e=>{e.preventDefault();start(M,1-TI,false,NOTE_FIN)};
 // ---- les jours d'avant -------------------------------------------------
 // Hors classement : le serveur n'accepte qu'une partie classee par jour et par
 // sport, celle du jour meme. Ces parties-la servent a rattraper et a s'entrainer.
@@ -699,6 +725,20 @@ function renderPasse(){
 }
 
 // ---- navigation entre les sections ------------------------------------
+// Ce qui reste visible sous le clavier. L'API visualViewport est la seule a le
+// savoir sur iOS, ou le clavier recouvre la page sans la retrecir.
+function hauteurVisible(){
+  const v=window.visualViewport,px=v?v.height:innerHeight;
+  document.documentElement.style.setProperty("--vue",px+"px");
+  $("play").classList.toggle("court",px<620);
+}
+if(window.visualViewport){
+  visualViewport.addEventListener("resize",hauteurVisible);
+  visualViewport.addEventListener("scroll",hauteurVisible);
+}
+addEventListener("resize",hauteurVisible);
+hauteurVisible();
+
 const SECTIONS=["home","moi","play"];
 let ONGLET="home";                       // l'onglet ou l'on revient apres une partie
 function montre(nom){

@@ -56,6 +56,31 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
     await p.close();
   }
 
+  // --- le clavier ne doit pas emporter le terrain hors de vue
+  // On simule le clavier en retrecissant la fenetre : pendant une partie,
+  // l'ecran doit tenir dedans, terrain entier et saisie visible, sans defilement.
+  const q = await b.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  await q.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
+  await q.waitForTimeout(300);
+  await q.evaluate(() => { const m = MATCHES.find(x => x.id === 'cdm-1998'); start(m, 0, false); });
+  await q.waitForTimeout(250);
+  for (const hauteur of [844, 700, 540, 460, 400]) {
+    await q.setViewportSize({ width: 390, height: hauteur });
+    await q.waitForTimeout(250);
+    const r = await q.evaluate(() => {
+      const pit = document.getElementById('pitch').getBoundingClientRect();
+      const inp = document.getElementById('inp').getBoundingClientRect();
+      return { terrainEntier: pit.top >= -1 && pit.bottom <= innerHeight + 1,
+               saisieVisible: inp.bottom <= innerHeight + 1,
+               defile: document.documentElement.scrollHeight > innerHeight + 1,
+               terrain: Math.round(pit.height) };
+    });
+    if (!r.terrainEntier) ennuis.push(`fenetre ${hauteur}px : le terrain sort de l'ecran`);
+    if (!r.saisieVisible) ennuis.push(`fenetre ${hauteur}px : la saisie n'est pas visible`);
+    if (r.defile)         ennuis.push(`fenetre ${hauteur}px : la page defile pendant la partie`);
+  }
+  await q.close();
+
   console.log(`${COMPOS.length * LARGEURS.length} combinaisons : ${nb} chevauchement(s), pire ${pire}px`);
   if (ennuis.length) { console.log('ENNUIS'); ennuis.forEach(x => console.log('  ' + x)); }
   else console.log('Rien ne sort du terrain, rien ne deborde, le titre est en haut.');
