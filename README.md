@@ -97,6 +97,16 @@ surnoms là où ils sont plus courts **et** plus parlants que le nom du pays :
 All Blacks, Springboks, Wallabies. Pas *XV de France*, qui est plus long que
 *France* et n'apporte rien.
 
+Dans la liste des finales, chaque ligne se lit comme un **tableau
+d'affichage** : l'année, puis les deux camps de part et d'autre du score, en
+sigles — `1998 · FRA [3] [0] BRA`. Les deux côtés pèsent le même espace, et la
+mention de prolongation garde sa place même quand il n'y en a pas, sans quoi le
+score se décalerait d'une ligne à l'autre. Les nations portent les codes
+internationaux, ceux des écrans de télé ; les clubs leur abréviation usuelle.
+
+Les cartes du jour, elles, gardent les noms en toutes lettres : c'est la
+proposition d'entrée, elle doit se lire sans décoder.
+
 C'est ce qui fait tenir l'affiche sur une ligne — « Munster 16–13 Toulouse »
 plutôt que « Munster 16–13 Stade toulousain » — et donc des cartes de 180 px
 au lieu de 230. `tools/test_onglets.js` vérifie que les 67 équipes de la base

@@ -119,10 +119,34 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('chaque equipe de la base a son entree', eq.manque.length === 0, eq.manque.slice(0, 8));
   v('les clubs portent un nom court', /^Toulouse /.test(eq.toulouse || ''), eq.toulouse);
   v('les nations de rugby portent leur surnom', /All Blacks/.test(eq.allblacks || ''), eq.allblacks);
-  v('une nation a un drapeau', /drapeau/.test(eq.drapeau), eq.drapeau);
-  v('un club a une pastille de couleur, pas un blason',
-    /blason/.test(eq.pastille) && !/<img/.test(eq.pastille), eq.pastille);
+  v('une nation a un rond avec son drapeau', /class="rond"/.test(eq.drapeau), eq.drapeau);
+  v('un club a un rond de couleur, pas un blason',
+    /rond club/.test(eq.pastille) && !/<img/.test(eq.pastille), eq.pastille);
   v('une equipe inconnue ne casse rien', eq.inconnu === '', eq.inconnu);
+
+  // --- la ligne facon tableau d'affichage
+  const lig = await p.evaluate(() => {
+    const manque = [];
+    MATCHES.forEach(m => m.teams.forEach(t => { if (!SIGLES[t.name]) manque.push(t.name); }));
+    const l = document.querySelector('#arch .fin');
+    const scores = [...document.querySelectorAll('#arch .fin')].slice(0, 12)
+      .map(f => Math.round(f.querySelector('.score').getBoundingClientRect().left));
+    return { manque,
+      sigles: [...l.querySelectorAll('.cote b')].map(e => e.textContent),
+      cases: [...l.querySelectorAll('.score i')].map(e => e.textContent),
+      noir: getComputedStyle(l.querySelector('.score i')).backgroundColor,
+      texte: l.textContent,
+      colonne: new Set(scores).size,
+      entete: document.querySelector('#arch .comp summary').textContent,
+    };
+  });
+  v('chaque equipe a son sigle', lig.manque.length === 0, lig.manque.slice(0, 8));
+  v('la ligne porte deux sigles', lig.sigles.length === 2, lig.sigles);
+  v('le score est en deux cases', lig.cases.length === 2 && lig.cases.every(c => /^\d+$/.test(c)), lig.cases);
+  v('les cases sont sombres', lig.noir !== 'rgba(0, 0, 0, 0)', lig.noir);
+  v('plus de « noms » en bout de ligne', !/noms/.test(lig.texte), lig.texte);
+  v('le score reste dans la meme colonne d’une ligne a l’autre', lig.colonne === 1, lig.colonne);
+  v('l’entete dit « Finales »', /Finales/.test(lig.entete), lig.entete);
 
   // Les annees descendent : on cherche d'abord la derniere.
   const annees = await p.evaluate(() =>

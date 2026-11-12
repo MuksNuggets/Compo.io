@@ -189,10 +189,10 @@ body.enjeu .wrap{padding:0;height:100%}
 /* Le sport, en tout petit au-dessus de l'affiche : il situe la carte sans
    prendre la vedette. */
 /* Pastille deux tons aux couleurs du club, et drapeau pour les nations. */
-.blason{display:inline-block;width:13px;height:13px;border-radius:50%;vertical-align:-1px;
-  margin-right:5px;border:1px solid rgba(0,0,0,.2);
-  background:linear-gradient(135deg,var(--c1) 0 50%,var(--c2) 50% 100%)}
-.drapeau{margin-right:4px;font-size:14px;line-height:1}
+.rond{width:22px;height:22px;flex:0 0 22px;border-radius:50%;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:19px;line-height:1;border:1px solid rgba(0,0,0,.18)}
+.rond.club{background:linear-gradient(135deg,var(--c1) 0 50%,var(--c2) 50% 100%)}
 .quel{font:700 10.5px/1 Barlow,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
 /* Ce qu'il y a a faire, dit une seule fois et en clair. */
 .task{font-size:14px;color:var(--muted)}
@@ -315,18 +315,31 @@ body.enjeu .wrap{padding:0;height:100%}
 .comp>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:baseline;gap:10px}
 .comp>summary::-webkit-details-marker{display:none}
 .comp>summary b{font:700 16px Barlow,sans-serif}
-.comp>summary span{margin-left:auto;font-size:13px;color:var(--muted)}
+.comp>summary em{font-style:normal;font-size:13px;color:var(--muted)}
+.comp>summary span{margin-left:auto;font-family:"Barlow Condensed",sans-serif;font-weight:700;
+  font-size:17px;color:var(--muted)}
 .comp .dedans{padding:0 16px 6px}
 /* Une finale : l'annee a gauche, l'affiche a droite. Rien d'autre — c'est une
    liste qu'on parcourt, pas une fiche qu'on lit. */
-.fin{width:100%;display:flex;align-items:baseline;gap:12px;text-align:left;color:inherit;font:inherit;
-  background:none;border:0;border-top:1px solid var(--line);padding:11px 2px}
+/* Une finale se lit comme un tableau d'affichage : l'annee, puis les deux
+   camps de part et d'autre du score. Les sigles et les ronds pesent le meme
+   espace a gauche et a droite, donc le score reste au milieu. */
+.fin{width:100%;display:flex;align-items:center;gap:10px;text-align:left;color:inherit;font:inherit;
+  background:none;border:0;border-top:1px solid var(--line);padding:10px 2px}
 .comp .dedans .fin:first-child{border-top:0}
-.fin .an{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:20px;min-width:42px;color:var(--muted)}
-.fin .aff{flex:1;min-width:0;font-weight:600;font-size:15px;line-height:1.25}
-.fin .nb{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.fin .an{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;min-width:38px;color:var(--muted)}
 .fin.fait .an{color:var(--ok)}
-.fin:hover .aff{color:var(--pitch)}
+.duel{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+.cote{flex:1;min-width:0;display:flex;align-items:center;gap:6px}
+.cote.droite{justify-content:flex-end}
+.cote b{font:700 15px/1 Barlow,sans-serif}
+.score{display:flex;gap:3px;flex:0 0 auto}
+.score i{font:800 16px/1 "Barlow Condensed",sans-serif;font-style:normal;
+  background:var(--panel);color:var(--panel-ink);
+  min-width:25px;text-align:center;padding:5px 3px;border-radius:5px}
+.sup{flex:0 0 34px;font-size:11px;color:var(--muted);white-space:nowrap;text-align:right}
+.fin .nb{font-size:12px;color:var(--ok);white-space:nowrap}
+.fin:hover .cote b{color:var(--pitch)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -624,15 +637,53 @@ const EQUIPES={
  "Stade toulousain":{c:"Toulouse",a:"#D2232A",b:"#111"},
  "Ulster":{c:"Ulster",a:"#fff",b:"#D0021B"},
 };
+// Les sigles, pour la ligne facon tableau d'affichage. Les nations portent les
+// codes internationaux, ceux des ecrans de tele ; les clubs, l'abreviation
+// usuelle. Deux sports ne se croisent jamais dans une meme liste, mais on
+// evite quand meme les doublons : Manchester United MUN, Munster MUS.
+const SIGLES={
+ "Afrique du Sud":"RSA","Allemagne":"GER","Angleterre":"ENG","Argentine":"ARG","Australie":"AUS",
+ "Brésil":"BRA","Croatie":"CRO","Danemark":"DEN","Espagne":"ESP","France":"FRA","Grèce":"GRE",
+ "Italie":"ITA","Nouvelle-Zélande":"NZL","Pays-Bas":"NED","Portugal":"POR","RFA":"FRG","Tchéquie":"CZE",
+ "AS Monaco":"ASM","Ajax":"AJA","Arsenal":"ARS","Atlético Madrid":"ATM","Bayer Leverkusen":"B04",
+ "Bayern Munich":"BAY","Borussia Dortmund":"BVB","Chelsea":"CHE","FC Barcelone":"BAR","FC Porto":"FCP",
+ "Inter Milan":"INT","Juventus":"JUV","Liverpool":"LIV","Manchester City":"MCI","Manchester United":"MUN",
+ "Marseille":"OM","Milan":"MIL","Paris Saint-Germain":"PSG","Real Madrid":"RMA","Sampdoria":"SAM",
+ "Tottenham Hotspur":"TOT","Valence":"VAL","Étoile rouge de Belgrade":"ERB",
+ "ASM Clermont":"CLE","Bath":"BAT","Biarritz":"BIA","Bordeaux Bègles":"UBB","Brive":"BRI",
+ "CS Bourgoin-Jallieu":"CSB","Cardiff":"CAR","Castres olympique":"CAS","Colomiers":"COL",
+ "Exeter Chiefs":"EXE","FC Grenoble":"FCG","La Rochelle":"LAR","Leicester Tigers":"LEI",
+ "Leinster":"LEN","London Wasps":"WAS","Montpellier HR":"MHR","Munster":"MUS",
+ "Northampton Saints":"NOR","Perpignan":"USAP","RC Toulon":"RCT","Racing 92":"R92","Saracens":"SAR",
+ "Stade français":"SFP","Stade toulousain":"ST","Ulster":"ULS",
+};
+const sigle=n=>SIGLES[n]||n.slice(0,3).toUpperCase();
 // Les surnoms, la ou ils sont plus courts ET plus parlants que le nom du pays.
 // « XV de France » est plus long que « France », il n'apporte rien ici.
 const SURNOMS={"Nouvelle-Zélande":"All Blacks","Afrique du Sud":"Springboks","Australie":"Wallabies"};
 const nomCourtEquipe=(n,sport)=>(sport==="rugby"&&SURNOMS[n])||(EQUIPES[n]&&EQUIPES[n].c)||n;
-// Drapeau pour une nation, pastille deux tons pour un club, rien si inconnu.
+// Une seule forme pour tout le monde : un rond. Pour une nation, le drapeau
+// recadre dedans — l'emoji est rectangulaire, le rond le rogne sur les cotes.
+// Pour un club, ses deux couleurs en diagonale.
 function marque(n){
   const e=EQUIPES[n];if(!e)return "";
-  if(e.f)return `<span class="drapeau" aria-hidden="true">${e.f}</span>`;
-  return `<span class="blason" aria-hidden="true" style="--c1:${e.a};--c2:${e.b}"></span>`;
+  if(e.f)return `<span class="rond" aria-hidden="true">${e.f}</span>`;
+  return `<span class="rond club" aria-hidden="true" style="--c1:${e.a};--c2:${e.b}"></span>`;
+}
+// Le score, tel qu'il est ecrit dans l'affiche. Le premier couple de chiffres
+// est le score du match ; ce qui suit entre parentheses — « (4–2 t.a.b.) » —
+// est la maniere dont il s'est decide, et se dit a part.
+function duel(m){
+  const [a,b]=m.teams.map(t=>t.name);
+  const sc=m.fx.match(/(\d+)\s*[–-]\s*(\d+)/);
+  const sup=m.fx.match(/\(([^)]+)\)\s*$/);
+  return `<span class="duel">`
+    +`<span class="cote">${marque(a)}<b>${esc(sigle(a))}</b></span>`
+    +`<span class="score"><i>${sc?sc[1]:"–"}</i><i>${sc?sc[2]:"–"}</i></span>`
+    +`<span class="cote droite"><b>${esc(sigle(b))}</b>${marque(b)}</span></span>`
+    // Toujours pose, meme vide : sinon le score se decale d'une ligne a
+    // l'autre selon qu'il y a eu prolongation ou non.
+    +`<span class="sup">${sup?esc(sup[1].replace(/^\d+–\d+\s*/,"")):""}</span>`;
 }
 // L'affiche avec les noms courts. Les 117 fixtures commencent toutes par
 // teams[0] et finissent par teams[1], ce qui permet de remplacer sans risque
@@ -1059,16 +1110,15 @@ function renderArchives(){
       const liste=MATCHES.filter(m=>m.comp===cp).sort((a,b)=>b.yr-a.yr);
       if(!liste.length)return "";
       return `<details class="comp"${i===0?" open":""}>`
-        +`<summary><b>${nom}</b><span>${liste.length} finales</span></summary>`
+        +`<summary><b>${nom}</b><em>Finales</em><span>${liste.length}</span></summary>`
         +`<div class="dedans">`
         +liste.map(m=>{
           // Le meilleur resultat deja obtenu sur cette compo, s'il existe :
           // bestKey est deja rempli a chaque fin de partie, classee ou non.
           const t=m.teams[0],tot=t.p.length+(t.coach?1:0),f=store.get(bestKey(m,0));
           return `<button class="fin${f?" fait":""}" data-id="${m.id}">`
-            +`<span class="an">${m.yr}</span>`
-            +`<span class="aff">${marque(m.teams[0].name)}${esc(afficheCourte(m))}</span>`
-            +`<span class="nb">${f?f.f+"/"+tot:tot+" noms"}</span></button>`;
+            +`<span class="an">${m.yr}</span>${duel(m)}`
+            +(f?`<span class="nb">${f.f}/${tot}</span>`:"")+`</button>`;
         }).join("")
         +`</div></details>`;
     }).join("");
