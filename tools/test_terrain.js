@@ -59,7 +59,8 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
   // --- le clavier ne doit pas emporter le terrain hors de vue
   // On simule le clavier en retrecissant la fenetre : pendant une partie,
   // l'ecran doit tenir dedans, terrain entier et saisie visible, sans defilement.
-  const q = await b.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const q = await b.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce',
+                              hasTouch: true });
   await q.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
   await q.waitForTimeout(300);
   await q.evaluate(() => { const m = MATCHES.find(x => x.id === 'cdm-1998'); start(m, 0, false); });
@@ -79,6 +80,29 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
     if (!r.saisieVisible) ennuis.push(`fenetre ${hauteur}px : la saisie n'est pas visible`);
     if (r.defile)         ennuis.push(`fenetre ${hauteur}px : la page defile pendant la partie`);
   }
+
+  // Pendant la partie la page est bloquee : rien ne doit pouvoir defiler
+  // sous le panneau, sinon le terrain part sous le clavier.
+  const bloque = await q.evaluate(() => getComputedStyle(document.body).overflow === 'hidden'
+    && getComputedStyle(document.getElementById('play')).position === 'fixed');
+  if (!bloque) ennuis.push('en partie : la page n’est pas bloquee');
+
+  // Et il faut une sortie : quand la place manque, « Abandonner » et « Retour »
+  // disparaissent ; toucher le terrain doit rendre la main.
+  await q.focus('#inp');
+  await q.waitForTimeout(150);
+  if (await q.evaluate(() => document.activeElement.id !== 'inp'))
+    ennuis.push('la saisie ne prend pas le focus');
+  await q.tap('#pitch');
+  await q.waitForTimeout(200);
+  if (await q.evaluate(() => document.activeElement.id === 'inp'))
+    ennuis.push('toucher le terrain ne ferme pas le clavier : on est pris au piege');
+
+  // Une fois la partie finie, la page redevient normale.
+  await q.click('#giveup');
+  await q.waitForTimeout(500);
+  if (await q.evaluate(() => getComputedStyle(document.body).overflow === 'hidden'))
+    ennuis.push('apres la partie : la page reste bloquee');
   await q.close();
 
   console.log(`${COMPOS.length * LARGEURS.length} combinaisons : ${nb} chevauchement(s), pire ${pire}px`);

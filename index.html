@@ -99,19 +99,31 @@ button{font:inherit;color:inherit;cursor:pointer}
 .inp.shake{animation:sh .3s}
 @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .flash{min-height:22px;font-size:14px;color:var(--muted);margin:8px 0 0}
-/* Pendant une partie, l'ecran tient exactement dans ce qui reste visible : le
-   terrain se retrecit quand le clavier monte, au lieu que la page remonte et
-   l'emporte hors de vue au moment meme ou l'on veut le voir se remplir.
-   --vue est posee en JS, parce que le clavier d'iOS ne retrecit pas la page :
-   il la recouvre, et ni 100dvh ni les requetes media ne s'en apercoivent. */
-#play.enjeu{display:flex;flex-direction:column;height:calc(var(--vue,100dvh) - 68px)}
+/* Pendant une partie, l'ecran de jeu est un PANNEAU FIXE cale sur la zone
+   reellement visible. C'est la seule facon qui tienne sur iOS : le clavier n'y
+   retrecit pas la page, il la recouvre, et Safari fait defiler pour amener la
+   saisie au-dessus du clavier — ce qui emporte le terrain hors de l'ecran.
+   Borner la hauteur ne suffisait pas : Safari defile avant que le JS ne reagisse.
+   Un panneau fixe, lui, n'a rien a faire defiler.
+   --vue et --haut viennent de visualViewport, seule API qui sache ce qui reste
+   visible sous le clavier et de combien Safari a decale la vue. */
+body.enjeu{overflow:hidden}
+#play.enjeu{position:fixed;left:0;right:0;top:var(--haut,0px);height:var(--vue,100dvh);
+  z-index:10;background:var(--bg);overflow:hidden;
+  display:flex;flex-direction:column;
+  padding:14px 16px calc(10px + env(safe-area-inset-bottom,0px))}
 #play.enjeu > *{flex:0 0 auto}
 #play.enjeu > .pitch{flex:1 1 auto;min-height:120px}
 /* Quand il ne reste presque rien, on enleve ce qui n'aide pas a jouer. Les
    etiquettes partent aussi : onze noms ne tiennent pas dans 270 px sans se
    chevaucher. Le maillot allume suffit a voir la compo se remplir, et le nom
    trouve s'affiche sous la saisie. */
-#play.enjeu.court .sub,#play.enjeu.court #acts,#play.enjeu.court .top.bas{display:none}
+/* Quand le clavier mange l'ecran on sacrifie le sous-titre, la barre d'onglets
+   et les etiquettes — mais jamais « Abandonner » : c'est la sortie, et un
+   joueur sans sortie est un joueur coince. */
+#play.enjeu.court .sub,#play.enjeu.court .top.bas{display:none}
+#play.enjeu.court #acts{margin:4px 0 0}
+#play.enjeu.court #acts .btn{padding:7px 12px;font-size:13px}
 #play.enjeu.court .title{font-size:21px}
 #play.enjeu.court .pl .nm{display:none}
 #play.enjeu.court .pl.todo svg{opacity:.4}
@@ -606,7 +618,7 @@ function start(m,ti,ranked,note){
   NOTE_FIN=note||"";RANKED=!!ranked;M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,...cles(n,al)}));
   if(t.coach)P.push({lab:"ENTR",n:t.coach[0],...cles(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
-  montre("play");$("play").classList.add("enjeu");hauteurVisible();
+  montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");hauteurVisible();
   $("result").classList.add("hidden");$("acts").classList.remove("hidden");
   $("ptitle").textContent=m.fx;$("psub").textContent=`${m.where}, ${m.yr}. Compo à retrouver : ${t.name}${t.coach?", entraîneur compris":""}.`;
   $("psport").textContent=m.sport==="foot"?"Football":"Rugby";$("swap").classList.toggle("hidden",m.teams.length<2);
@@ -653,6 +665,14 @@ function tryMatch(q,loose){
   if(loose&&cherche(q,true,true)>=0){$("flash").textContent="Déjà trouvé.";$("inp").value="";return true}
   return false;
 }
+// Toucher le terrain referme le clavier. Sans ca on est pris au piege : quand
+// la place manque, « Abandonner » et « Retour » se cachent, et plus rien ne
+// permet de sortir de la saisie.
+$("play").addEventListener("pointerdown",e=>{
+  if(!$("play").classList.contains("enjeu"))return;
+  if(e.target.closest("input,button,a"))return;
+  $("inp").blur();
+});
 $("inp").addEventListener("input",e=>{if(!over)tryMatch(e.target.value,false)});
 $("inp").addEventListener("keydown",e=>{if(e.key!=="Enter"||over)return;
   if(!tryMatch(e.target.value,true)&&e.target.value.trim()){const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");$("flash").textContent="Pas dans cette compo.";}});
@@ -673,7 +693,7 @@ async function copier(txt,b,libelle){
 }
 function end(){
   if(over)return;over=true;clearInterval(tick);$("inp").disabled=true;$("inp").hidden=true;
-  $("play").classList.remove("enjeu");   // le bilan a le droit de depasser et de defiler
+  $("play").classList.remove("enjeu");document.body.classList.remove("enjeu");  // le bilan a le droit de defiler
   P.forEach((p,i)=>{if(!found.has(i)){const d=$("pl"+i);d.className=(p.coach?"coach":"pl")+" miss";d.querySelector(".nm").textContent=p.coach?p.n:nomCourt(p.n);}});
   const t=Math.round((Date.now()-startT)/1000),tot=P.length,key=bestKey(M,TI),b=store.get(key);
   const better=found.size>0&&(!b||found.size>b.f||(found.size===b.f&&t<b.t));if(better)store.set(key,{f:found.size,t});
@@ -739,8 +759,11 @@ function renderPasse(){
 // Ce qui reste visible sous le clavier. L'API visualViewport est la seule a le
 // savoir sur iOS, ou le clavier recouvre la page sans la retrecir.
 function hauteurVisible(){
-  const v=window.visualViewport,px=v?v.height:innerHeight;
-  document.documentElement.style.setProperty("--vue",px+"px");
+  const v=window.visualViewport;
+  const px=v?v.height:innerHeight,haut=v?v.offsetTop:0;
+  const st=document.documentElement.style;
+  st.setProperty("--vue",px+"px");
+  st.setProperty("--haut",haut+"px");
   $("play").classList.toggle("court",px<620);
 }
 if(window.visualViewport){
