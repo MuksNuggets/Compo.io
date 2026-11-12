@@ -429,8 +429,13 @@ function cles(name,al){
   const k=new Set();
   [name,...(al||[])].forEach(src=>{const x=norm(src);if(!x)return;k.add(x);
     const w=x.split(" ");
-    if(w.length>1){k.add(w.slice(1).join(" "));k.add(w[w.length-1]);
-      k.add([...w].sort().join(" "));}            // « barthez fabien » aussi
+    // Toutes les fins de nom, pas seulement la derniere : on ne sait pas ou
+    // s'arrete le prenom. "Pieter-Steph du Toit" donne « steph du toit »,
+    // « du toit » et « toit ». Avant, le trait d'union comptait pour deux mots,
+    // donc la seule coupe essayee etait « steph du toit » : « du toit » n'etait
+    // une cle de personne.
+    for(let i=1;i<w.length;i++)k.add(w.slice(i).join(" "));
+    if(w.length>1)k.add([...w].sort().join(" "));  // « barthez fabien » aussi
   });
   [...k].forEach(x=>k.add(x.replace(/ /g,"")));
   ["de","du","le","van","der","di","mac","la","da","dos"].forEach(x=>k.delete(x));
@@ -446,7 +451,13 @@ const bestKey=(m,t)=>"compo:best:"+m.id+":"+t;
 // joueurs de la base : le nom complet ne tient sur une ligne que dans 25 %
 // des cas, le nom de famille dans 98 %. Le prenom n'est pas perdu : il
 // s'affiche sous la saisie a chaque trouvaille, et dans la liste de fin.
-const nomCourt=n=>{const w=n.split(" ");return w.length>1?w.slice(1).join(" "):n};
+// Les particules font partie du nom : « van der Sar », pas « Sar », et
+// « du Toit » meme quand le prenom porte un trait d'union.
+const PARTICULES=new Set(["de","du","des","van","von","der","den","le","la",
+  "di","da","dos","del","della","mac","mc","ten","ter","al","el","bin","ibn"]);
+const nomCourt=n=>{const w=n.split(" ");let i=w.length-1;
+  while(i>0&&PARTICULES.has(w[i-1].toLowerCase()))i--;
+  return i>0?w.slice(i).join(" "):n};
 
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 // Temps restant avant la compo suivante, c'est-a-dire avant minuit a Paris.
@@ -646,7 +657,7 @@ $("inp").addEventListener("input",e=>{if(!over)tryMatch(e.target.value,false)});
 $("inp").addEventListener("keydown",e=>{if(e.key!=="Enter"||over)return;
   if(!tryMatch(e.target.value,true)&&e.target.value.trim()){const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");$("flash").textContent="Pas dans cette compo.";}});
 $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!found.has(i)&&!hinted.has(i));if(!todo.length)return;
-  const i=todo[Math.floor(Math.random()*todo.length)];hinted.add(i);const w=P[i].n.split(" "),last=w.length>1?w.slice(1).join(" "):w[0];
+  const i=todo[Math.floor(Math.random()*todo.length)];hinted.add(i);const last=nomCourt(P[i].n);
   $("pl"+i).querySelector(".nm").textContent=last[0]+"…";$("flash").textContent=`Indice : un nom en ${last[0].toUpperCase()}.`;$("inp").focus();};
 $("giveup").onclick=()=>end();
 // L'affiche du match pour le partage : FRANCE - BRESIL 98. Pas de score, il

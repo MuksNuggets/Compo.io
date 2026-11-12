@@ -34,6 +34,15 @@ const FAUTES = [
   ['hcup-2024',0, 'Emmanuel Meafou',  'meafou'],
   ['ldc-2013', 0, 'Philipp Lahm',     'lam'],
   ['ldc-2013', 0, 'Arjen Robben',     'roben'],
+  // Les particules : le prenom ne s'arrete pas toujours au premier mot.
+  ['rwc-2023', 0, 'Pieter-Steph du Toit', 'du toit'],
+  ['rwc-2023', 0, 'Pieter-Steph du Toit', 'dutoit'],
+  ['rwc-2023', 0, 'Pieter-Steph du Toit', 'toit'],
+  ['rwc-2019', 0, 'Faf de Klerk',      'de klerk'],
+  ['cdm-2010', 1, 'Giovanni van Bronckhorst', 'van bronckhorst'],
+  ['cdm-2010', 1, 'Mark van Bommel',   'van bommel'],
+  ['hcup-2018', 1, 'Bernard Le Roux',  'le roux'],
+  ['hcup-2016', 1, 'François van der Merwe', 'van der merwe'],
 ];
 
 (async () => {
@@ -47,7 +56,9 @@ const FAUTES = [
   // deuxieme saisie. Ce qui est interdit, c'est de rendre quelqu'un d'autre.
   const r = await p.evaluate(() => {
     const norme = s => norm(s).replace(/ /g, '');
-    const nomDeFamille = n => { const w = norm(n).split(' '); return w.length > 1 ? w.slice(1).join('') : w[0]; };
+    // On tape ce que l'app affiche sur le terrain, particules comprises :
+    // « du toit », pas « steph du toit ».
+    const nomDeFamille = n => norme(nomCourt(n));
     const rates = [], faux = [];
     MATCHES.forEach(m => m.teams.forEach((t, ti) => {
       start(m, ti, false);
