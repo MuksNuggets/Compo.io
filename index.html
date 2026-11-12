@@ -140,6 +140,11 @@ body.enjeu .wrap{padding:0;height:100%}
 /* Quand le clavier mange l'ecran on sacrifie le sous-titre, la barre d'onglets
    et les etiquettes — mais jamais « Abandonner » : c'est la sortie, et un
    joueur sans sortie est un joueur coince. */
+/* Clavier ouvert : rien que le terrain et la saisie. Indice, Abandonner et
+   Retour reviennent des qu'on le referme — une tape sur le terrain suffit.
+   C'est la hauteur perdue qui fait foi, pas le focus : sur iOS le focus pose
+   au demarrage n'ouvre aucun clavier. */
+#play.enjeu.clavier #acts,#play.enjeu.clavier .top.bas{display:none}
 #play.enjeu.court .sub,#play.enjeu.court .top.bas{display:none}
 #play.enjeu.court #acts{margin:4px 0 0}
 #play.enjeu.court #acts .btn{padding:7px 12px;font-size:13px}
@@ -308,9 +313,11 @@ body.enjeu .wrap{padding:0;height:100%}
     <div class="count" id="count">0/11</div>
   </div>
   <!-- La saisie est sous le terrain : clavier ouvert, on voit encore les
-       postes, au lieu de les avoir derrière le clavier. -->
-  <input class="inp" id="inp" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
+       postes, au lieu de les avoir derrière le clavier. Et elle est le dernier
+       element, pour venir se coller au clavier : la ligne de retour passe
+       au-dessus d'elle. -->
   <p class="flash" id="flash" aria-live="polite"></p>
+  <input class="inp" id="inp" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
   <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="giveup">Abandonner</button></div>
   <div class="result hidden" id="result">
     <div class="big" id="rbig"></div>
@@ -646,6 +653,7 @@ function start(m,ti,ranked,note){
   if(t.coach)P.push({lab:"ENTR",n:t.coach[0],...cles(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
   clearTimeout(attenteFin);   // pas de validation en retard d'une partie sur l'autre
+  direClavier=false;
   montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");
   $("scene").scrollTop=0;hauteurVisible();
   $("result").classList.add("hidden");$("acts").classList.remove("hidden");
@@ -824,8 +832,16 @@ function hauteurVisible(){
   st.setProperty("--vue",px+"px");
   st.setProperty("--haut",haut+"px");
   $("play").classList.toggle("court",px<620);
+  // Le clavier est la quand il manque une bonne part de la fenetre. innerHeight
+  // ne bouge pas sur iOS quand il monte : la difference, c'est lui.
+  const clavier=!!v&&innerHeight-px>120;
+  $("play").classList.toggle("clavier",clavier);
+  if(clavier&&!direClavier&&!over&&!$("flash").textContent){
+    direClavier=true;$("flash").textContent="Touche le terrain pour refermer le clavier.";
+  }
   recale();
 }
+let direClavier=false;   // le rappel ne se dit qu'une fois par partie
 // Safari defile la page pour amener la saisie au-dessus du clavier, et il le
 // fait APRES notre code, pendant l'animation du clavier. Une seule remise a
 // zero ne suffit donc pas : on insiste une seconde. Des que --vue est a jour,

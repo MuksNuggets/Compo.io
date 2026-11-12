@@ -121,8 +121,24 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
   });
   if (!dehors) ennuis.push('la saisie est dans la zone qui glisse : le titre repartira en haut');
 
-  // Et il faut une sortie : quand la place manque, « Abandonner » et « Retour »
-  // disparaissent ; toucher le terrain doit rendre la main.
+  // Clavier ouvert : Indice, Abandonner et Retour s'effacent pour rendre la
+  // place a la saisie, et reviennent des qu'il se referme.
+  const ks = await q.evaluate(() => {
+    // getClientRects, et non getComputedStyle : l'enfant d'un element cache
+    // garde son propre display, donc la question se pose a l'ecran, pas dans
+    // la feuille de style.
+    const pl = document.getElementById('play'), vu = id =>
+      !!document.getElementById(id).getClientRects().length;
+    pl.classList.add('clavier');
+    const cache = !vu('acts') && !vu('hint') && !vu('giveup');
+    pl.classList.remove('clavier');
+    return { cache, revient: vu('acts') && vu('giveup') };
+  });
+  if (!ks.cache)    ennuis.push('clavier ouvert : Indice et Abandonner restent la');
+  if (!ks.revient)  ennuis.push('clavier referme : Indice et Abandonner ne reviennent pas');
+
+  // Et il faut une sortie : sans elle, cacher Abandonner enfermerait le joueur.
+  // Toucher le terrain doit rendre la main.
   await q.focus('#inp');
   await q.waitForTimeout(150);
   if (await q.evaluate(() => document.activeElement.id !== 'inp'))
