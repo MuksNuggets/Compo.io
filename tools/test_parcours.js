@@ -235,6 +235,36 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     memes.a === memes.c && memes.c === memes.d, memes);
   await s.close();
 
+  // --- 11. la mesure d'audience
+  // Deux choses : qu'elle ne parte vers personne tant qu'aucun code n'est
+  // renseigne, et que les chemins comptes disent bien ce qui se passe —
+  // l'app ne rechargeant jamais la page, sans eux on ne verrait qu'une vue
+  // par visiteur.
+  const g = await b.newPage({ viewport: { width: 390, height: 844 } });
+  // Supabase est notre propre serveur, et il est simule ici : ce qu'on
+  // surveille, c'est qu'aucune mesure ne parte chez un tiers.
+  const dehors = [];
+  g.on('request', r => { const u = r.url();
+    if (/goatcounter|zgo\.at/.test(u)) dehors.push(u); });
+  await g.route('**/functions/v1/compo', r => r.fulfill({ status: 200,
+    contentType: 'application/json', body: '{"roundId":"11111111-1111-1111-1111-111111111111","day":2}' }));
+  await g.addInitScript(() => { window.__vu = [];
+    window.goatcounter = { count: o => window.__vu.push(o.path) }; });
+  await g.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
+  await g.fill('#pseudo', 'leo'); await g.click('#valide'); await g.waitForTimeout(200);
+  await g.click('[data-jour="foot"]'); await g.waitForTimeout(400);
+  await g.click('#giveup'); await g.waitForTimeout(400);
+  await g.click('#other'); await g.waitForTimeout(200);
+  await g.click('#versmoi'); await g.waitForTimeout(300);
+  const vus = await g.evaluate(() => window.__vu);
+  v('la partie est comptee', vus.includes('/partie/foot'), vus);
+  v('la fin de partie est comptee', vus.some(x => /^\/fini\/foot\//.test(x)), vus);
+  v('le profil est compte', vus.includes('/profil'), vus);
+  v('aucun chemin ne porte de donnee du joueur',
+    vus.every(x => /^\/(profil|partage|partie|fini)(\/(foot|rugby|passee|complet|partiel))*$/.test(x)), vus);
+  v('aucune mesure ne part chez un tiers sans code', dehors.length === 0, dehors);
+  await g.close();
+
   console.log('REUSSIS\n  ' + ok.join('\n  '));
   if (ko.length) console.log('ECHECS\n  ' + ko.join('\n  '));
   console.log('ERREURS JS : ' + (err.length ? JSON.stringify(err, null, 1) : 'aucune'));

@@ -672,6 +672,7 @@ function start(m,ti,ranked,note){
   direClavier=false;saisieActive=false;
   montreSugg("");
   montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");
+  compte(`/partie/${m.sport}${RANKED?"":"/passee"}`,`Partie ${m.sport}`);
   $("scene").scrollTop=0;hauteurVisible();
   $("result").classList.add("hidden");$("acts").classList.remove("hidden");
   $("ptitle").textContent=m.fx;$("psub").textContent=`${m.where}, ${m.yr}. Compo à retrouver : ${t.name}${t.coach?", entraîneur compris":""}.`;
@@ -878,9 +879,12 @@ function end(){
     majClassement(found.size,hinted.size);
     $("share").onclick=async()=>{
       copier(texteDefi(M),$("share"),"Partager");
+      compte("/partage","Partage");
     };
   } else {$("share").hidden=true;$("board").innerHTML="";}
   $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";montreSugg("");
+  // Combien vont au bout : c'est le chiffre qui dit si le jeu est trop dur.
+  compte(`/fini/${M.sport}/${found.size===P.length?"complet":"partiel"}`,"Fin de partie");
   // Le terrain est haut : sans ca le panneau de fin reste sous l'ecran et on
   // a l'impression qu'il ne s'est rien passe.
   setTimeout(()=>$("result").scrollIntoView({behavior:"smooth",block:"end"}),60);
@@ -974,12 +978,36 @@ hauteurVisible();
 
 const SECTIONS=["home","moi","play"];
 let ONGLET="home";                       // l'onglet ou l'on revient apres une partie
+// ---- mesure d'audience -------------------------------------------------
+// GoatCounter : gratuit pour un usage non commercial, sans cookie — donc pas
+// de bandeau a afficher — et il ne conserve aucune adresse IP.
+// Tant que le code ci-dessous est vide, RIEN n'est charge et rien n'est envoye.
+// C'est ce qui garde les tests hors ligne. Pour activer : remplacer "" par le
+// code du compte, par exemple "compoio".
+const GOATCOUNTER="";
+if(GOATCOUNTER){
+  const s=document.createElement("script");
+  s.async=true;s.src="//gc.zgo.at/count.js";
+  s.dataset.goatcounter=`https://${GOATCOUNTER}.goatcounter.com/count`;
+  document.head.appendChild(s);
+}
+// L'app ne recharge jamais la page : sans ces appels on ne verrait qu'une seule
+// vue par visiteur, et rien de ce qu'il fait. Les chemins sont choisis courts
+// et en nombre fini, et ne portent jamais le pseudo ni quoi que ce soit qui
+// vienne du joueur.
+// Pas de garde sur GOATCOUNTER ici : sans code le script n'est jamais charge,
+// donc window.goatcounter n'existe pas et l'appel ne fait rien. Ce qui rend du
+// meme coup la mesure verifiable, en posant un faux compteur.
+function compte(chemin,titre){
+  const g=window.goatcounter;
+  if(g&&g.count)g.count({path:chemin,title:titre||chemin,event:false});
+}
 function montre(nom){
   if(nom!=="play")ONGLET=nom;
   SECTIONS.forEach(s=>$(s).classList.toggle("hidden",s!==nom));
   window.scrollTo(0,0);
   if(nom==="home"){renderDaily();renderPortrait();}
-  if(nom==="moi"){renderMoi();renderPasse();}
+  if(nom==="moi"){renderMoi();renderPasse();compte("/profil","Profil");}
 }
 const home=()=>{clearInterval(tick);over=true;montre(ONGLET==="play"?"home":ONGLET);};
 $("other").onclick=home;$("back").onclick=home;

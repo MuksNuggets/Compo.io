@@ -86,6 +86,26 @@ Conséquence à connaître : qui possède le code possède le profil. Pour un je
 entre amis c'est le bon compromis ; pour autre chose, il faudrait de vrais
 comptes.
 
+## Mesure d'audience
+
+GoatCounter, gratuit pour un usage non commercial, sans cookie — donc pas de
+bandeau à afficher — et sans conservation d'adresse IP.
+
+**Tant que la constante `GOATCOUNTER` est vide, rien n'est chargé et rien n'est
+envoyé.** C'est ce qui garde les tests hors ligne. Pour activer : y mettre le
+code du compte, par exemple `compoio`.
+
+L'app ne recharge jamais la page : sans appels manuels, on ne verrait qu'une
+seule vue par visiteur et rien de ce qu'il fait. On compte donc `/partie/foot`,
+`/partie/rugby`, `/partie/<sport>/passee`, `/fini/<sport>/complet` ou
+`/partiel`, `/profil` et `/partage`. Ces chemins sont en nombre fini et ne
+portent jamais le pseudo ni quoi que ce soit qui vienne du joueur —
+`tools/test_parcours.js` le vérifie, et vérifie aussi qu'aucune mesure ne part
+chez un tiers tant que le code est vide.
+
+`/fini/<sport>/complet` contre `/partiel` est le chiffre qui dit si le jeu est
+trop dur.
+
 ## Les noms mal écrits
 
 Trois filets, du plus sûr au plus large : l'écriture exacte, une clé « à
