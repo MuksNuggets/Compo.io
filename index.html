@@ -899,9 +899,14 @@ function hauteurVisible(){
   st.setProperty("--vue",px+"px");
   st.setProperty("--haut",haut+"px");
   $("play").classList.toggle("court",px<620);
-  // Le clavier est la quand il manque une bonne part de la fenetre. innerHeight
-  // ne bouge pas sur iOS quand il monte : la difference, c'est lui.
-  const clavier=!!v&&innerHeight-px>120;
+  // Reperer le clavier n'est pas si simple : dans Safari il recouvre la page
+  // sans la retrecir (innerHeight ne bouge pas), mais dans l'app ajoutee a
+  // l'ecran d'accueil iOS retrecit bel et bien la fenetre — comparer les deux
+  // ne voyait alors aucune difference et les boutons restaient la.
+  // La reference, c'est donc la hauteur visible tant qu'on ne tape pas.
+  const tape=document.activeElement===$("inp");
+  if(!tape)hautPlein=px;
+  const clavier=tape&&hautPlein-px>120;
   $("play").classList.toggle("clavier",clavier);
   if(clavier&&!direClavier&&!over&&!$("flash").textContent){
     direClavier=true;$("flash").textContent="Touche le terrain pour refermer le clavier.";
@@ -909,6 +914,11 @@ function hauteurVisible(){
   recale();
 }
 let direClavier=false;   // le rappel ne se dit qu'une fois par partie
+let hautPlein=0;         // hauteur visible sans clavier, relevee quand on ne tape pas
+// Le focus et la perte de focus ne declenchent pas toujours un redimensionnement :
+// on recalcule a la main, sinon les boutons reviennent avec un temps de retard.
+$("inp").addEventListener("focus",hauteurVisible);
+$("inp").addEventListener("blur",hauteurVisible);
 // Safari defile la page pour amener la saisie au-dessus du clavier, et il le
 // fait APRES notre code, pendant l'animation du clavier. Une seule remise a
 // zero ne suffit donc pas : on insiste une seconde. Des que --vue est a jour,
@@ -926,7 +936,6 @@ function recale(){
     }
   },50);
 }
-$("inp").addEventListener("focus",recale);
 if(window.visualViewport){
   visualViewport.addEventListener("resize",hauteurVisible);
   visualViewport.addEventListener("scroll",hauteurVisible);
