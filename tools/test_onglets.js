@@ -124,8 +124,10 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('une nation est un rond peint aux couleurs du drapeau',
     /class="rond"/.test(eq.drapeau) && /linear-gradient/.test(eq.drapeau)
     && !/<img/.test(eq.drapeau) && !/[\u{1F1E6}-\u{1F1FF}]/u.test(eq.drapeau), eq.drapeau);
-  v('un club est un rond a ses deux couleurs',
-    /class="rond"/.test(eq.pastille) && /linear-gradient/.test(eq.pastille), eq.pastille);
+  // Un club n'a pas de drapeau : on ne lui en invente pas un. Il porte son
+  // nom court, qui le designe mieux que deux couleurs — Toulouse et Toulon
+  // donnaient le meme rond rouge et noir.
+  v('un club n’a pas de rond', eq.pastille === '', eq.pastille);
   v('une equipe inconnue ne casse rien', eq.inconnu === '', eq.inconnu);
 
   // --- la ligne facon tableau d'affichage
@@ -155,6 +157,18 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('le score reste dans la meme colonne d’une ligne a l’autre', lig.colonne === 1, lig.colonne);
   v('l’entete dit « Finales »', /Finales/.test(lig.entete), lig.entete);
   v('les camps sont serres contre le score', lig.ecartGauche >= 0 && lig.ecartGauche <= 14, lig.ecartGauche);
+
+  // Les drapeaux doivent tomber sur la meme colonne d'une ligne a l'autre :
+  // c'est la largeur fixe du sigle qui le garantit.
+  const colonnes = await p.evaluate(() => {
+    const x = s => [...new Set([...document.querySelectorAll(s)]
+      .map(e => Math.round(e.getBoundingClientRect().left)))];
+    return { gauche: x('#arch .comp[open] .fin .cote:not(.droite) .rond'),
+             droite: x('#arch .comp[open] .fin .cote.droite .rond'),
+             clubs: document.querySelectorAll('#arch .fin b.nom .rond').length };
+  });
+  v('les drapeaux de gauche sont alignes', colonnes.gauche.length === 1, colonnes.gauche);
+  v('ceux de droite aussi', colonnes.droite.length === 1, colonnes.droite);
 
   // Le resultat apparait apres une partie : il ne doit rien decaler.
   const colAvant = await p.evaluate(() =>

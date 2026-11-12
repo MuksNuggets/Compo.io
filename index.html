@@ -335,7 +335,16 @@ body.enjeu .wrap{padding:0;height:100%}
 /* Les deux camps se serrent contre le score. */
 .cote{flex:1;min-width:0;display:flex;align-items:center;gap:6px;justify-content:flex-end}
 .cote.droite{justify-content:flex-start}
-.cote b{font:700 15px/1 Barlow,sans-serif}
+.cote b{font:700 15px/1 Barlow,sans-serif;min-width:0}
+/* Largeur fixe pour le sigle : c'est ce qui met tous les drapeaux sur la
+   meme colonne, d'une ligne a l'autre. */
+.cote b.sig{flex:0 0 40px;text-align:right}
+.cote.droite b.sig{text-align:left}
+/* Les noms de clubs sont plus longs que des sigles : ils descendent d'un
+   cran, et encore d'un sur les ecrans etroits, pour ne pas se faire couper.
+   « Stade français » est le pire cas, quatorze signes. */
+.cote b.nom{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:420px){.cote b.nom{font-size:11.5px}}
 .score{display:flex;gap:3px;flex:0 0 auto}
 .score i{font:800 16px/1 "Barlow Condensed",sans-serif;font-style:normal;
   background:var(--panel);color:var(--panel-ink);
@@ -347,14 +356,16 @@ body.enjeu .wrap{padding:0;height:100%}
    moitie et passaient par-dessus l'annee. On resserre tout d'un cran plutot
    que de tronquer un sigle, qui est deja une abreviation. */
 @media (max-width:365px){
-  .fin{gap:6px}
-  .fin .an{flex-basis:34px;font-size:17px}
-  .duel{gap:5px}
-  .cote{gap:5px}
-  .cote b{font-size:13.5px}
-  .rond{width:18px;height:18px;flex-basis:18px}
-  .score i{min-width:22px;font-size:15px;padding:4px 2px}
-  .fin .nb{flex-basis:30px;font-size:11px}
+  .fin{gap:5px}
+  .fin .an{flex-basis:30px;font-size:16px}
+  .duel{gap:4px}
+  .cote{gap:4px}
+  .cote b{font-size:13px}
+  .cote b.sig{flex-basis:32px}
+  .cote b.nom{font-size:11px}
+  .rond{width:17px;height:17px;flex-basis:17px}
+  .score i{min-width:21px;font-size:14px;padding:4px 2px}
+  .fin .nb{flex-basis:26px;font-size:10.5px}
 }
 .fin:hover .cote b{color:var(--pitch)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
@@ -616,56 +627,59 @@ const EQUIPES={
  "Tchéquie":{g:"linear-gradient(135deg,#11457E 0 36%,transparent 36%),linear-gradient(180deg,#fff 0 50%,#D7141A 50%)"},
  "Angleterre":{g:"linear-gradient(#CE1124,#CE1124) 50%/100% 30% no-repeat,linear-gradient(#CE1124,#CE1124) 50%/30% 100% no-repeat,#fff"},
  "Danemark":{g:"linear-gradient(#fff,#fff) 50%/100% 28% no-repeat,linear-gradient(#fff,#fff) 36%/28% 100% no-repeat,#C8102E"},
+ // --- clubs : le nom court, et rien d'autre. Un club n'a pas de drapeau, et
+ // ses deux couleurs dans un rond ne disaient pas grand-chose — Toulouse et
+ // Toulon etaient le meme rond rouge et noir.
  // --- clubs de football
- "AS Monaco":{c:"Monaco",a:"#E63329",b:"#fff"},
- "Ajax":{c:"Ajax",a:"#D2122E",b:"#fff"},
- "Arsenal":{c:"Arsenal",a:"#EF0107",b:"#fff"},
- "Atlético Madrid":{c:"Atlético",a:"#CE3524",b:"#fff"},
- "Bayer Leverkusen":{c:"Leverkusen",a:"#E32221",b:"#111"},
- "Bayern Munich":{c:"Bayern",a:"#DC052D",b:"#fff"},
- "Borussia Dortmund":{c:"Dortmund",a:"#FDE100",b:"#111"},
- "Chelsea":{c:"Chelsea",a:"#034694",b:"#fff"},
- "FC Barcelone":{c:"Barcelone",a:"#A50044",b:"#004D98"},
- "FC Porto":{c:"Porto",a:"#00428C",b:"#fff"},
- "Inter Milan":{c:"Inter",a:"#0068A8",b:"#111"},
- "Juventus":{c:"Juventus",a:"#111",b:"#fff"},
- "Liverpool":{c:"Liverpool",a:"#C8102E",b:"#fff"},
- "Manchester City":{c:"Man City",a:"#6CABDD",b:"#fff"},
- "Manchester United":{c:"Man United",a:"#DA291C",b:"#111"},
- "Marseille":{c:"Marseille",a:"#2FAEE0",b:"#fff"},
- "Milan":{c:"Milan",a:"#FB090B",b:"#111"},
- "Paris Saint-Germain":{c:"PSG",a:"#004170",b:"#DA291C"},
- "Real Madrid":{c:"Real Madrid",a:"#fff",b:"#FEBE10"},
- "Sampdoria":{c:"Sampdoria",a:"#1B5497",b:"#fff"},
- "Tottenham Hotspur":{c:"Tottenham",a:"#fff",b:"#132257"},
- "Valence":{c:"Valence",a:"#fff",b:"#F3851F"},
- "Étoile rouge de Belgrade":{c:"Étoile rouge",a:"#E4001B",b:"#fff"},
+ "AS Monaco":{c:"Monaco"},
+ "Ajax":{c:"Ajax"},
+ "Arsenal":{c:"Arsenal"},
+ "Atlético Madrid":{c:"Atlético"},
+ "Bayer Leverkusen":{c:"Leverkusen"},
+ "Bayern Munich":{c:"Bayern"},
+ "Borussia Dortmund":{c:"Dortmund"},
+ "Chelsea":{c:"Chelsea"},
+ "FC Barcelone":{c:"Barcelone"},
+ "FC Porto":{c:"Porto"},
+ "Inter Milan":{c:"Inter"},
+ "Juventus":{c:"Juventus"},
+ "Liverpool":{c:"Liverpool"},
+ "Manchester City":{c:"Man City"},
+ "Manchester United":{c:"Man United"},
+ "Marseille":{c:"Marseille"},
+ "Milan":{c:"Milan"},
+ "Paris Saint-Germain":{c:"PSG"},
+ "Real Madrid":{c:"Real Madrid"},
+ "Sampdoria":{c:"Sampdoria"},
+ "Tottenham Hotspur":{c:"Tottenham"},
+ "Valence":{c:"Valence"},
+ "Étoile rouge de Belgrade":{c:"Étoile rouge"},
  // --- clubs de rugby
- "ASM Clermont":{c:"Clermont",a:"#FFE500",b:"#0B2D71"},
- "Bath":{c:"Bath",a:"#0033A0",b:"#111"},
- "Biarritz":{c:"Biarritz",a:"#D4142B",b:"#fff"},
- "Bordeaux Bègles":{c:"Bordeaux",a:"#16243E",b:"#fff"},
- "Brive":{c:"Brive",a:"#fff",b:"#111"},
- "CS Bourgoin-Jallieu":{c:"Bourgoin",a:"#D4142B",b:"#fff"},
- "Cardiff":{c:"Cardiff",a:"#0033A0",b:"#111"},
- "Castres olympique":{c:"Castres",a:"#0096D6",b:"#fff"},
- "Colomiers":{c:"Colomiers",a:"#6B2C91",b:"#fff"},
- "Exeter Chiefs":{c:"Exeter",a:"#111",b:"#fff"},
- "FC Grenoble":{c:"Grenoble",a:"#003F87",b:"#E2001A"},
- "La Rochelle":{c:"La Rochelle",a:"#FFD200",b:"#111"},
- "Leicester Tigers":{c:"Leicester",a:"#006241",b:"#C8102E"},
- "Leinster":{c:"Leinster",a:"#004B87",b:"#fff"},
- "London Wasps":{c:"Wasps",a:"#111",b:"#FFD700"},
- "Montpellier HR":{c:"Montpellier",a:"#002B5C",b:"#fff"},
- "Munster":{c:"Munster",a:"#B50E1F",b:"#fff"},
- "Northampton Saints":{c:"Northampton",a:"#111",b:"#00703C"},
- "Perpignan":{c:"Perpignan",a:"#C8102E",b:"#FFD100"},
- "RC Toulon":{c:"Toulon",a:"#E2001A",b:"#111"},
- "Racing 92":{c:"Racing 92",a:"#00AEEF",b:"#fff"},
- "Saracens":{c:"Saracens",a:"#111",b:"#E4002B"},
- "Stade français":{c:"Stade français",a:"#E6007E",b:"#0C2340"},
- "Stade toulousain":{c:"Toulouse",a:"#D2232A",b:"#111"},
- "Ulster":{c:"Ulster",a:"#fff",b:"#D0021B"},
+ "ASM Clermont":{c:"Clermont"},
+ "Bath":{c:"Bath"},
+ "Biarritz":{c:"Biarritz"},
+ "Bordeaux Bègles":{c:"Bordeaux"},
+ "Brive":{c:"Brive"},
+ "CS Bourgoin-Jallieu":{c:"Bourgoin"},
+ "Cardiff":{c:"Cardiff"},
+ "Castres olympique":{c:"Castres"},
+ "Colomiers":{c:"Colomiers"},
+ "Exeter Chiefs":{c:"Exeter"},
+ "FC Grenoble":{c:"Grenoble"},
+ "La Rochelle":{c:"La Rochelle"},
+ "Leicester Tigers":{c:"Leicester"},
+ "Leinster":{c:"Leinster"},
+ "London Wasps":{c:"Wasps"},
+ "Montpellier HR":{c:"Montpellier"},
+ "Munster":{c:"Munster"},
+ "Northampton Saints":{c:"Northampton"},
+ "Perpignan":{c:"Perpignan"},
+ "RC Toulon":{c:"Toulon"},
+ "Racing 92":{c:"Racing 92"},
+ "Saracens":{c:"Saracens"},
+ "Stade français":{c:"Stade français"},
+ "Stade toulousain":{c:"Toulouse"},
+ "Ulster":{c:"Ulster"},
 };
 // Les sigles, pour la ligne facon tableau d'affichage. Les nations portent les
 // codes internationaux, ceux des ecrans de tele ; les clubs, l'abreviation
@@ -696,9 +710,9 @@ const nomCourtEquipe=(n,sport)=>(sport==="rugby"&&SURNOMS[n])||(EQUIPES[n]&&EQUI
 // recadre dedans — l'emoji est rectangulaire, le rond le rogne sur les cotes.
 // Pour un club, ses deux couleurs en diagonale.
 function marque(n){
-  const e=EQUIPES[n];if(!e)return "";
-  const fond=e.g||`linear-gradient(135deg,${e.a} 0 50%,${e.b} 50%)`;
-  return `<span class="rond" aria-hidden="true" style="background:${fond}"></span>`;
+  const e=EQUIPES[n];
+  if(!e||!e.g)return "";          // pas de drapeau invente pour un club
+  return `<span class="rond" aria-hidden="true" style="background:${e.g}"></span>`;
 }
 // Le score, tel qu'il est ecrit dans l'affiche. Le premier couple de chiffres
 // est le score du match ; ce qui suit entre parentheses — « (4–2 t.a.b.) » —
@@ -710,9 +724,19 @@ function duel(m){
   // le droit a gauche. Sans ca ils partaient aux deux bords et le regard devait
   // traverser toute la ligne.
   return `<span class="duel">`
-    +`<span class="cote">${marque(a)}<b>${esc(sigle(a))}</b></span>`
+    +`<span class="cote">${camp(a,m.sport,false)}</span>`
     +`<span class="score"><i>${sc?sc[1]:"–"}</i><i>${sc?sc[2]:"–"}</i></span>`
-    +`<span class="cote droite"><b>${esc(sigle(b))}</b>${marque(b)}</span></span>`;
+    +`<span class="cote droite">${camp(b,m.sport,true)}</span></span>`;
+}
+// Un drapeau ne se dessine que la ou il en existe un. Une nation porte donc son
+// drapeau et son sigle ; un club, son nom court — c'est lui qui le designe.
+// Le sigle occupe une largeur fixe, sans quoi les drapeaux ne seraient pas sur
+// la meme colonne d'une ligne a l'autre.
+function camp(nom,sport,droite){
+  const e=EQUIPES[nom];
+  if(e&&e.g)return droite?`<b class="sig">${esc(sigle(nom))}</b>${marque(nom)}`
+                         :`${marque(nom)}<b class="sig">${esc(sigle(nom))}</b>`;
+  return `<b class="nom">${esc(nomCourtEquipe(nom,sport))}</b>`;
 }
 // « a.p. », « t.a.b. » : la maniere dont le score s'est decide. Elle se range
 // sous l'annee, a gauche, ou la colonne est deja de largeur fixe.

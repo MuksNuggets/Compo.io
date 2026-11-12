@@ -87,13 +87,20 @@ sport, **code de reprise**, et le tableau de bord pour le propriétaire.
 **Pas de blasons de clubs.** Ce sont des marques déposées, et les poser sur un
 site publié n'est pas une question technique.
 
-Chaque équipe est donc **un rond plein, peint en CSS** : le drapeau pour une
-nation, les deux couleurs du club sinon. Ni image, ni emoji — un emoji de
-drapeau est rectangulaire, se recadre mal en rond, et sur Windows ne s'affiche
-pas du tout. Un dégradé par drapeau coûte une ligne et s'affiche partout
-pareil. Quelques-uns sont des simplifications assumées : l'Afrique du Sud est
-en vert et or, ses couleurs de maillot, plutôt qu'en six couleurs illisibles
-dans 22 pixels.
+**Un drapeau ne se dessine que là où il en existe un.** Une nation porte le
+sien, peint en CSS — ni image, ni emoji : un emoji de drapeau est
+rectangulaire, se recadre mal en rond, et sur Windows ne s'affiche pas du tout.
+Un dégradé coûte une ligne et s'affiche partout pareil. Quelques-uns sont des
+simplifications assumées : l'Afrique du Sud est en vert et or, ses couleurs de
+maillot, plutôt qu'en six couleurs illisibles dans 22 pixels.
+
+Un club, lui, n'a pas de drapeau et n'en reçoit pas d'inventé : il porte son
+**nom court**, qui le désigne mieux que deux couleurs — Toulouse et Toulon
+donnaient le même rond rouge et noir.
+
+Le sigle d'une nation occupe une largeur fixe. C'est ce qui met tous les
+drapeaux sur la même colonne d'une ligne à l'autre, à gauche comme à droite ;
+`tools/test_onglets.js` le vérifie.
 
 Chaque équipe a un **nom court** : *Stade toulousain* → Toulouse, *Paris
 Saint-Germain* → PSG, *Étoile rouge de Belgrade* → Étoile rouge. Et les
