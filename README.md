@@ -82,6 +82,27 @@ même.
 Le profil reste derrière le portrait, en haut à droite : pseudo, chiffres par
 sport, **code de reprise**, et le tableau de bord pour le propriétaire.
 
+## Les équipes : noms courts, drapeaux, couleurs
+
+**Pas de blasons de clubs.** Ce sont des marques déposées, et les poser sur un
+site publié n'est pas une question technique. À la place, les couleurs du
+club, en pastille deux tons : gratuit, reconnaissable, et deux déclarations de
+CSS. Les nations, elles, portent leur drapeau — un emoji, donc zéro octet et
+zéro fichier. Sur Windows les drapeaux s'affichent en deux lettres ; sur
+mobile, partout, ils s'affichent.
+
+Chaque équipe a un **nom court** : *Stade toulousain* → Toulouse, *Paris
+Saint-Germain* → PSG, *Étoile rouge de Belgrade* → Étoile rouge. Et les
+surnoms là où ils sont plus courts **et** plus parlants que le nom du pays :
+All Blacks, Springboks, Wallabies. Pas *XV de France*, qui est plus long que
+*France* et n'apporte rien.
+
+C'est ce qui fait tenir l'affiche sur une ligne — « Munster 16–13 Toulouse »
+plutôt que « Munster 16–13 Stade toulousain » — et donc des cartes de 180 px
+au lieu de 230. `tools/test_onglets.js` vérifie que les 67 équipes de la base
+ont toutes leur entrée, sans quoi certaines garderaient leur nom long en
+silence.
+
 Un troisième onglet « joueur mystère » a existé une nuit : deviner un joueur
 à partir d'indices dévoilés un à un. Retiré, pas assez bon. Il est dans
 l'historique git si l'idée revient.

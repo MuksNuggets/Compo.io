@@ -71,7 +71,8 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   const copie = await p.evaluate(() => navigator.clipboard.readText());
   const lignes = copie.split('\n');
   v('le partage annonce le match en deux lignes',
-    /^[A-ZÀ-Ü' .-]+ - [A-ZÀ-Ü' .-]+ \d\d$/.test(lignes[0]) && lignes[1] === 'Peux-tu refaire la compo ?', lignes);
+    // Les chiffres sont admis : « RACING 92 » est un nom d'equipe.
+    /^[A-ZÀ-Ü0-9' .-]+ - [A-ZÀ-Ü0-9' .-]+ \d\d$/.test(lignes[0]) && lignes[1] === 'Peux-tu refaire la compo ?', lignes);
   v('le partage ne porte aucun carre', !/[🟩🟥🟨]/u.test(copie), copie);
 
   // --- 3bis. de retour a l'accueil, la compo jouee porte son classement

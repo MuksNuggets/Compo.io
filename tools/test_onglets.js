@@ -102,6 +102,28 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     rug.competitions);
   v('toutes les finales de rugby sont listees', rug.finales === rug.attendu, rug);
 
+  // --- noms courts et marques d'equipe
+  // Pas de blasons de clubs : ce sont des marques deposees. A la place, les
+  // couleurs du club ; les nations gardent leur drapeau.
+  const eq = await p.evaluate(() => {
+    const manque = [];
+    MATCHES.forEach(m => m.teams.forEach(t => { if (!EQUIPES[t.name]) manque.push(t.name); }));
+    const tlse = MATCHES.find(x => x.id === 'hcup-2024');
+    const nz = MATCHES.find(x => x.id === 'rwc-2015');
+    return { manque,
+      toulouse: tlse ? afficheCourte(tlse) : null,
+      allblacks: nz ? afficheCourte(nz) : null,
+      drapeau: marque('France'), pastille: marque('Stade toulousain'),
+      inconnu: marque('Equipe qui n’existe pas') };
+  });
+  v('chaque equipe de la base a son entree', eq.manque.length === 0, eq.manque.slice(0, 8));
+  v('les clubs portent un nom court', /^Toulouse /.test(eq.toulouse || ''), eq.toulouse);
+  v('les nations de rugby portent leur surnom', /All Blacks/.test(eq.allblacks || ''), eq.allblacks);
+  v('une nation a un drapeau', /drapeau/.test(eq.drapeau), eq.drapeau);
+  v('un club a une pastille de couleur, pas un blason',
+    /blason/.test(eq.pastille) && !/<img/.test(eq.pastille), eq.pastille);
+  v('une equipe inconnue ne casse rien', eq.inconnu === '', eq.inconnu);
+
   // Les annees descendent : on cherche d'abord la derniere.
   const annees = await p.evaluate(() =>
     [...document.querySelectorAll('#arch .comp:first-of-type .fin .an')].map(e => +e.textContent));
