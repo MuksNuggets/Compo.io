@@ -231,6 +231,12 @@ de changement de focus à signaler. Le joueur tapait sur une barre qui ne
 répondait pas. À la souris le problème n'existe pas et pouvoir écrire tout de
 suite est agréable, donc le focus automatique y reste.
 
+L'indice ne rend pas la main à la saisie : le clavier remonterait aussitôt,
+l'écran se resserrerait, et la lettre qu'on vient de payer 50 points
+disparaîtrait avec les étiquettes. Et quand l'écran est resserré, l'étiquette
+d'un indice reste affichée alors que les autres s'effacent — c'est la seule
+qu'on ait achetée.
+
 Une liste de suggestions a existé : à partir de quatre lettres, des noms tirés
 de toute la base. Retirée — elle s'affichait au-dessus de la saisie, proposait
 même quand l'orthographe était juste, et les trois filets du moteur de noms

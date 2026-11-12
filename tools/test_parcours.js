@@ -186,6 +186,30 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('le premier appui donne le focus a la saisie',
     (await s.evaluate(() => document.activeElement.id)) === 'inp');
   v('plus de liste de suggestions', await s.evaluate(() => !document.getElementById('sugg')));
+
+  // L'indice doit se voir. Rendre la main au clavier le faisait remonter,
+  // l'ecran se resserrait, et la lettre qu'on vient de payer disparaissait
+  // avec les etiquettes.
+  // Clavier ouvert, « Indice » est cache : on referme d'abord en touchant le
+  // terrain, exactement comme un joueur.
+  await s.tap('#pitch'); await s.waitForTimeout(250);
+  await s.tap('#hint'); await s.waitForTimeout(250);
+  v('l’indice ne rouvre pas le clavier',
+    (await s.evaluate(() => document.activeElement.id)) !== 'inp',
+    await s.evaluate(() => document.activeElement.id));
+  const aide = await s.evaluate(() => {
+    const d = document.querySelector('.pl.aide .nm');
+    if (!d) return null;
+    const vu = !!d.getClientRects().length;
+    document.getElementById('play').classList.add('court');   // comme clavier ouvert
+    const autre = document.querySelector('.pl.todo:not(.aide) .nm');
+    const r = { texte: d.textContent, vu, serre: !!d.getClientRects().length,
+                autres: !!(autre && autre.getClientRects().length) };
+    document.getElementById('play').classList.remove('court');
+    return r;
+  });
+  v('la lettre de l’indice s’affiche', aide && aide.vu && /…$/.test(aide.texte), aide);
+  v('elle reste visible quand l’ecran se resserre', aide && aide.serre && !aide.autres, aide);
   await s.close();
 
   // --- 11. la mesure d'audience

@@ -151,6 +151,9 @@ body.enjeu .wrap{padding:0;height:100%}
 #play.enjeu.court #acts .btn{padding:7px 12px;font-size:13px}
 #play.enjeu.court .title{font-size:21px}
 #play.enjeu.court .pl .nm{display:none}
+/* Sauf celle d'un indice : c'est tout ce qu'on a obtenu en echange de 50
+   points, elle doit rester lisible meme clavier ouvert. */
+#play.enjeu.court .pl.aide .nm{display:block}
 #play.enjeu.court .pl.todo svg{opacity:.4}
 #play.enjeu.court .pl.miss svg{opacity:.4;filter:grayscale(1)}
 .pitch{position:relative;width:100%;border-radius:10px;overflow:hidden;
@@ -1036,7 +1039,13 @@ $("inp").addEventListener("keydown",e=>{if(e.key!=="Enter"||over)return;
   if(!tryMatch(e.target.value,true)&&e.target.value.trim()){const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");$("flash").textContent="Pas dans cette compo.";}});
 $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!found.has(i)&&!hinted.has(i));if(!todo.length)return;
   const i=todo[Math.floor(Math.random()*todo.length)];hinted.add(i);const last=nomCourt(P[i].n);
-  $("pl"+i).querySelector(".nm").textContent=last[0]+"…";$("flash").textContent=`Indice : un nom en ${last[0].toUpperCase()}.`;$("inp").focus();};
+  const d=$("pl"+i);d.classList.add("aide");
+  d.querySelector(".nm").textContent=last[0]+"…";
+  $("flash").textContent=`Indice : un nom en ${last[0].toUpperCase()}.`;
+  // Pas de retour au clavier : il remonterait aussitot, l'ecran se resserrerait
+  // et la lettre qu'on vient de payer disparaitrait avec les etiquettes. A la
+  // souris il n'y a rien a cacher, donc on y rend la main a la saisie.
+  if(matchMedia("(hover:hover) and (pointer:fine)").matches)$("inp").focus();};
 $("giveup").onclick=()=>end();
 // L'affiche du match pour le partage : FRANCE - BRESIL 98. Pas de score, il
 // n'apporte rien a quelqu'un qu'on invite a jouer.
