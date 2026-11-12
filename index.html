@@ -730,18 +730,37 @@ function tousLesNoms(){
   // n'aide personne.
   const parNom=new Map();
   [...vus.keys()].forEach(n=>{const f=nomCourt(n);if(!parNom.has(f))parNom.set(f,n)});
-  TOUS=[...parNom].map(([f,n])=>({n,f,cf:norm(f).replace(/ /g,""),cn:norm(n).replace(/ /g,"")}));
+  // sf : la cle « a l'oreille », calculee une fois pour toutes. C'est elle qui
+  // rattrape celui qui ne sait pas ecrire le nom qu'il a en tete.
+  TOUS=[...parNom].map(([f,n])=>{const cf=norm(f).replace(/ /g,"");
+    return {n,f,cf,sf:sonne(cf)}});
   TOUS.sort((a,b)=>a.cf<b.cf?-1:a.cf>b.cf?1:0);
   return TOUS;
 }
 function suggere(q){
   const c=norm(q).replace(/ /g,"");
-  if(c.length<3)return [];
+  // Quatre lettres : a trois, la liste sortait a la moindre amorce et donnait
+  // trop facilement des noms qu'on n'avait pas vraiment en tete.
+  if(c.length<4)return [];
   const debut=[],dedans=[];
   for(const p of tousLesNoms()){
-    if(p.cf.startsWith(c)||p.cn.startsWith(c)){if(debut.length<6)debut.push(p)}
+    // Le nom de famille, et lui seul. Chercher aussi dans le prenom donnait des
+    // resultats qui semblaient sortis de nulle part : « cle » proposait
+    // Poitrenaud, parce qu'il s'appelle Clement — et la pastille, elle,
+    // n'affiche que « Poitrenaud ».
+    if(p.cf.startsWith(c)){if(debut.length<6)debut.push(p)}
     else if(dedans.length<6&&p.cf.includes(c))dedans.push(p);
     if(debut.length>=6)break;
+  }
+  // En dernier recours seulement, l'oreille : « dech » ne commence aucun nom,
+  // mais sonne comme Deschamps. De meme « sidan » pour Zidane, « cante » pour
+  // Kanté. En dernier recours, parce que la cle phonetique est courte et
+  // ratisserait large si on la passait avant.
+  if(!debut.length&&!dedans.length){
+    const so=sonne(c);
+    if(so.length>2)for(const p of tousLesNoms()){
+      if(p.sf.startsWith(so)){dedans.push(p);if(dedans.length>=6)break}
+    }
   }
   return [...debut,...dedans].slice(0,6);
 }

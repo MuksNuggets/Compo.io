@@ -106,13 +106,24 @@ attend — 700 ms sans frappe, ou Entrée.
 
 ## L'aide à l'orthographe
 
-À partir de trois lettres, une rangée de noms s'affiche au-dessus de la saisie.
-Ils viennent de **toute la base** (1 683 noms de famille, toutes finales
-confondues), **jamais de la compo du jour** : une suggestion ne dit donc pas que
-le joueur est sur le terrain. Sur France 98, « des » propose Desailly,
-Desbrosse, Deschamps et Doué — deux y sont, deux non. Celui qui sait qui il
-cherche mais pas comment ça s'écrit s'en sort ; celui qui ne sait pas reste
-devant la même page blanche.
+À partir de quatre lettres, une rangée de noms s'affiche au-dessus de la
+saisie. Ils viennent de **toute la base** (1 683 noms de famille, toutes
+finales confondues), **jamais de la compo du jour** : une suggestion ne dit
+donc pas que le joueur est sur le terrain. Celui qui sait qui il cherche mais
+pas comment ça s'écrit s'en sort ; celui qui ne sait pas reste devant la même
+page blanche.
+
+Trois nets, dans cet ordre : le nom de famille qui commence par ce qui est
+tapé, puis celui qui le contient (« toit » → du Toit), puis — en dernier
+recours seulement — la clé « à l'oreille », qui rattrape une faute dès le
+début : « dech » → Deschamps, « sidan » → Zidane, « canté » → Kanté. En dernier
+recours parce que cette clé est courte et ratisserait large si elle passait
+avant.
+
+On ne cherche **que** dans le nom de famille. Chercher aussi dans le prénom
+donnait des résultats qui semblaient sortis de nulle part : « cle » proposait
+Poitrenaud, parce qu'il s'appelle Clément — et la pastille, elle, n'affiche que
+« Poitrenaud ».
 
 C'est le point que `tools/test_parcours.js` surveille : la liste doit être
 identique d'une compo à l'autre, et identique une fois la compo entièrement

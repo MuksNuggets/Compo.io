@@ -178,8 +178,20 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await s.fill('#pseudo', 'leo'); await s.click('#valide'); await s.waitForTimeout(200);
   await s.click('[data-jour="foot"]'); await s.waitForTimeout(400);
   const nom1 = await s.evaluate(() => nomCourt(P[0].n));
-  await s.fill('#inp', 'ba'); await s.waitForTimeout(150);
-  v('deux lettres ne proposent rien', await s.evaluate(() => document.getElementById('sugg').hidden));
+  await s.fill('#inp', 'bar'); await s.waitForTimeout(150);
+  v('trois lettres ne proposent rien', await s.evaluate(() => document.getElementById('sugg').hidden));
+
+  // Ce qu'on propose doit avoir un rapport avec ce qui est tape. « cle »
+  // proposait Poitrenaud, parce qu'il s'appelle Clement : on cherchait aussi
+  // dans le prenom, alors que la pastille n'affiche que le nom de famille.
+  const pertinence = await s.evaluate(() => ({
+    cler: suggere('cler').map(x => x.f),
+    dech: suggere('dech').map(x => x.f),     // faute d'orthographe : l'oreille rattrape
+  }));
+  v('une suggestion a un rapport avec ce qui est tape',
+    pertinence.cler.every(f => /^cler/i.test(f.replace(/[^a-z]/gi, ''))), pertinence.cler);
+  v('l’oreille rattrape une faute de debut',
+    pertinence.dech.length > 0, pertinence.dech);
   await s.fill('#inp', nom1.slice(0, 4).toLowerCase()); await s.waitForTimeout(200);
   const chips = await s.locator('#sugg button').allTextContents();
   v('quatre lettres proposent des noms', chips.length > 0, chips);
