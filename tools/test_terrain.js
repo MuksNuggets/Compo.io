@@ -85,6 +85,26 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
   // sous le panneau, sinon le terrain part sous le clavier.
   const bloque = await q.evaluate(() => getComputedStyle(document.body).position === 'fixed');
   if (!bloque) ennuis.push('en partie : la page n’est pas bloquee');
+
+  // body doit couvrir EXACTEMENT la zone visible. Avec inset:0 il faisait la
+  // hauteur sans clavier : des que la vue etait decalee on tombait sur le vide
+  // en dessous — l'ecran blanc. Et un defilement force doit etre annule, parce
+  // que Safari en declenche un apres coup pour montrer la saisie.
+  for (const hauteur of [844, 500, 400]) {
+    await q.setViewportSize({ width: 390, height: hauteur });
+    await q.waitForTimeout(250);
+    await q.focus('#inp');
+    await q.evaluate(() => window.scrollTo(0, 250));
+    await q.waitForTimeout(700);
+    const r = await q.evaluate(() => {
+      const b = document.body.getBoundingClientRect();
+      return { couvre: b.top <= 0.5 && b.bottom >= innerHeight - 0.5, defile: Math.round(window.scrollY) };
+    });
+    if (!r.couvre)  ennuis.push(`fenetre ${hauteur}px : le fond ne couvre pas l’ecran`);
+    if (r.defile)   ennuis.push(`fenetre ${hauteur}px : le defilement n’est pas annule (${r.defile}px)`);
+  }
+  await q.setViewportSize({ width: 390, height: 400 });
+  await q.waitForTimeout(250);
   // Mais le panneau, lui, doit pouvoir glisser : c'est la soupape quand la
   // place manque au point de rogner le haut du terrain.
   const soupape = await q.evaluate(() => {

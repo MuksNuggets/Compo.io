@@ -69,6 +69,9 @@
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
+/* Le fond est aussi sur html : pendant une partie body est fixe et ne couvre
+   que la zone visible, donc tout ce qui depasse laissait voir du blanc. */
+html{background:var(--bg)}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Barlow,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 .wrap{max-width:600px;margin:0 auto;padding:20px 16px 48px}
 .cond{font-family:"Barlow Condensed","Arial Narrow",Arial,sans-serif}
@@ -109,11 +112,16 @@ button{font:inherit;color:inherit;cursor:pointer}
    decale la vue : on perdait le haut du terrain.
    Le panneau, en revanche, defile a l'interieur. Si la place manque vraiment on
    peut remonter voir le haut du terrain, et c'est le panneau qui bouge, pas la
-   page. --vue vient de visualViewport, seule API qui sache ce qui reste visible
-   sous le clavier. */
-body.enjeu{position:fixed;inset:0;width:100%;overflow:hidden}
+   page.
+   body fait exactement la zone visible — pas toute la fenetre. Avec inset:0 il
+   faisait la hauteur SANS clavier : des que Safari decalait la vue, on tombait
+   sur le vide en dessous, d'ou l'ecran blanc. --vue et --haut viennent de
+   visualViewport, seule API qui sache ce qui reste visible sous le clavier et
+   de combien la vue a ete decalee. */
+body.enjeu{position:fixed;left:0;right:0;width:100%;overflow:hidden;
+  top:var(--haut,0px);height:var(--vue,100dvh)}
 body.enjeu .wrap{padding:0;height:100%}
-#play.enjeu{height:var(--vue,100dvh);overflow:hidden;
+#play.enjeu{height:100%;overflow:hidden;
   display:flex;flex-direction:column;
   /* body fixe sort du flux, donc le padding de :root qui reserve l'encoche ne
      s'applique plus : le titre passait sous la barre d'etat. On le reprend ici. */
@@ -811,10 +819,31 @@ function renderPasse(){
 // savoir sur iOS, ou le clavier recouvre la page sans la retrecir.
 function hauteurVisible(){
   const v=window.visualViewport;
-  const px=v?v.height:innerHeight;
-  document.documentElement.style.setProperty("--vue",px+"px");
+  const px=v?v.height:innerHeight,haut=v?v.offsetTop:0;
+  const st=document.documentElement.style;
+  st.setProperty("--vue",px+"px");
+  st.setProperty("--haut",haut+"px");
   $("play").classList.toggle("court",px<620);
+  recale();
 }
+// Safari defile la page pour amener la saisie au-dessus du clavier, et il le
+// fait APRES notre code, pendant l'animation du clavier. Une seule remise a
+// zero ne suffit donc pas : on insiste une seconde. Des que --vue est a jour,
+// la saisie est de toute facon au-dessus du clavier, ce defilement n'a plus
+// aucune raison d'etre.
+let recalage=null;
+function recale(){
+  clearInterval(recalage);
+  let n=0;
+  recalage=setInterval(()=>{
+    if(!document.body.classList.contains("enjeu")||++n>20){clearInterval(recalage);return}
+    if(window.scrollY||document.documentElement.scrollTop||document.body.scrollTop){
+      window.scrollTo(0,0);
+      document.documentElement.scrollTop=0;document.body.scrollTop=0;
+    }
+  },50);
+}
+$("inp").addEventListener("focus",recale);
 if(window.visualViewport){
   visualViewport.addEventListener("resize",hauteurVisible);
   visualViewport.addEventListener("scroll",hauteurVisible);
