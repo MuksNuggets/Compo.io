@@ -114,6 +114,50 @@ const FAUTES = [
     return ennuis;
   });
 
+  // --- 4. deux compos attribuees a l'envers
+  // La finale 2016 du Top 14 donnait les joueurs de Toulon au Racing et
+  // l'inverse : taper « Giteau » sur la compo de Toulon ne trouvait rien.
+  // Aucune source exterieure n'est joignable d'ici, mais les clubs reviennent
+  // d'une annee sur l'autre : si les joueurs d'une equipe collent au passe du
+  // club d'en face bien mieux qu'au sien, les deux compos sont inversees.
+  const envers = await p.evaluate(() => {
+    const parClub = {};
+    MATCHES.forEach(m => m.teams.forEach(t => {
+      (parClub[t.name] = parClub[t.name] || new Set());
+      t.p.forEach(x => parClub[t.name].add(x[3]));
+    }));
+    const score = (noms, club) => parClub[club] ? noms.filter(n => parClub[club].has(n)).length : 0;
+    const louches = [];
+    MATCHES.forEach(m => {
+      if (m.teams.length < 2) return;
+      const [A, B] = m.teams, na = A.p.map(x => x[3]), nb = B.p.map(x => x[3]);
+      // on retire la contribution du match lui-meme a son propre club
+      const aa = score(na, A.name) - na.length, ab = score(na, B.name);
+      const bb = score(nb, B.name) - nb.length, ba = score(nb, A.name);
+      // 2 joueurs du mauvais cote, ce sont des transferts ; 3 et plus, non.
+      if (ab - aa >= 3 || ba - bb >= 3) louches.push(`${m.id} (${ab}-${aa} / ${ba}-${bb})`);
+    });
+    return louches;
+  });
+
+  // --- 5. une faute que seule la distance d'edition rattrape
+  // « gui » dur et « gi » doux ne sonnent pas pareil : le filet phonetique
+  // passe a cote de « guiteau » pour Giteau. Il attendait Entree ; il part
+  // maintenant apres une pause, qui dit la meme chose.
+  const tardif = await p.evaluate(async () => {
+    const m = MATCHES.find(x => x.id === 'top14-2016');
+    const ti = m.teams.findIndex(t => t.p.some(x => /Giteau/.test(x[3])));
+    if (ti < 0) return 'Giteau absent de la finale 2016';
+    start(m, ti, false);
+    const inp = document.getElementById('inp');
+    inp.value = 'guiteau'; inp.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise(r => setTimeout(r, 1200));
+    return inp.value === '' && /Giteau/.test(document.getElementById('flash').textContent)
+      ? null : `« guiteau » non valide (champ : « ${inp.value} »)`;
+  });
+
+  console.log(`Compos a l’envers : ${envers.length ? envers.join(', ') : 'aucune'}`);
+  console.log(`Faute rattrapee apres une pause : ${tardif || 'oui'}`);
   console.log(`Noms testes : ${r.total} joueurs, nom de famille et nom complet.`);
   console.log(`Validation anticipee : ${trop.length ? trop.join(' / ') : 'aucune'}`);
   console.log(`  pas reconnus    : ${r.rates.length}`);
@@ -124,5 +168,6 @@ const FAUTES = [
   mauvais.forEach(x => console.log('    ', JSON.stringify(x)));
 
   await b.close();
-  process.exit(r.rates.length || r.faux.length || mauvais.length || trop.length ? 1 : 0);
+  process.exit(r.rates.length || r.faux.length || mauvais.length || trop.length
+    || envers.length || tardif ? 1 : 0);
 })();

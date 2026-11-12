@@ -21776,120 +21776,6 @@
       "1",
       30,
       18,
-      "Xavier Chiocci",
-      []
-     ],
-     [
-      "2",
-      50,
-      18,
-      "Guilhem Guirado",
-      []
-     ],
-     [
-      "3",
-      70,
-      18,
-      "Levan Chilachava",
-      []
-     ],
-     [
-      "4",
-      40,
-      29,
-      "Samu Manoa",
-      []
-     ],
-     [
-      "5",
-      60,
-      29,
-      "Konstantin Mikautadze",
-      []
-     ],
-     [
-      "6",
-      22,
-      40,
-      "Mamuka Gorgodze",
-      []
-     ],
-     [
-      "7",
-      78,
-      40,
-      "Juan Martin Fernandez Lobbe",
-      []
-     ],
-     [
-      "8",
-      50,
-      40,
-      "Steffon Armitage",
-      []
-     ],
-     [
-      "9",
-      35,
-      53,
-      "Jonathan Pelissié",
-      []
-     ],
-     [
-      "10",
-      65,
-      53,
-      "Matt Giteau",
-      []
-     ],
-     [
-      "11",
-      12,
-      72,
-      "Bryan Habana",
-      []
-     ],
-     [
-      "12",
-      30,
-      64,
-      "Maxime Mermoz",
-      []
-     ],
-     [
-      "13",
-      70,
-      64,
-      "Mathieu Bastareaud",
-      []
-     ],
-     [
-      "14",
-      88,
-      72,
-      "Josua Tuisova",
-      []
-     ],
-     [
-      "15",
-      50,
-      82,
-      "Leigh Halfpenny",
-      []
-     ]
-    ],
-    "coach": [
-     "Bernard Laporte",
-     []
-    ]
-   },
-   {
-    "name": "RC Toulon",
-    "p": [
-     [
-      "1",
-      30,
-      18,
       "Eddy Ben Arous",
       []
      ],
@@ -21994,6 +21880,120 @@
     ],
     "coach": [
      "Laurent Labit",
+     []
+    ]
+   },
+   {
+    "name": "RC Toulon",
+    "p": [
+     [
+      "1",
+      30,
+      18,
+      "Xavier Chiocci",
+      []
+     ],
+     [
+      "2",
+      50,
+      18,
+      "Guilhem Guirado",
+      []
+     ],
+     [
+      "3",
+      70,
+      18,
+      "Levan Chilachava",
+      []
+     ],
+     [
+      "4",
+      40,
+      29,
+      "Samu Manoa",
+      []
+     ],
+     [
+      "5",
+      60,
+      29,
+      "Konstantin Mikautadze",
+      []
+     ],
+     [
+      "6",
+      22,
+      40,
+      "Mamuka Gorgodze",
+      []
+     ],
+     [
+      "7",
+      78,
+      40,
+      "Juan Martin Fernandez Lobbe",
+      []
+     ],
+     [
+      "8",
+      50,
+      40,
+      "Steffon Armitage",
+      []
+     ],
+     [
+      "9",
+      35,
+      53,
+      "Jonathan Pelissié",
+      []
+     ],
+     [
+      "10",
+      65,
+      53,
+      "Matt Giteau",
+      []
+     ],
+     [
+      "11",
+      12,
+      72,
+      "Bryan Habana",
+      []
+     ],
+     [
+      "12",
+      30,
+      64,
+      "Maxime Mermoz",
+      []
+     ],
+     [
+      "13",
+      70,
+      64,
+      "Mathieu Bastareaud",
+      []
+     ],
+     [
+      "14",
+      88,
+      72,
+      "Josua Tuisova",
+      []
+     ],
+     [
+      "15",
+      50,
+      82,
+      "Leigh Halfpenny",
+      []
+     ]
+    ],
+    "coach": [
+     "Bernard Laporte",
      []
     ]
    }

@@ -184,44 +184,6 @@ vérifie les deux côtés.
 L'appel part à chaque ouverture du profil. C'est une requête de plus par visite
 du profil, et elle se solde par un refus pour tout le monde sauf un.
 
-## Mesure d'audience
-
-GoatCounter, gratuit pour un usage non commercial, sans cookie — donc pas de
-bandeau à afficher — et sans conservation d'adresse IP.
-
-**Tant que la constante `GOATCOUNTER` est vide, rien n'est chargé et rien n'est
-envoyé.** C'est ce qui garde les tests hors ligne. Pour activer : y mettre le
-code du compte, par exemple `compoio`.
-
-L'app ne recharge jamais la page : sans appels manuels, on ne verrait qu'une
-seule vue par visiteur et rien de ce qu'il fait. On compte donc `/partie/foot`,
-`/partie/rugby`, `/partie/<sport>/passee`, `/fini/<sport>/complet` ou
-`/partiel`, `/profil` et `/partage`. Ces chemins sont en nombre fini et ne
-portent jamais le pseudo ni quoi que ce soit qui vienne du joueur —
-`tools/test_parcours.js` le vérifie, et vérifie aussi qu'aucune mesure ne part
-chez un tiers tant que le code est vide.
-
-`/fini/<sport>/complet` contre `/partiel` est le chiffre qui dit si le jeu est
-trop dur.
-
-## Les noms mal écrits
-
-Trois filets, du plus sûr au plus large : l'écriture exacte, une clé « à
-l'oreille » qui écrase ce qui ne s'entend pas (ph/f, qu/k, h muet, lettres
-doublées, consonne finale muette…), puis la distance d'édition avec une
-tolérance qui suit la longueur de ce qui est tapé. Les deux premiers tournent à
-chaque frappe, le troisième attend la touche Entrée.
-
-`tools/test_noms.js` tape le nom de famille puis le nom complet des 3 299
-joueurs de la base, chacun dans sa compo : **6 598 saisies, zéro non reconnue,
-zéro qui tombe sur un autre joueur**. C'est ce second chiffre qui compte : une
-tolérance trop large validerait le mauvais nom et fausserait une partie classée.
-
-Un nom à moitié tapé ne doit pas être validé sous les doigts : « heyman » a
-déjà la clé phonétique de « heymans », et le S finissait dans une barre vide.
-Tant que ce qui est tapé peut encore devenir un autre nom de la compo, on
-attend — 700 ms sans frappe, ou Entrée.
-
 ## Le clavier
 
 Au doigt, aucun focus n'est posé sur la saisie au démarrage d'une partie. Sur
@@ -262,13 +224,30 @@ chez un tiers tant que le code est vide.
 `/fini/<sport>/complet` contre `/partiel` est le chiffre qui dit si le jeu est
 trop dur.
 
+## Les compos à l'envers
+
+La finale 2016 du Top 14 donnait les joueurs de Toulon au Racing et l'inverse,
+entraîneurs compris : taper « Giteau » sur la compo de Toulon ne trouvait rien.
+Les noms d'équipe et l'ordre de l'affiche étaient justes, c'est le contenu qui
+était croisé.
+
+Aucune source extérieure n'est joignable depuis le conteneur, mais les clubs
+reviennent d'une année sur l'autre : si les joueurs d'une équipe collent au
+passé du club d'en face bien mieux qu'au sien, les deux compos sont inversées.
+`tools/test_noms.js` balaie la base avec ce critère à chaque passage. Deux
+joueurs du mauvais côté sont des transferts ; trois et plus, non. La finale
+2016 en comptait **huit et treize** ; aucune autre ne dépasse deux.
+
 ## Les noms mal écrits
 
 Trois filets, du plus sûr au plus large : l'écriture exacte, une clé « à
 l'oreille » qui écrase ce qui ne s'entend pas (ph/f, qu/k, h muet, lettres
 doublées, consonne finale muette…), puis la distance d'édition avec une
 tolérance qui suit la longueur de ce qui est tapé. Les deux premiers tournent à
-chaque frappe, le troisième attend la touche Entrée.
+chaque frappe ; le troisième part sur Entrée, ou après une seconde de pause —
+qui dit la même chose : le mot est fini. Sans cette pause, « guiteau » pour
+Matt Giteau ne passait jamais au fil de la frappe : le « gui » dur et le « gi »
+doux ne sonnent pas pareil, seule la distance d'édition les rapproche.
 
 `tools/test_noms.js` tape le nom de famille puis le nom complet des 3 299
 joueurs de la base, chacun dans sa compo : **6 598 saisies, zéro non reconnue,
@@ -279,31 +258,6 @@ Un nom à moitié tapé ne doit pas être validé sous les doigts : « heyman »
 déjà la clé phonétique de « heymans », et le S finissait dans une barre vide.
 Tant que ce qui est tapé peut encore devenir un autre nom de la compo, on
 attend — 700 ms sans frappe, ou Entrée.
-
-## L'aide à l'orthographe
-
-À partir de quatre lettres, une rangée de noms s'affiche au-dessus de la
-saisie. Ils viennent de **toute la base** (1 683 noms de famille, toutes
-finales confondues), **jamais de la compo du jour** : une suggestion ne dit
-donc pas que le joueur est sur le terrain. Celui qui sait qui il cherche mais
-pas comment ça s'écrit s'en sort ; celui qui ne sait pas reste devant la même
-page blanche.
-
-Trois nets, dans cet ordre : le nom de famille qui commence par ce qui est
-tapé, puis celui qui le contient (« toit » → du Toit), puis — en dernier
-recours seulement — la clé « à l'oreille », qui rattrape une faute dès le
-début : « dech » → Deschamps, « sidan » → Zidane, « canté » → Kanté. En dernier
-recours parce que cette clé est courte et ratisserait large si elle passait
-avant.
-
-On ne cherche **que** dans le nom de famille. Chercher aussi dans le prénom
-donnait des résultats qui semblaient sortis de nulle part : « cle » proposait
-Poitrenaud, parce qu'il s'appelle Clément — et la pastille, elle, n'affiche que
-« Poitrenaud ».
-
-C'est le point que `tools/test_parcours.js` surveille : la liste doit être
-identique d'une compo à l'autre, et identique une fois la compo entièrement
-trouvée. Si elle change, c'est qu'elle regarde le terrain.
 
 # Tests
 
