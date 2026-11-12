@@ -199,6 +199,18 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
       return mauvais;
     });
     v(`rien ne se chevauche a ${large} px`, chevauche.length === 0, chevauche.slice(0, 4));
+
+    // Un nom de club coupe ne sert plus a rien : c'est deja un nom court.
+    // « Stade français » a ete raccourci en « Paris » pour cette raison.
+    const coupes = [];
+    for (const sp of ['foot', 'rugby']) {
+      await p.click(`#arch [data-sa="${sp}"]`); await p.waitForTimeout(180);
+      await p.evaluate(() => document.querySelectorAll('#arch .comp').forEach(d => d.open = true));
+      await p.waitForTimeout(150);
+      coupes.push(...await p.evaluate(() => [...new Set([...document.querySelectorAll('#arch .fin b.nom')]
+        .filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent))]));
+    }
+    v(`aucun nom de club n’est coupe a ${large} px`, coupes.length === 0, coupes.slice(0, 4));
   }
   await p.setViewportSize({ width: 390, height: 820 });
 

@@ -98,6 +98,11 @@ Un club, lui, n'a pas de drapeau et n'en reçoit pas d'inventé : il porte son
 **nom court**, qui le désigne mieux que deux couleurs — Toulouse et Toulon
 donnaient le même rond rouge et noir.
 
+Les noms courts sont choisis pour tenir : *Stade français* est devenu
+**Paris**, parce que ses quatorze signes se coupaient sur un petit écran — et
+un nom court coupé ne sert plus à rien. `tools/test_onglets.js` vérifie
+qu'aucun nom n'est tronqué, de 320 à 430 px.
+
 Le sigle d'une nation occupe une largeur fixe. C'est ce qui met tous les
 drapeaux sur la même colonne d'une ligne à l'autre, à gauche comme à droite ;
 `tools/test_onglets.js` le vérifie.
