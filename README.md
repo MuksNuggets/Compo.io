@@ -90,9 +90,14 @@ site publié n'est pas une question technique.
 **Un drapeau ne se dessine que là où il en existe un.** Une nation porte le
 sien, peint en CSS — ni image, ni emoji : un emoji de drapeau est
 rectangulaire, se recadre mal en rond, et sur Windows ne s'affiche pas du tout.
-Un dégradé coûte une ligne et s'affiche partout pareil. Quelques-uns sont des
-simplifications assumées : l'Afrique du Sud est en vert et or, ses couleurs de
-maillot, plutôt qu'en six couleurs illisibles dans 22 pixels.
+Un dégradé coûte une ligne et s'affiche partout pareil.
+
+Trois ont demandé mieux qu'une diagonale. L'Afrique du Sud porte ses six
+couleurs : bande noire et or à la hampe, puis rouge, blanc, vert, blanc, bleu.
+La Nouvelle-Zélande et l'Australie ont le même champ bleu, et ce qui les
+distingue tient dans la Croix du Sud : étoiles **rouges** d'un côté,
+**blanches** de l'autre, avec la grande étoile du Commonwealth. Le quartier
+Union Jack est hors d'atteinte dans 22 pixels, les étoiles non.
 
 Un club, lui, n'a pas de drapeau et n'en reçoit pas d'inventé : il porte son
 **nom court**, qui le désigne mieux que deux couleurs — Toulouse et Toulon

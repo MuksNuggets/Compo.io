@@ -621,9 +621,15 @@ const EQUIPES={
  "Espagne":{g:"linear-gradient(180deg,#AA151B 0 25%,#F1BF00 25% 75%,#AA151B 75%)"},
  "Grèce":{g:"linear-gradient(180deg,#0D5EAF 0 20%,#fff 20% 40%,#0D5EAF 40% 60%,#fff 60% 80%,#0D5EAF 80%)"},
  "Brésil":{g:"linear-gradient(135deg,#009C3B 0 38%,#FFDF00 38% 72%,#002776 72%)"},
- "Afrique du Sud":{g:"linear-gradient(135deg,#007A4D 0 40%,#FFB612 40% 60%,#000 60%)"},
- "Nouvelle-Zélande":{g:"linear-gradient(135deg,#00247D 0 55%,#CC142B 55% 78%,#fff 78%)"},
- "Australie":{g:"linear-gradient(135deg,#00247D 0 55%,#fff 55% 78%,#00247D 78%)"},
+ // Le drapeau sud-africain a six couleurs : la bande noire et l'or a la hampe,
+ // puis rouge, blanc, vert, blanc, bleu. En diagonale il ne disait rien.
+ "Afrique du Sud":{g:"linear-gradient(to right,#000 0 22%,#FFB612 22% 28%,transparent 28%),linear-gradient(#DE3831 0 30%,#fff 30% 35%,#007A4D 35% 65%,#fff 65% 70%,#002395 70%)"},
+ // Ces deux drapeaux sont le meme champ bleu, et ce qui les distingue tient
+ // dans la Croix du Sud : etoiles ROUGES pour la Nouvelle-Zelande, BLANCHES
+ // pour l'Australie, qui porte en plus la grande etoile du Commonwealth. Le
+ // quartier Union Jack est hors d'atteinte a 22 pixels, les etoiles non.
+ "Nouvelle-Zélande":{g:"radial-gradient(circle at 72% 26%,#CC142B 0 9%,transparent 9%),radial-gradient(circle at 87% 53%,#CC142B 0 9%,transparent 9%),radial-gradient(circle at 70% 79%,#CC142B 0 9%,transparent 9%),radial-gradient(circle at 57% 52%,#CC142B 0 8%,transparent 8%),#00247D"},
+ "Australie":{g:"radial-gradient(circle at 25% 74%,#fff 0 12%,transparent 12%),radial-gradient(circle at 72% 26%,#fff 0 8%,transparent 8%),radial-gradient(circle at 87% 53%,#fff 0 8%,transparent 8%),radial-gradient(circle at 70% 79%,#fff 0 8%,transparent 8%),#00247D"},
  "Tchéquie":{g:"linear-gradient(135deg,#11457E 0 36%,transparent 36%),linear-gradient(180deg,#fff 0 50%,#D7141A 50%)"},
  "Angleterre":{g:"linear-gradient(#CE1124,#CE1124) 50%/100% 30% no-repeat,linear-gradient(#CE1124,#CE1124) 50%/30% 100% no-repeat,#fff"},
  "Danemark":{g:"linear-gradient(#fff,#fff) 50%/100% 28% no-repeat,linear-gradient(#fff,#fff) 36%/28% 100% no-repeat,#C8102E"},
