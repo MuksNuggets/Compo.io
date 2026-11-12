@@ -123,20 +123,36 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
 
   // Clavier ouvert : Indice, Abandonner et Retour s'effacent pour rendre la
   // place a la saisie, et reviennent des qu'il se referme.
-  // D'abord la detection elle-meme. Safari recouvre la page sans la retrecir,
-  // mais l'app installee sur l'ecran d'accueil la retrecit : la reference ne
-  // peut donc pas etre innerHeight, c'est la hauteur visible hors frappe.
+  // D'abord le declenchement. Mesurer le clavier a echoue deux fois : il
+  // recouvre la page dans Safari mais retrecit la fenetre dans l'app installee.
+  // Le signal est maintenant « le champ a le curseur, et on y a touche ».
   const det = await q.evaluate(() => {
     const pl = document.getElementById('play'), inp = document.getElementById('inp');
-    inp.focus();
-    hautPlein = (window.visualViewport ? visualViewport.height : innerHeight) + 300;
-    hauteurVisible();                        // on fait comme si le clavier etait monte
-    const monte = pl.classList.contains('clavier');
-    inp.blur(); hauteurVisible();
-    return { monte, redescendu: !pl.classList.contains('clavier') };
+    const etat = {};
+    inp.focus(); hauteurVisible();            // focus pose au demarrage : pas la saisie
+    etat.auDepart = pl.classList.contains('clavier');
+    inp.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    etat.apresToucher = pl.classList.contains('clavier');
+    inp.blur();
+    etat.apresSortie = pl.classList.contains('clavier');
+    return etat;
   });
-  if (!det.monte)       ennuis.push('le clavier n’est pas detecte quand la fenetre retrecit');
-  if (!det.redescendu)  ennuis.push('le clavier reste detecte apres la perte du focus');
+  if (det.auDepart)      ennuis.push('les boutons partent avant qu’on ait touche au champ');
+  if (!det.apresToucher) ennuis.push('toucher le champ ne cache pas Indice et Abandonner');
+  if (det.apresSortie)   ennuis.push('ils ne reviennent pas quand on quitte le champ');
+
+  // Puis la sequence pour de vrai, a la souris et au doigt. Les evenements
+  // fabriques ci-dessus ne disent rien de l'ordre reel : pointerdown arrive
+  // avant que le champ prenne le curseur, et c'est la que ca s'est casse.
+  const vu = () => q.evaluate(() => !!document.getElementById('acts').getClientRects().length);
+  const suite = [];
+  await q.click('#inp');   await q.waitForTimeout(200); suite.push(await vu());
+  await q.tap('#pitch');   await q.waitForTimeout(200); suite.push(await vu());
+  await q.click('#inp');   await q.waitForTimeout(200); suite.push(await vu());
+  await q.tap('#pitch');   await q.waitForTimeout(200); suite.push(await vu());
+  const attendu = [false, true, false, true];
+  if (JSON.stringify(suite) !== JSON.stringify(attendu))
+    ennuis.push(`champ/terrain enchaines : Indice visible ${JSON.stringify(suite)}, attendu ${JSON.stringify(attendu)}`);
 
   const ks = await q.evaluate(() => {
     // getClientRects, et non getComputedStyle : l'enfant d'un element cache

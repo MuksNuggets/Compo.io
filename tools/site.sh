@@ -10,6 +10,9 @@ set -e
 dest="${1:-site}"
 rm -rf "$dest"
 mkdir -p "$dest"
-cp index.html "$dest/index.html"
-cp index.html "$dest/404.html"
+# __VERSION__ devient la date de mise en ligne, affichee en bas du profil :
+# c'est la seule facon de savoir d'un coup d'oeil si l'app ouverte sur un
+# telephone est bien la derniere, ou une version gardee en cache.
+sed "s|__VERSION__|$(date -u '+%d/%m/%Y %H:%M UTC')|" index.html > "$dest/index.html"
+cp "$dest/index.html" "$dest/404.html"
 cp -R public/. "$dest/"

@@ -304,6 +304,9 @@ body.enjeu .wrap{padding:0;height:100%}
   <h2 class="title" style="margin-top:26px">Les jours d’avant</h2>
   <p class="sub">Toutes les compos déjà passées. Hors classement : seul le jour en cours compte.</p>
   <div id="listepasse"></div>
+  <!-- La date de mise en ligne, posee par tools/site.sh. Elle dit d'un coup
+       d'oeil si l'app ouverte est bien la derniere, cache compris. -->
+  <p class="sub" style="margin-top:26px;font-size:12.5px">Version du __VERSION__</p>
 </section>
 <section id="play" class="hidden">
   <!-- Seule cette partie peut glisser pendant une partie. La saisie et les
@@ -666,7 +669,7 @@ function start(m,ti,ranked,note){
   if(t.coach)P.push({lab:"ENTR",n:t.coach[0],...cles(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
   clearTimeout(attenteFin);   // pas de validation en retard d'une partie sur l'autre
-  direClavier=false;
+  direClavier=false;saisieActive=false;
   montreSugg("");
   montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");
   $("scene").scrollTop=0;hauteurVisible();
@@ -899,26 +902,33 @@ function hauteurVisible(){
   st.setProperty("--vue",px+"px");
   st.setProperty("--haut",haut+"px");
   $("play").classList.toggle("court",px<620);
-  // Reperer le clavier n'est pas si simple : dans Safari il recouvre la page
-  // sans la retrecir (innerHeight ne bouge pas), mais dans l'app ajoutee a
-  // l'ecran d'accueil iOS retrecit bel et bien la fenetre — comparer les deux
-  // ne voyait alors aucune difference et les boutons restaient la.
-  // La reference, c'est donc la hauteur visible tant qu'on ne tape pas.
-  const tape=document.activeElement===$("inp");
-  if(!tape)hautPlein=px;
-  const clavier=tape&&hautPlein-px>120;
-  $("play").classList.toggle("clavier",clavier);
-  if(clavier&&!direClavier&&!over&&!$("flash").textContent){
+  // Le signal, c'est le curseur dans le champ, pas une mesure du clavier.
+  // Deviner le clavier a la hauteur a echoue deux fois : il recouvre la page
+  // dans Safari mais retrecit la fenetre dans l'app installee, et selon le cas
+  // la mesure ne voyait rien. « Le champ a le curseur » est vrai partout, ne
+  // demande aucune mesure, et c'est exactement le moment ou l'on tape.
+  // saisieActive, et pas seulement le focus : la partie s'ouvre avec le curseur
+  // deja dans le champ, sans clavier. Sans ce garde-fou, Indice et Abandonner
+  // disparaitraient avant meme qu'on ait touche a quoi que ce soit.
+  const tape=saisieActive&&document.activeElement===$("inp");
+  $("play").classList.toggle("clavier",tape);
+  if(tape&&!direClavier&&!over&&!$("flash").textContent){
     direClavier=true;$("flash").textContent="Touche le terrain pour refermer le clavier.";
   }
   recale();
 }
 let direClavier=false;   // le rappel ne se dit qu'une fois par partie
-let hautPlein=0;         // hauteur visible sans clavier, relevee quand on ne tape pas
-// Le focus et la perte de focus ne declenchent pas toujours un redimensionnement :
-// on recalcule a la main, sinon les boutons reviennent avec un temps de retard.
+// On est en saisie des qu'on touche le champ ou qu'on y ecrit, et plus des
+// qu'on le quitte. Le focus seul ne suffit pas : il est pose au demarrage.
+let saisieActive=false;
+const entreEnSaisie=()=>{saisieActive=true;hauteurVisible()};
+$("inp").addEventListener("pointerdown",entreEnSaisie);
+$("inp").addEventListener("input",entreEnSaisie);
+// Et au focus : pointerdown arrive AVANT que le champ prenne le curseur, donc
+// le calcul fait sur lui seul concluait « pas en saisie ». C'est ce qui faisait
+// que les boutons restaient a partir du deuxieme clic dans le champ.
 $("inp").addEventListener("focus",hauteurVisible);
-$("inp").addEventListener("blur",hauteurVisible);
+$("inp").addEventListener("blur",()=>{saisieActive=false;hauteurVisible()});
 // Safari defile la page pour amener la saisie au-dessus du clavier, et il le
 // fait APRES notre code, pendant l'animation du clavier. Une seule remise a
 // zero ne suffit donc pas : on insiste une seconde. Des que --vue est a jour,
