@@ -265,6 +265,40 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('aucune mesure ne part chez un tiers sans code', dehors.length === 0, dehors);
   await g.close();
 
+  // --- 12. le tableau de bord du proprietaire
+  // La porte est au serveur, pas dans le navigateur : on verifie qu'un joueur
+  // ordinaire ne voit rien, et que le bloc n'apparait que sur reponse du
+  // serveur. Le faux serveur tient le secret cote Node, comme le vrai.
+  const a = await b.newPage({ viewport: { width: 390, height: 844 } });
+  let ADMIN = null, demandes = 0;
+  await a.route('**/functions/v1/compo', async r => {
+    const c = JSON.parse(r.request().postData() || '{}');
+    if (c.action !== 'stats') return r.fulfill({ status: 200, contentType: 'application/json',
+      body: '{"day":2,"sport":"foot","classement":[]}' });
+    demandes++;
+    const bon = ADMIN && c.playerId === ADMIN;
+    await r.fulfill({ status: bon ? 200 : 403, contentType: 'application/json',
+      body: bon ? JSON.stringify({ jour: 3, joueurs: 12, parties: 30, fideles: 4,
+          sports: { foot: { n: 20, complets: 5, indices: 3, secondes: 1800, trouves: 180, total: 240 },
+                    rugby: { n: 10, complets: 1, indices: 6, secondes: 1500, trouves: 100, total: 160 } },
+          jours: [{ day: 3, foot: 8, rugby: 4, joueurs: 9 }] })
+        : JSON.stringify({ code: 'refuse', erreur: 'reserve' }) });
+  });
+  await a.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
+  await a.fill('#pseudo', 'leo'); await a.click('#valide'); await a.waitForTimeout(200);
+  await a.click('#versmoi'); await a.waitForTimeout(400);
+  v('un joueur ordinaire ne voit aucun tableau de bord',
+    await a.evaluate(() => !document.getElementById('admin').innerHTML));
+  v('le refus ne casse rien', demandes > 0, demandes);
+
+  ADMIN = await a.evaluate(() => moi().id);
+  await a.click('[data-va="home"]'); await a.waitForTimeout(200);
+  await a.click('#versmoi'); await a.waitForTimeout(500);
+  const bord = await a.textContent('#admin');
+  v('le proprietaire voit le tableau de bord', /Tableau de bord/.test(bord || ''), (bord || '').slice(0, 60));
+  v('il porte les chiffres du serveur', /12/.test(bord) && /30/.test(bord), (bord || '').slice(0, 120));
+  await a.close();
+
   console.log('REUSSIS\n  ' + ok.join('\n  '));
   if (ko.length) console.log('ECHECS\n  ' + ko.join('\n  '));
   console.log('ERREURS JS : ' + (err.length ? JSON.stringify(err, null, 1) : 'aucune'));

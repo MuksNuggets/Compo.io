@@ -159,6 +159,64 @@ Deno.serve(async (req) => {
       });
     }
 
+    // ---- tableau de bord, réservé au propriétaire
+    // La porte est ici, pas dans le navigateur : le code de reprise de
+    // l'administrateur est posé en secret Supabase (ADMIN_PLAYER_ID), et c'est
+    // le serveur qui compare. Tant que ce secret n'existe pas, l'action est
+    // fermée à tout le monde, y compris à celui qui devinerait son nom.
+    if (c.action === "stats") {
+      const admin = (Deno.env.get("ADMIN_PLAYER_ID") ?? "").trim().toLowerCase();
+      if (!admin || !uuid(c.playerId) || String(c.playerId).toLowerCase() !== admin)
+        return json({ code: "refuse", erreur: "reserve" }, 403);
+
+      const JOURS = 30;
+      const depuis = Math.max(1, aujourdhui - JOURS + 1);
+      const { data: lignes } = await db.from("scores")
+        .select("player_id, day, sport, found, size, hints, seconds")
+        .gte("day", depuis).limit(50000);
+      const { count: joueurs } = await db.from("players")
+        .select("id", { count: "exact", head: true });
+      const { count: parties } = await db.from("scores")
+        .select("player_id", { count: "exact", head: true });
+
+      // On agrège ici plutôt qu'en SQL : la base est petite, et ça évite une
+      // vue à maintenir en parallèle du reste.
+      const vide = () => ({ n: 0, complets: 0, indices: 0, secondes: 0, trouves: 0, total: 0 });
+      const sports: Record<string, ReturnType<typeof vide>> = { foot: vide(), rugby: vide() };
+      const parJour = new Map<number, Record<string, number>>();
+      const joursParJoueur = new Map<string, Set<number>>();
+
+      for (const l of lignes ?? []) {
+        const s = sports[l.sport]; if (!s) continue;
+        s.n++; s.indices += l.hints; s.secondes += l.seconds;
+        s.trouves += l.found; s.total += l.size;
+        if (l.found === l.size) s.complets++;
+        const d = parJour.get(l.day) ?? { foot: 0, rugby: 0, joueurs: 0 };
+        d[l.sport]++; parJour.set(l.day, d);
+        const vus = joursParJoueur.get(l.player_id) ?? new Set<number>();
+        vus.add(l.day); joursParJoueur.set(l.player_id, vus);
+      }
+      // Joueurs distincts par jour : un même joueur qui fait les deux sports
+      // ne compte qu'une fois.
+      const parJourJoueurs = new Map<number, Set<string>>();
+      for (const l of lignes ?? []) {
+        const s = parJourJoueurs.get(l.day) ?? new Set<string>();
+        s.add(l.player_id); parJourJoueurs.set(l.day, s);
+      }
+      for (const [j, s] of parJourJoueurs) {
+        const d = parJour.get(j); if (d) d.joueurs = s.size;
+      }
+
+      let fideles = 0;
+      for (const vus of joursParJoueur.values()) if (vus.size >= 3) fideles++;
+
+      const jours = [...parJour.entries()]
+        .sort((a, b) => b[0] - a[0])
+        .map(([day, d]) => ({ day, foot: d.foot, rugby: d.rugby, joueurs: d.joueurs }));
+
+      return json({ jour: aujourdhui, joueurs, parties, fideles, jours, sports });
+    }
+
     return json({ code: "action", erreur: "action inconnue" }, 400);
   } catch (e) {
     console.error(e);

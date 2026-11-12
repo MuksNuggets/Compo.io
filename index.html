@@ -303,6 +303,9 @@ body.enjeu .wrap{padding:0;height:100%}
   <div id="profil"></div>
   <h2 class="title" style="margin-top:26px">Les jours d’avant</h2>
   <p class="sub">Toutes les compos déjà passées. Hors classement : seul le jour en cours compte.</p>
+  <!-- Tableau de bord : vide pour tout le monde, rempli seulement si le
+       serveur reconnait le code de reprise comme celui du proprietaire. -->
+  <div id="admin"></div>
   <div id="listepasse"></div>
   <!-- La date de mise en ligne, posee par tools/site.sh. Elle dit d'un coup
        d'oeil si l'app ouverte est bien la derniere, cache compris. -->
@@ -1007,11 +1010,52 @@ function montre(nom){
   SECTIONS.forEach(s=>$(s).classList.toggle("hidden",s!==nom));
   window.scrollTo(0,0);
   if(nom==="home"){renderDaily();renderPortrait();}
-  if(nom==="moi"){renderMoi();renderPasse();compte("/profil","Profil");}
+  if(nom==="moi"){renderMoi();renderPasse();renderAdmin();compte("/profil","Profil");}
 }
 const home=()=>{clearInterval(tick);over=true;montre(ONGLET==="play"?"home":ONGLET);};
 $("other").onclick=home;$("back").onclick=home;
 document.querySelectorAll("[data-va]").forEach(b=>b.onclick=()=>montre(b.dataset.va));
+// ---- tableau de bord du proprietaire -----------------------------------
+// Il s'ouvre tout seul en haut du profil, et uniquement pour lui : le serveur
+// compare le code de reprise a un secret qu'il est seul a connaitre. Pour tous
+// les autres — et tant que le serveur n'est pas a jour — la reponse est un
+// refus, et le bloc reste vide. Rien a cacher dans le navigateur, donc rien a
+// contourner.
+const nb=n=>(n||0).toLocaleString("fr-FR");
+async function renderAdmin(){
+  const el=$("admin");el.innerHTML="";
+  let s;try{s=await api("stats",{playerId:moi().id})}catch(e){return}
+  if(!s||!s.jours)return;                       // refus, ou serveur d'avant
+  const taux=x=>x.n?Math.round(100*x.complets/x.n)+" %":"—";
+  const moy=(t,n)=>n?Math.round(t/n):0;
+  const hier=s.jours.slice(0,14);
+  const pic=Math.max(1,...hier.map(j=>j.foot+j.rugby));
+  el.innerHTML=
+    `<div class="bloc"><h3>Tableau de bord</h3>
+       <div class="chiffres">
+         <span class="chiffre"><b>${nb(s.joueurs)}</b><span>joueurs inscrits</span></span>
+         <span class="chiffre"><b>${nb(s.parties)}</b><span>parties jouées</span></span>
+         <span class="chiffre"><b>${nb(s.fideles)}</b><span>revenus 3 jours ou +</span></span>
+       </div></div>`
+   +SPORTS.map(sp=>{const x=s.sports[sp]||{n:0};
+      return `<div class="bloc"><h3>${nomSport(sp)} · 30 derniers jours</h3><div class="chiffres">`
+        +`<span class="chiffre"><b>${nb(x.n)}</b><span>parties</span></span>`
+        +`<span class="chiffre"><b>${taux(x)}</b><span>compos finies</span></span>`
+        +`<span class="chiffre"><b>${x.total?Math.round(100*x.trouves/x.total):0} %</b><span>de noms trouvés</span></span>`
+        +`<span class="chiffre"><b>${moy(x.secondes,x.n)} s</b><span>par partie</span></span>`
+        +`<span class="chiffre"><b>${(moy(x.indices*10,x.n)/10).toString().replace(".",",")}</b><span>indices par partie</span></span>`
+        +`</div></div>`}).join("")
+   +`<div class="bloc"><h3>Les 14 derniers jours</h3>
+       <table class="board" style="table-layout:fixed">
+       <thead><tr><th style="width:14%">Jour</th><th style="width:22%">Joueurs</th>
+       <th style="width:17%">Foot</th><th style="width:17%">Rugby</th><th style="width:30%"></th></tr></thead><tbody>`
+   +(hier.length?hier.map(j=>`<tr><td>${j.day}</td><td class="n">${nb(j.joueurs)}</td>`
+        +`<td class="n">${nb(j.foot)}</td><td class="n">${nb(j.rugby)}</td>`
+        +`<td><span style="display:block;height:8px;border-radius:4px;background:var(--pitch);`
+        +`width:${Math.round(100*(j.foot+j.rugby)/pic)}%"></span></td></tr>`).join("")
+      :`<tr><td colspan="5">Personne n’a encore joué.</td></tr>`)
+   +`</tbody></table></div>`;
+}
 // Le portrait porte l'initiale du pseudo, ou un trait tant qu'il n'y en a pas.
 function renderPortrait(){
   const n=(moi().pseudo||"").trim();

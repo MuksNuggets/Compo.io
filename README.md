@@ -86,6 +86,29 @@ Conséquence à connaître : qui possède le code possède le profil. Pour un je
 entre amis c'est le bon compromis ; pour autre chose, il faudrait de vrais
 comptes.
 
+## Le tableau de bord du propriétaire
+
+En haut du profil, et pour lui seul : nombre de joueurs, de parties, combien
+sont revenus trois jours ou plus, puis par sport le taux de compos finies, la
+part de noms trouvés, la durée moyenne et les indices consommés, et enfin les
+quatorze derniers jours.
+
+**La porte est au serveur, pas dans le navigateur.** Le code de reprise du
+propriétaire est posé en secret Supabase, et c'est la fonction `compo` qui
+compare :
+
+```
+supabase secrets set ADMIN_PLAYER_ID=<le code de reprise, vu dans le profil>
+```
+
+Tant que ce secret n'existe pas, l'action `stats` est fermée à tout le monde.
+Pour un joueur ordinaire, la réponse est un 403 et le bloc reste vide : il n'y
+a rien à cacher dans le navigateur, donc rien à contourner. `tools/test_parcours.js`
+vérifie les deux côtés.
+
+L'appel part à chaque ouverture du profil. C'est une requête de plus par visite
+du profil, et elle se solde par un refus pour tout le monde sauf un.
+
 ## Mesure d'audience
 
 GoatCounter, gratuit pour un usage non commercial, sans cookie — donc pas de
