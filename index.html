@@ -102,6 +102,16 @@ button{font:inherit;color:inherit;cursor:pointer}
 .inp.shake{animation:sh .3s}
 @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .flash{min-height:22px;font-size:14px;color:var(--muted);margin:8px 0 0}
+/* Aide a l'orthographe. Les noms viennent de toute la base, jamais de la compo
+   du jour : la liste ne dit donc pas qui joue. Elle se glisse juste au-dessus
+   de la saisie, a portee de pouce, et prend la place de la ligne de retour. */
+.sugg{display:flex;gap:6px;margin:8px 0 0;overflow-x:auto;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch}
+.sugg::-webkit-scrollbar{display:none}
+.sugg button{flex:0 0 auto;font:600 14px/1 Barlow,sans-serif;white-space:nowrap;
+  background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 13px}
+.sugg button:active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.flash[hidden],.sugg[hidden]{display:none}
 /* Pendant une partie, la PAGE est verrouillee et le panneau de jeu tient dans
    ce qui reste visible. Sur iOS le clavier ne retrecit pas la page, il la
    recouvre, et Safari fait defiler pour amener la saisie au-dessus du clavier —
@@ -317,6 +327,9 @@ body.enjeu .wrap{padding:0;height:100%}
        element, pour venir se coller au clavier : la ligne de retour passe
        au-dessus d'elle. -->
   <p class="flash" id="flash" aria-live="polite"></p>
+  <!-- Les suggestions prennent la place de la ligne de retour : jamais les deux
+       en meme temps, donc la hauteur ne bouge pas. -->
+  <div class="sugg" id="sugg" hidden></div>
   <input class="inp" id="inp" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
   <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="giveup">Abandonner</button></div>
   <div class="result hidden" id="result">
@@ -654,6 +667,7 @@ function start(m,ti,ranked,note){
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
   clearTimeout(attenteFin);   // pas de validation en retard d'une partie sur l'autre
   direClavier=false;
+  montreSugg("");
   montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");
   $("scene").scrollTop=0;hauteurVisible();
   $("result").classList.add("hidden");$("acts").classList.remove("hidden");
@@ -696,6 +710,58 @@ function cherche(q,loose,deja){
   }
   return idx;
 }
+// ---- l'aide a l'orthographe --------------------------------------------
+// Tous les noms de la base, toutes finales confondues, et JAMAIS la compo du
+// jour : une suggestion ne dit donc pas que le joueur est sur le terrain. Un
+// joueur qui sait qui il cherche mais pas comment ca s'ecrit s'en sort ; celui
+// qui ne sait pas reste devant la meme page blanche.
+let TOUS=null;
+function tousLesNoms(){
+  if(TOUS)return TOUS;
+  const vus=new Map();
+  MATCHES.forEach(x=>x.teams.forEach(t=>{
+    t.p.forEach(p=>vus.set(p[3],1));
+    if(t.coach)vus.set(t.coach[0],1);
+  }));
+  // Un seul representant par nom de famille : « Martínez » deux fois de suite
+  // n'aide personne.
+  const parNom=new Map();
+  [...vus.keys()].forEach(n=>{const f=nomCourt(n);if(!parNom.has(f))parNom.set(f,n)});
+  TOUS=[...parNom].map(([f,n])=>({n,f,cf:norm(f).replace(/ /g,""),cn:norm(n).replace(/ /g,"")}));
+  TOUS.sort((a,b)=>a.cf<b.cf?-1:a.cf>b.cf?1:0);
+  return TOUS;
+}
+function suggere(q){
+  const c=norm(q).replace(/ /g,"");
+  if(c.length<3)return [];
+  const debut=[],dedans=[];
+  for(const p of tousLesNoms()){
+    if(p.cf.startsWith(c)||p.cn.startsWith(c)){if(debut.length<6)debut.push(p)}
+    else if(dedans.length<6&&p.cf.includes(c))dedans.push(p);
+    if(debut.length>=6)break;
+  }
+  return [...debut,...dedans].slice(0,6);
+}
+const echappe=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+function montreSugg(q){
+  const el=$("sugg"),l=over?[]:suggere(q);
+  el.innerHTML=l.map(p=>`<button type="button" data-n="${echappe(p.n)}">${echappe(p.f)}</button>`).join("");
+  el.hidden=!l.length;
+  $("flash").hidden=!!l.length;
+}
+// pointerdown annule : sans ca, toucher une suggestion quitte le champ et le
+// clavier redescend entre deux noms.
+$("sugg").addEventListener("pointerdown",e=>e.preventDefault());
+$("sugg").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||over)return;
+  const n=b.dataset.n;$("inp").value=n;
+  if(!tryMatch(n,true)){
+    const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");
+    $("flash").textContent="Pas dans cette compo.";
+  }
+  montreSugg("");$("inp").focus();
+});
+
 // Un nom encore en train de s'ecrire ne doit pas etre valide sous les doigts.
 // « heyman » sonne deja comme « heymans » (meme cle phonetique, « eman ») : le
 // joueur etait valide a l'avant-derniere lettre, la barre se vidait, et le S
@@ -740,9 +806,10 @@ $("play").addEventListener("pointerup",e=>{
   $("inp").blur();
 });
 $("play").addEventListener("pointercancel",()=>{tapeVa=false});
-$("inp").addEventListener("input",e=>{if(!over)tryMatch(e.target.value,false)});
+$("inp").addEventListener("input",e=>{if(!over)tryMatch(e.target.value,false);montreSugg(e.target.value)});
 $("inp").addEventListener("keydown",e=>{if(e.key!=="Enter"||over)return;
-  if(!tryMatch(e.target.value,true)&&e.target.value.trim()){const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");$("flash").textContent="Pas dans cette compo.";}});
+  if(!tryMatch(e.target.value,true)&&e.target.value.trim()){const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");$("flash").textContent="Pas dans cette compo.";}
+  montreSugg($("inp").value);});
 $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!found.has(i)&&!hinted.has(i));if(!todo.length)return;
   const i=todo[Math.floor(Math.random()*todo.length)];hinted.add(i);const last=nomCourt(P[i].n);
   $("pl"+i).querySelector(".nm").textContent=last[0]+"…";$("flash").textContent=`Indice : un nom en ${last[0].toUpperCase()}.`;$("inp").focus();};
@@ -791,7 +858,7 @@ function end(){
       copier(texteDefi(M),$("share"),"Partager");
     };
   } else {$("share").hidden=true;$("board").innerHTML="";}
-  $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";
+  $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";montreSugg("");
   // Le terrain est haut : sans ca le panneau de fin reste sous l'ecran et on
   // a l'impression qu'il ne s'est rien passe.
   setTimeout(()=>$("result").scrollIntoView({behavior:"smooth",block:"end"}),60);

@@ -99,6 +99,25 @@ joueurs de la base, chacun dans sa compo : **6 598 saisies, zéro non reconnue,
 zéro qui tombe sur un autre joueur**. C'est ce second chiffre qui compte : une
 tolérance trop large validerait le mauvais nom et fausserait une partie classée.
 
+Un nom à moitié tapé ne doit pas être validé sous les doigts : « heyman » a
+déjà la clé phonétique de « heymans », et le S finissait dans une barre vide.
+Tant que ce qui est tapé peut encore devenir un autre nom de la compo, on
+attend — 700 ms sans frappe, ou Entrée.
+
+## L'aide à l'orthographe
+
+À partir de trois lettres, une rangée de noms s'affiche au-dessus de la saisie.
+Ils viennent de **toute la base** (1 683 noms de famille, toutes finales
+confondues), **jamais de la compo du jour** : une suggestion ne dit donc pas que
+le joueur est sur le terrain. Sur France 98, « des » propose Desailly,
+Desbrosse, Deschamps et Doué — deux y sont, deux non. Celui qui sait qui il
+cherche mais pas comment ça s'écrit s'en sort ; celui qui ne sait pas reste
+devant la même page blanche.
+
+C'est le point que `tools/test_parcours.js` surveille : la liste doit être
+identique d'une compo à l'autre, et identique une fois la compo entièrement
+trouvée. Si elle change, c'est qu'elle regarde le terrain.
+
 # Tests
 
 ```
