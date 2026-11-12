@@ -222,6 +222,58 @@ déjà la clé phonétique de « heymans », et le S finissait dans une barre vi
 Tant que ce qui est tapé peut encore devenir un autre nom de la compo, on
 attend — 700 ms sans frappe, ou Entrée.
 
+## Le clavier
+
+Au doigt, aucun focus n'est posé sur la saisie au démarrage d'une partie. Sur
+iOS un focus programmé place le curseur **sans ouvrir le clavier**, et le
+premier appui sur un champ déjà focalisé n'ouvre rien non plus : il n'y a pas
+de changement de focus à signaler. Le joueur tapait sur une barre qui ne
+répondait pas. À la souris le problème n'existe pas et pouvoir écrire tout de
+suite est agréable, donc le focus automatique y reste.
+
+Une liste de suggestions a existé : à partir de quatre lettres, des noms tirés
+de toute la base. Retirée — elle s'affichait au-dessus de la saisie, proposait
+même quand l'orthographe était juste, et les trois filets du moteur de noms
+suffisent. Elle est dans l'historique git si l'idée revient.
+
+## Mesure d'audience
+
+GoatCounter, gratuit pour un usage non commercial, sans cookie — donc pas de
+bandeau à afficher — et sans conservation d'adresse IP.
+
+**Tant que la constante `GOATCOUNTER` est vide, rien n'est chargé et rien n'est
+envoyé.** C'est ce qui garde les tests hors ligne. Pour activer : y mettre le
+code du compte, par exemple `compoio`.
+
+L'app ne recharge jamais la page : sans appels manuels, on ne verrait qu'une
+seule vue par visiteur et rien de ce qu'il fait. On compte donc `/partie/foot`,
+`/partie/rugby`, `/partie/<sport>/passee`, `/fini/<sport>/complet` ou
+`/partiel`, `/profil` et `/partage`. Ces chemins sont en nombre fini et ne
+portent jamais le pseudo ni quoi que ce soit qui vienne du joueur —
+`tools/test_parcours.js` le vérifie, et vérifie aussi qu'aucune mesure ne part
+chez un tiers tant que le code est vide.
+
+`/fini/<sport>/complet` contre `/partiel` est le chiffre qui dit si le jeu est
+trop dur.
+
+## Les noms mal écrits
+
+Trois filets, du plus sûr au plus large : l'écriture exacte, une clé « à
+l'oreille » qui écrase ce qui ne s'entend pas (ph/f, qu/k, h muet, lettres
+doublées, consonne finale muette…), puis la distance d'édition avec une
+tolérance qui suit la longueur de ce qui est tapé. Les deux premiers tournent à
+chaque frappe, le troisième attend la touche Entrée.
+
+`tools/test_noms.js` tape le nom de famille puis le nom complet des 3 299
+joueurs de la base, chacun dans sa compo : **6 598 saisies, zéro non reconnue,
+zéro qui tombe sur un autre joueur**. C'est ce second chiffre qui compte : une
+tolérance trop large validerait le mauvais nom et fausserait une partie classée.
+
+Un nom à moitié tapé ne doit pas être validé sous les doigts : « heyman » a
+déjà la clé phonétique de « heymans », et le S finissait dans une barre vide.
+Tant que ce qui est tapé peut encore devenir un autre nom de la compo, on
+attend — 700 ms sans frappe, ou Entrée.
+
 ## L'aide à l'orthographe
 
 À partir de quatre lettres, une rangée de noms s'affiche au-dessus de la

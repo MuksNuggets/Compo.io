@@ -102,16 +102,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .inp.shake{animation:sh .3s}
 @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .flash{min-height:22px;font-size:14px;color:var(--muted);margin:8px 0 0}
-/* Aide a l'orthographe. Les noms viennent de toute la base, jamais de la compo
-   du jour : la liste ne dit donc pas qui joue. Elle se glisse juste au-dessus
-   de la saisie, a portee de pouce, et prend la place de la ligne de retour. */
-.sugg{display:flex;gap:6px;margin:8px 0 0;overflow-x:auto;scrollbar-width:none;
-  -webkit-overflow-scrolling:touch}
-.sugg::-webkit-scrollbar{display:none}
-.sugg button{flex:0 0 auto;font:600 14px/1 Barlow,sans-serif;white-space:nowrap;
-  background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 13px}
-.sugg button:active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.flash[hidden],.sugg[hidden]{display:none}
+
 /* Pendant une partie, la PAGE est verrouillee et le panneau de jeu tient dans
    ce qui reste visible. Sur iOS le clavier ne retrecit pas la page, il la
    recouvre, et Safari fait defiler pour amener la saisie au-dessus du clavier —
@@ -434,9 +425,6 @@ body.enjeu .wrap{padding:0;height:100%}
        element, pour venir se coller au clavier : la ligne de retour passe
        au-dessus d'elle. -->
   <p class="flash" id="flash" aria-live="polite"></p>
-  <!-- Les suggestions prennent la place de la ligne de retour : jamais les deux
-       en meme temps, donc la hauteur ne bouge pas. -->
-  <div class="sugg" id="sugg" hidden></div>
   <input class="inp" id="inp" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
   <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="giveup">Abandonner</button></div>
   <div class="result hidden" id="result">
@@ -947,7 +935,6 @@ function start(m,ti,ranked,note){
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
   clearTimeout(attenteFin);   // pas de validation en retard d'une partie sur l'autre
   direClavier=false;saisieActive=false;
-  montreSugg("");
   montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");
   compte(`/partie/${m.sport}${RANKED?"":"/passee"}`,`Partie ${m.sport}`);
   $("scene").scrollTop=0;hauteurVisible();
@@ -969,7 +956,14 @@ function start(m,ti,ranked,note){
   $("inp").placeholder=ci>=0?"Tape un joueur ou l’entraîneur…":"Tape un joueur…";
   $("inp").value="";$("inp").disabled=false;$("inp").hidden=false;$("flash").textContent="";
   upd();clearInterval(tick);tick=setInterval(()=>{left--;upd();if(left<=0)end();},1000);
-  window.scrollTo(0,0);setTimeout(()=>$("inp").focus(),50);
+  window.scrollTo(0,0);
+  // Pas de focus automatique au doigt. Sur iOS il place le curseur sans ouvrir
+  // le clavier, et le premier appui sur un champ DEJA focalise n'ouvre rien
+  // non plus : il n'y a pas de changement de focus a signaler. On laissait donc
+  // le joueur taper sur une barre qui ne repondait pas.
+  // A la souris le probleme n'existe pas, et pouvoir ecrire tout de suite est
+  // agreable : on le garde la.
+  if(matchMedia("(hover:hover) and (pointer:fine)").matches)setTimeout(()=>$("inp").focus(),50);
 }
 function upd(){$("clock").textContent=fmt(Math.max(left,0));$("clock").classList.toggle("low",left<=30);$("count").textContent=found.size+"/"+P.length;}
 function hit(i){found.add(i);const d=$("pl"+i);d.className=(P[i].coach?"coach":"pl")+" hit";d.querySelector(".nm").textContent=P[i].coach?P[i].n:nomCourt(P[i].n);$("inp").value="";$("flash").textContent=P[i].n+" ✓";upd();if(found.size===P.length)end();}
@@ -993,77 +987,6 @@ function cherche(q,loose,deja){
   }
   return idx;
 }
-// ---- l'aide a l'orthographe --------------------------------------------
-// Tous les noms de la base, toutes finales confondues, et JAMAIS la compo du
-// jour : une suggestion ne dit donc pas que le joueur est sur le terrain. Un
-// joueur qui sait qui il cherche mais pas comment ca s'ecrit s'en sort ; celui
-// qui ne sait pas reste devant la meme page blanche.
-let TOUS=null;
-function tousLesNoms(){
-  if(TOUS)return TOUS;
-  const vus=new Map();
-  MATCHES.forEach(x=>x.teams.forEach(t=>{
-    t.p.forEach(p=>vus.set(p[3],1));
-    if(t.coach)vus.set(t.coach[0],1);
-  }));
-  // Un seul representant par nom de famille : « Martínez » deux fois de suite
-  // n'aide personne.
-  const parNom=new Map();
-  [...vus.keys()].forEach(n=>{const f=nomCourt(n);if(!parNom.has(f))parNom.set(f,n)});
-  // sf : la cle « a l'oreille », calculee une fois pour toutes. C'est elle qui
-  // rattrape celui qui ne sait pas ecrire le nom qu'il a en tete.
-  TOUS=[...parNom].map(([f,n])=>{const cf=norm(f).replace(/ /g,"");
-    return {n,f,cf,sf:sonne(cf)}});
-  TOUS.sort((a,b)=>a.cf<b.cf?-1:a.cf>b.cf?1:0);
-  return TOUS;
-}
-function suggere(q){
-  const c=norm(q).replace(/ /g,"");
-  // Quatre lettres : a trois, la liste sortait a la moindre amorce et donnait
-  // trop facilement des noms qu'on n'avait pas vraiment en tete.
-  if(c.length<4)return [];
-  const debut=[],dedans=[];
-  for(const p of tousLesNoms()){
-    // Le nom de famille, et lui seul. Chercher aussi dans le prenom donnait des
-    // resultats qui semblaient sortis de nulle part : « cle » proposait
-    // Poitrenaud, parce qu'il s'appelle Clement — et la pastille, elle,
-    // n'affiche que « Poitrenaud ».
-    if(p.cf.startsWith(c)){if(debut.length<6)debut.push(p)}
-    else if(dedans.length<6&&p.cf.includes(c))dedans.push(p);
-    if(debut.length>=6)break;
-  }
-  // En dernier recours seulement, l'oreille : « dech » ne commence aucun nom,
-  // mais sonne comme Deschamps. De meme « sidan » pour Zidane, « cante » pour
-  // Kanté. En dernier recours, parce que la cle phonetique est courte et
-  // ratisserait large si on la passait avant.
-  if(!debut.length&&!dedans.length){
-    const so=sonne(c);
-    if(so.length>2)for(const p of tousLesNoms()){
-      if(p.sf.startsWith(so)){dedans.push(p);if(dedans.length>=6)break}
-    }
-  }
-  return [...debut,...dedans].slice(0,6);
-}
-const echappe=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
-function montreSugg(q){
-  const el=$("sugg"),l=over?[]:suggere(q);
-  el.innerHTML=l.map(p=>`<button type="button" data-n="${echappe(p.n)}">${echappe(p.f)}</button>`).join("");
-  el.hidden=!l.length;
-  $("flash").hidden=!!l.length;
-}
-// pointerdown annule : sans ca, toucher une suggestion quitte le champ et le
-// clavier redescend entre deux noms.
-$("sugg").addEventListener("pointerdown",e=>e.preventDefault());
-$("sugg").addEventListener("click",e=>{
-  const b=e.target.closest("button");if(!b||over)return;
-  const n=b.dataset.n;$("inp").value=n;
-  if(!tryMatch(n,true)){
-    const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");
-    $("flash").textContent="Pas dans cette compo.";
-  }
-  montreSugg("");$("inp").focus();
-});
-
 // Un nom encore en train de s'ecrire ne doit pas etre valide sous les doigts.
 // « heyman » sonne deja comme « heymans » (meme cle phonetique, « eman ») : le
 // joueur etait valide a l'avant-derniere lettre, la barre se vidait, et le S
@@ -1108,10 +1031,9 @@ $("play").addEventListener("pointerup",e=>{
   $("inp").blur();
 });
 $("play").addEventListener("pointercancel",()=>{tapeVa=false});
-$("inp").addEventListener("input",e=>{if(!over)tryMatch(e.target.value,false);montreSugg(e.target.value)});
+$("inp").addEventListener("input",e=>{if(!over)tryMatch(e.target.value,false)});
 $("inp").addEventListener("keydown",e=>{if(e.key!=="Enter"||over)return;
-  if(!tryMatch(e.target.value,true)&&e.target.value.trim()){const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");$("flash").textContent="Pas dans cette compo.";}
-  montreSugg($("inp").value);});
+  if(!tryMatch(e.target.value,true)&&e.target.value.trim()){const el=$("inp");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");$("flash").textContent="Pas dans cette compo.";}});
 $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!found.has(i)&&!hinted.has(i));if(!todo.length)return;
   const i=todo[Math.floor(Math.random()*todo.length)];hinted.add(i);const last=nomCourt(P[i].n);
   $("pl"+i).querySelector(".nm").textContent=last[0]+"…";$("flash").textContent=`Indice : un nom en ${last[0].toUpperCase()}.`;$("inp").focus();};
@@ -1161,7 +1083,7 @@ function end(){
       compte("/partage","Partage");
     };
   } else {$("share").hidden=true;$("board").innerHTML="";}
-  $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";montreSugg("");
+  $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";
   // Combien vont au bout : c'est le chiffre qui dit si le jeu est trop dur.
   compte(`/fini/${M.sport}/${found.size===P.length?"complet":"partiel"}`,"Fin de partie");
   // Le terrain est haut : sans ca le panneau de fin reste sous l'ecran et on

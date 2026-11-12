@@ -168,73 +168,24 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('en navigation privee, rien ne casse', errPrive.length === 0, errPrive);
   await w.close();
 
-  // --- 10. l'aide a l'orthographe
-  // Le point sensible : la liste ne doit rien dire de la compo du jour. On la
-  // compare donc sur deux compos differentes, et hors partie : si elle change,
-  // c'est qu'elle regarde le terrain.
-  const s = await b.newPage({ viewport: { width: 390, height: 844 } });
+  // --- 10. le clavier s'ouvre au premier appui
+  // Au doigt, aucun focus n'est pose au demarrage : sur iOS il placerait le
+  // curseur sans ouvrir le clavier, et le premier appui sur un champ deja
+  // focalise n'ouvre rien non plus — il n'y a pas de changement de focus a
+  // signaler. Le joueur tapait sur une barre qui ne repondait pas.
+  const s = await b.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await s.route('**/functions/v1/compo', r => r.fulfill({ status: 200,
+    contentType: 'application/json', body: '{"roundId":"11111111-1111-1111-1111-111111111111","day":2}' }));
   await s.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
-  await s.waitForTimeout(300);
-  v('elle puise dans toute la base', (await s.evaluate(() => tousLesNoms().length)) > 1000);
-
   await s.fill('#pseudo', 'leo'); await s.click('#valide'); await s.waitForTimeout(200);
-  await s.click('[data-jour="foot"]'); await s.waitForTimeout(400);
-  const nom1 = await s.evaluate(() => nomCourt(P[0].n));
-  await s.fill('#inp', 'bar'); await s.waitForTimeout(150);
-  v('trois lettres ne proposent rien', await s.evaluate(() => document.getElementById('sugg').hidden));
-
-  // Ce qu'on propose doit avoir un rapport avec ce qui est tape. « cle »
-  // proposait Poitrenaud, parce qu'il s'appelle Clement : on cherchait aussi
-  // dans le prenom, alors que la pastille n'affiche que le nom de famille.
-  const pertinence = await s.evaluate(() => ({
-    cler: suggere('cler').map(x => x.f),
-    dech: suggere('dech').map(x => x.f),     // faute d'orthographe : l'oreille rattrape
-  }));
-  v('une suggestion a un rapport avec ce qui est tape',
-    pertinence.cler.every(f => /^cler/i.test(f.replace(/[^a-z]/gi, ''))), pertinence.cler);
-  v('l’oreille rattrape une faute de debut',
-    pertinence.dech.length > 0, pertinence.dech);
-  await s.fill('#inp', nom1.slice(0, 4).toLowerCase()); await s.waitForTimeout(200);
-  const chips = await s.locator('#sugg button').allTextContents();
-  v('quatre lettres proposent des noms', chips.length > 0, chips);
-  v('la ligne de retour laisse la place',
-    await s.evaluate(() => document.getElementById('flash').hidden));
-  const avant = await s.textContent('#count');
-  await s.locator('#sugg button', { hasText: nom1 }).first().click();
-  await s.waitForTimeout(300);
-  v('toucher une suggestion valide le joueur',
-    (await s.textContent('#count')) !== avant, { avant, apres: await s.textContent('#count') });
-  v('la liste se referme ensuite', await s.evaluate(() => document.getElementById('sugg').hidden));
-
-  // un nom de la base qui n'est pas dans cette compo : refuse, sans rien devoiler
-  const absent = await s.evaluate(() => {
-    const ici = new Set(P.map(x => nomCourt(x.n)));
-    const p = tousLesNoms().find(x => !ici.has(x.f) && x.cf.length > 5);
-    return p ? p.f : null;
-  });
-  if (absent) {
-    await s.fill('#inp', absent.slice(0, 5)); await s.waitForTimeout(200);
-    const b2 = s.locator('#sugg button', { hasText: absent }).first();
-    if (await b2.count()) {
-      await b2.click(); await s.waitForTimeout(250);
-      v('un joueur hors compo est refuse', /Pas dans cette compo/.test(await s.textContent('#flash')),
-        await s.textContent('#flash'));
-    }
-  }
-
-  // Le point sensible, garde pour la fin parce qu'il change de compo : la liste
-  // ne doit rien dire du terrain. Si elle change d'une compo a l'autre, c'est
-  // qu'elle le regarde.
-  const memes = await s.evaluate(() => {
-    const dit = () => suggere('ro').concat(suggere('bar')).map(x => x.f).join('|');
-    start(MATCHES.find(x => x.id === 'cdm-1998'), 0, false); const a = dit();
-    start(MATCHES.find(x => x.id === 'rwc-1995'), 0, false); const c = dit();
-    P.forEach((_, i) => hit(i));                      // compo entierement trouvee
-    const d = dit();
-    return { a, c, d };
-  });
-  v('la liste ne depend pas de la compo jouee',
-    memes.a === memes.c && memes.c === memes.d, memes);
+  await s.click('[data-jour="foot"]'); await s.waitForTimeout(500);
+  v('au doigt, rien n’a le focus au demarrage',
+    (await s.evaluate(() => document.activeElement.id)) !== 'inp',
+    await s.evaluate(() => document.activeElement.id));
+  await s.tap('#inp'); await s.waitForTimeout(250);
+  v('le premier appui donne le focus a la saisie',
+    (await s.evaluate(() => document.activeElement.id)) === 'inp');
+  v('plus de liste de suggestions', await s.evaluate(() => !document.getElementById('sugg')));
   await s.close();
 
   // --- 11. la mesure d'audience
