@@ -13,6 +13,10 @@ mkdir -p "$dest"
 # __VERSION__ devient la date de mise en ligne, affichee en bas du profil :
 # c'est la seule facon de savoir d'un coup d'oeil si l'app ouverte sur un
 # telephone est bien la derniere, ou une version gardee en cache.
-sed "s|__VERSION__|$(date -u '+%d/%m/%Y %H:%M UTC')|" index.html > "$dest/index.html"
+horo="$(date -u '+%d/%m/%Y %H:%M UTC')"
+sed "s|__VERSION__|$horo|" index.html > "$dest/index.html"
 cp "$dest/index.html" "$dest/404.html"
+# Le meme tampon dans un fichier de quelques octets : l'app le relit sans
+# passer par le cache pour savoir si elle tourne en version perimee.
+printf '%s' "$horo" > "$dest/version.txt"
 cp -R public/. "$dest/"

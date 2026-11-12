@@ -404,7 +404,7 @@ body.enjeu .wrap{padding:0;height:100%}
   <div id="profil"></div>
   <!-- La date de mise en ligne, posee par tools/site.sh. Elle dit d'un coup
        d'oeil si l'app ouverte est bien la derniere, cache compris. -->
-  <p class="sub" style="margin-top:26px;font-size:12.5px">Version du __VERSION__</p>
+  <p class="sub" style="margin-top:26px;font-size:12.5px">Version du <span id="batie">__VERSION__</span></p>
 </section>
 <section id="play" class="hidden">
   <!-- Seule cette partie peut glisser pendant une partie. La saisie et les
@@ -1227,6 +1227,23 @@ hauteurVisible();
 
 const SECTIONS=["home","archives","moi","play"];
 let ONGLET="home";                       // l'onglet ou l'on revient apres une partie
+// ---- la version en cache -----------------------------------------------
+// Le telephone garde l'ancienne page, parfois des heures, et on joue une
+// version d'avant sans le savoir — on a perdu trois allers-retours a chercher
+// des bugs deja corriges. version.txt fait quelques octets et n'est jamais
+// mis en cache : s'il annonce autre chose que ce qui tourne, on recharge, une
+// fois. Le garde-fou est dans sessionStorage ; s'il n'est pas disponible, on
+// ne recharge pas du tout, plutot que de risquer une boucle.
+fetch("version.txt",{cache:"no-store"}).then(r=>r.ok?r.text():null).then(t=>{
+  const la=(t||"").trim(),ici=($("batie")?$("batie").textContent:"").trim();
+  if(!la||!ici||la===ici)return;
+  try{
+    if(sessionStorage.getItem("compo:recharge"))return;
+    sessionStorage.setItem("compo:recharge","1");
+  }catch(e){return}
+  location.reload();
+}).catch(()=>{});
+
 // ---- mesure d'audience -------------------------------------------------
 // GoatCounter : gratuit pour un usage non commercial, sans cookie — donc pas
 // de bandeau a afficher — et il ne conserve aucune adresse IP.

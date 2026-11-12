@@ -80,6 +80,29 @@ const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : 
   const yArch = await posOnglets();
   await p.click('#archives [data-va="home"]'); await p.waitForTimeout(250);
   verifie('les onglets ne sautent pas d’un onglet a l’autre', yHome === yArch, { yHome, yArch });
+
+  // --- la version perimee se recharge toute seule, une seule fois
+  // Trois allers-retours ont ete perdus a chercher des bugs deja corriges,
+  // sur un telephone qui gardait l'ancienne page en cache.
+  const cas = async (reponse, attendu, quoi) => {
+    const q = await b.newPage();
+    let n = 0; const err = [];
+    // On compte les navigations, pas les evenements « load » : le rechargement
+    // part des la reponse de version.txt, souvent avant la fin du premier
+    // chargement — qui est alors abandonne et n'emet jamais son evenement.
+    q.on('request', r => { if (r.isNavigationRequest() && r.frame() === q.mainFrame()) n++; });
+    q.on('pageerror', e => err.push(e.message));
+    if (reponse !== null) await q.route('**/version.txt', r => r.fulfill(reponse));
+    await q.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' }).catch(() => {});
+    for (let i = 0; i < 40 && n < attendu; i++) await q.waitForTimeout(100);
+    await q.waitForTimeout(800);          // et un peu plus, pour voir s'il recommence
+    await q.close();
+    verifie(quoi, n === attendu && err.length === 0, { navigations: n, attendu, err });
+  };
+  await cas(null, 1, 'une version a jour ne recharge rien');
+  await cas({ status: 200, body: '01/01/2030 00:00 UTC' }, 2,
+    'une version perimee se recharge une fois, et une seule');
+  await cas({ status: 404, body: '' }, 1, 'un version.txt absent ne casse rien');
   verifie('identite reduite a id + pseudo', disparus.moi === 'id,pseudo', disparus);
 
   // --- 4. jouer le foot : seul le foot est enregistre, et le classement est global
