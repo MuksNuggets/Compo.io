@@ -113,14 +113,18 @@ button{font:inherit;color:inherit;cursor:pointer}
    sous le clavier. */
 body.enjeu{position:fixed;inset:0;width:100%;overflow:hidden}
 body.enjeu .wrap{padding:0;height:100%}
-#play.enjeu{height:var(--vue,100dvh);
+#play.enjeu{height:var(--vue,100dvh);overflow:hidden;
   display:flex;flex-direction:column;
-  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
   /* body fixe sort du flux, donc le padding de :root qui reserve l'encoche ne
      s'applique plus : le titre passait sous la barre d'etat. On le reprend ici. */
   padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(10px + env(safe-area-inset-bottom,0px))}
 #play.enjeu > *{flex:0 0 auto}
-#play.enjeu > .pitch{flex:1 1 auto;min-height:150px}
+/* Le terrain se serre pour tenir ; s'il ne peut plus, c'est cette zone-la qui
+   glisse, et elle seule. La saisie reste dessous. */
+#play.enjeu > .scene{flex:1 1 auto;min-height:0;
+  display:flex;flex-direction:column;
+  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#play.enjeu .scene > .pitch{flex:1 1 auto;min-height:150px}
 /* Quand il ne reste presque rien, on enleve ce qui n'aide pas a jouer. Les
    etiquettes partent aussi : onze noms ne tiennent pas dans 270 px sans se
    chevaucher. Le maillot allume suffit a voir la compo se remplir, et le nom
@@ -277,9 +281,15 @@ body.enjeu .wrap{padding:0;height:100%}
   <div id="listepasse"></div>
 </section>
 <section id="play" class="hidden">
-  <h2 class="title" id="ptitle"></h2>
-  <p class="sub" id="psub"></p>
-  <div class="pitch" id="pitch"></div>
+  <!-- Seule cette partie peut glisser pendant une partie. La saisie et les
+       boutons restent dessous, toujours visibles : le navigateur n'a donc
+       jamais besoin de faire defiler quoi que ce soit pour amener le clavier
+       en vue, et le titre ne part plus en haut. -->
+  <div class="scene" id="scene">
+    <h2 class="title" id="ptitle"></h2>
+    <p class="sub" id="psub"></p>
+    <div class="pitch" id="pitch"></div>
+  </div>
   <!-- Chrono et compteur encadrent l'entraineur : tout ce qui bouge pendant la
        partie est reuni sous le terrain, juste au-dessus de la saisie. -->
   <div class="barre">
@@ -625,7 +635,9 @@ function start(m,ti,ranked,note){
   NOTE_FIN=note||"";RANKED=!!ranked;M=m;TI=ti;const t=m.teams[ti];P=t.p.map(([lab,x,y,n,al])=>({lab,x,y,n,...cles(n,al)}));
   if(t.coach)P.push({lab:"ENTR",n:t.coach[0],...cles(t.coach[0],t.coach[1]),coach:true});
   found=new Set();hinted=new Set();over=false;left=TIME[m.sport];startT=Date.now();
-  montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");hauteurVisible();
+  clearTimeout(attenteFin);   // pas de validation en retard d'une partie sur l'autre
+  montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");
+  $("scene").scrollTop=0;hauteurVisible();
   $("result").classList.add("hidden");$("acts").classList.remove("hidden");
   $("ptitle").textContent=m.fx;$("psub").textContent=`${m.where}, ${m.yr}. Compo à retrouver : ${t.name}${t.coach?", entraîneur compris":""}.`;
   $("psport").textContent=m.sport==="foot"?"Football":"Rugby";$("swap").classList.toggle("hidden",m.teams.length<2);
@@ -666,9 +678,31 @@ function cherche(q,loose,deja){
   }
   return idx;
 }
+// Un nom encore en train de s'ecrire ne doit pas etre valide sous les doigts.
+// « heyman » sonne deja comme « heymans » (meme cle phonetique, « eman ») : le
+// joueur etait valide a l'avant-derniere lettre, la barre se vidait, et le S
+// tombait dedans. Tant que ce qui est tape peut encore devenir un autre nom de
+// la compo, on attend.
+function rallongeable(c){
+  if(!c)return false;
+  return P.some(p=>[...p.k].some(k=>{const kk=k.replace(/ /g,"");
+    return kk.length>c.length&&kk.startsWith(c)}));
+}
+let attenteFin=null;
 function tryMatch(q,loose){
+  clearTimeout(attenteFin);
   const idx=cherche(q,loose,false);
-  if(idx>=0){hit(idx);return true}
+  if(idx>=0){
+    // Sauf sur Entree, qui dit justement que le mot est fini : sinon on laisse
+    // le temps de taper la derniere lettre, et on valide si rien ne vient.
+    if(!loose&&rallongeable(norm(q).replace(/ /g,""))){
+      attenteFin=setTimeout(()=>{
+        if(!over&&!found.has(idx)&&$("inp").value===q)hit(idx);
+      },700);
+      return false;
+    }
+    hit(idx);return true;
+  }
   if(loose&&cherche(q,true,true)>=0){$("flash").textContent="Déjà trouvé.";$("inp").value="";return true}
   return false;
 }

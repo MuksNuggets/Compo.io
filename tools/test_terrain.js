@@ -88,10 +88,18 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
   // Mais le panneau, lui, doit pouvoir glisser : c'est la soupape quand la
   // place manque au point de rogner le haut du terrain.
   const soupape = await q.evaluate(() => {
-    const s = getComputedStyle(document.getElementById('play')).overflowY;
+    const s = getComputedStyle(document.getElementById('scene')).overflowY;
     return s === 'auto' || s === 'scroll';
   });
-  if (!soupape) ennuis.push('en partie : le panneau ne peut pas defiler');
+  if (!soupape) ennuis.push('en partie : le terrain ne peut pas glisser');
+  // La saisie et les boutons sont hors de la zone qui glisse : c'est ce qui
+  // evite que le navigateur emporte le titre pour amener le clavier en vue.
+  const dehors = await q.evaluate(() => {
+    const sc = document.getElementById('scene');
+    return !sc.contains(document.getElementById('inp'))
+        && !sc.contains(document.getElementById('giveup'));
+  });
+  if (!dehors) ennuis.push('la saisie est dans la zone qui glisse : le titre repartira en haut');
 
   // Et il faut une sortie : quand la place manque, « Abandonner » et « Retour »
   // disparaissent ; toucher le terrain doit rendre la main.

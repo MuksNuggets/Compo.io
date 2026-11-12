@@ -87,7 +87,35 @@ const FAUTES = [
     return trouve === attendu ? null : { id, saisie, attendu, trouve };
   }).filter(Boolean), FAUTES);
 
+  // --- 3. on ne valide pas un nom sous les doigts
+  // « heyman » a la meme cle phonetique que « heymans » : le joueur etait
+  // valide a l'avant-derniere lettre, la barre se vidait, et le S tombait
+  // dedans. On tape lettre a lettre, pour de vrai, et on verifie que rien ne
+  // part avant la fin.
+  const trop = await p.evaluate(async () => {
+    const m = MATCHES.find(x => x.id === 'hcup-2004');
+    const ti = m.teams.findIndex(t => t.p.some(j => j[3].includes('Heymans')));
+    if (ti < 0) return ['Heymans introuvable dans hcup-2004'];
+    start(m, ti, false);
+    const inp = document.getElementById('inp'), ennuis = [];
+    const tape = async (txt) => {
+      inp.value = '';
+      for (let i = 1; i <= txt.length; i++) {
+        inp.value = txt.slice(0, i);
+        inp.dispatchEvent(new Event('input', { bubbles: true }));
+        if (inp.value === '' && i < txt.length)
+          ennuis.push(`« ${txt} » valide des « ${txt.slice(0, i)} »`);
+        await new Promise(r => setTimeout(r, 30));
+      }
+    };
+    await tape('heymans');
+    await new Promise(r => setTimeout(r, 900));          // le temps que l'attente expire
+    if (inp.value !== '') ennuis.push('« heymans » tape en entier n’a pas ete valide');
+    return ennuis;
+  });
+
   console.log(`Noms testes : ${r.total} joueurs, nom de famille et nom complet.`);
+  console.log(`Validation anticipee : ${trop.length ? trop.join(' / ') : 'aucune'}`);
   console.log(`  pas reconnus    : ${r.rates.length}`);
   r.rates.slice(0, 15).forEach(x => console.log('    ', JSON.stringify(x)));
   console.log(`  MAUVAIS joueur  : ${r.faux.length}`);
@@ -96,5 +124,5 @@ const FAUTES = [
   mauvais.forEach(x => console.log('    ', JSON.stringify(x)));
 
   await b.close();
-  process.exit(r.rates.length || r.faux.length || mauvais.length ? 1 : 0);
+  process.exit(r.rates.length || r.faux.length || mauvais.length || trop.length ? 1 : 0);
 })();
