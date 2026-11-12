@@ -81,26 +81,37 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.click('#moi [data-va="home"]'); await p.waitForTimeout(200);
   await p.click('#home [data-va="archives"]'); await p.waitForTimeout(300);
   v('l’onglet des finales s’ouvre', JSON.stringify(await vue()) === JSON.stringify(['archives']), await vue());
-  const arch = await p.evaluate(() => ({
-    competitions: [...document.querySelectorAll('#arch .comp summary b')].map(e => e.textContent),
-    finales: document.querySelectorAll('#arch .fin').length,
-    attendu: MATCHES.filter(m => m.sport === 'foot').length,
-  }));
-  v('les competitions de foot sont la',
-    JSON.stringify(arch.competitions) === JSON.stringify(['Coupe du monde', 'Euro', 'Ligue des champions']),
-    arch.competitions);
-  v('toutes les finales de foot sont listees', arch.finales === arch.attendu, arch);
+  // Deux rangees de boutons : le sport, puis la competition. Une competition
+  // a la fois, et le compte de chacune doit couvrir toute la base.
+  const compte = async (sport) => {
+    await p.click(`#arch [data-sa="${sport}"]`); await p.waitForTimeout(220);
+    const noms = await p.evaluate(() =>
+      [...document.querySelectorAll('#arch .comps button')].map(e => e.textContent));
+    let total = 0;
+    for (const n of noms) {
+      await p.click(`#arch .comps button:text-is("${n}")`); await p.waitForTimeout(200);
+      total += await p.locator('#arch .fin').count();
+    }
+    return { noms, total, attendu: await p.evaluate(s => MATCHES.filter(m => m.sport === s).length, sport) };
+  };
+  const arch = await compte('foot');
+  v('les trois competitions de foot sont proposees',
+    JSON.stringify(arch.noms) === JSON.stringify(['CDM', 'Euro', 'LDC']), arch.noms);
+  v('elles couvrent toutes les finales de foot', arch.total === arch.attendu, arch);
 
-  await p.click('#arch [data-sa="rugby"]'); await p.waitForTimeout(250);
-  const rug = await p.evaluate(() => ({
-    competitions: [...document.querySelectorAll('#arch .comp summary b')].map(e => e.textContent),
-    finales: document.querySelectorAll('#arch .fin').length,
-    attendu: MATCHES.filter(m => m.sport === 'rugby').length,
-  }));
-  v('le rugby a ses competitions',
-    JSON.stringify(rug.competitions) === JSON.stringify(['Coupe du monde', 'Coupe d’Europe', 'Top 14']),
-    rug.competitions);
-  v('toutes les finales de rugby sont listees', rug.finales === rug.attendu, rug);
+  const rug = await compte('rugby');
+  v('les trois competitions de rugby sont proposees',
+    JSON.stringify(rug.noms) === JSON.stringify(['CDM', 'H Cup', 'Top 14']), rug.noms);
+  v('elles couvrent toutes les finales de rugby', rug.total === rug.attendu, rug);
+
+  // Au changement de sport, la competition choisie n'existe plus de l'autre
+  // cote : il faut repartir de la premiere, pas afficher une liste vide.
+  await p.click('#arch .comps button:text-is("Top 14")'); await p.waitForTimeout(200);
+  await p.click('#arch [data-sa="foot"]'); await p.waitForTimeout(220);
+  v('changer de sport retombe sur une competition valide',
+    (await p.locator('#arch .fin').count()) > 0
+    && (await p.locator('#arch .comps button.on').textContent()) === 'CDM',
+    await p.locator('#arch .comps button.on').textContent());
 
   // --- noms courts et marques d'equipe
   // Pas de blasons de clubs : ce sont des marques deposees. A la place, les
@@ -146,7 +157,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
       // Les deux camps doivent se serrer contre le score, pas partir aux bords.
       ecartGauche: Math.round(l.querySelector('.score').getBoundingClientRect().left
         - l.querySelector('.cote b').getBoundingClientRect().right),
-      entete: document.querySelector('#arch .comp summary').textContent,
+      entete: document.querySelector('#arch .combien').textContent,
     };
   });
   v('chaque equipe a son sigle', lig.manque.length === 0, lig.manque.slice(0, 8));
@@ -155,7 +166,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('les cases sont sombres', lig.noir !== 'rgba(0, 0, 0, 0)', lig.noir);
   v('plus de « noms » en bout de ligne', !/noms/.test(lig.texte), lig.texte);
   v('le score reste dans la meme colonne d’une ligne a l’autre', lig.colonne === 1, lig.colonne);
-  v('l’entete dit « Finales »', /Finales/.test(lig.entete), lig.entete);
+  v('la ligne de compte dit « finales »', /finales/.test(lig.entete), lig.entete);
   v('les camps sont serres contre le score', lig.ecartGauche >= 0 && lig.ecartGauche <= 14, lig.ecartGauche);
 
   // Les drapeaux doivent tomber sur la meme colonne d'une ligne a l'autre :
@@ -163,8 +174,8 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   const colonnes = await p.evaluate(() => {
     const x = s => [...new Set([...document.querySelectorAll(s)]
       .map(e => Math.round(e.getBoundingClientRect().left)))];
-    return { gauche: x('#arch .comp[open] .fin .cote:not(.droite) .rond'),
-             droite: x('#arch .comp[open] .fin .cote.droite .rond'),
+    return { gauche: x('#arch .fin .cote:not(.droite) .rond'),
+             droite: x('#arch .fin .cote.droite .rond'),
              clubs: document.querySelectorAll('#arch .fin b.nom .rond').length };
   });
   v('les drapeaux de gauche sont alignes', colonnes.gauche.length === 1, colonnes.gauche);
@@ -205,10 +216,14 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     const coupes = [];
     for (const sp of ['foot', 'rugby']) {
       await p.click(`#arch [data-sa="${sp}"]`); await p.waitForTimeout(180);
-      await p.evaluate(() => document.querySelectorAll('#arch .comp').forEach(d => d.open = true));
-      await p.waitForTimeout(150);
-      coupes.push(...await p.evaluate(() => [...new Set([...document.querySelectorAll('#arch .fin b.nom')]
-        .filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent))]));
+      // Toutes les competitions du sport, une par une : un nom long peut se
+      // cacher dans n'importe laquelle.
+      const combien = await p.locator('#arch .comps button').count();
+      for (let i = 0; i < combien; i++) {
+        await p.locator('#arch .comps button').nth(i).click(); await p.waitForTimeout(160);
+        coupes.push(...await p.evaluate(() => [...new Set([...document.querySelectorAll('#arch .fin b.nom')]
+          .filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent))]));
+      }
     }
     v(`aucun nom de club n’est coupe a ${large} px`, coupes.length === 0, coupes.slice(0, 4));
   }

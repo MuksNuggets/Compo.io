@@ -312,13 +312,14 @@ body.enjeu .wrap{padding:0;height:100%}
   padding:10px;font:700 15px Barlow,sans-serif}
 .sports button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .comp{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:0 0 12px;overflow:hidden}
-.comp>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:baseline;gap:10px}
-.comp>summary::-webkit-details-marker{display:none}
-.comp>summary b{font:700 16px Barlow,sans-serif}
-.comp>summary em{font-style:normal;font-size:13px;color:var(--muted)}
-.comp>summary span{margin-left:auto;font-family:"Barlow Condensed",sans-serif;font-weight:700;
-  font-size:17px;color:var(--muted)}
-.comp .dedans{padding:0 16px 6px}
+/* Deuxieme rangee : la competition. Plus discrete que le sport, pour que la
+   hierarchie se lise — le sport commande, la competition precise. */
+.comps{display:flex;gap:6px;margin:0 0 14px}
+.comps button{flex:1;border:1px solid var(--line);background:none;border-radius:999px;
+  padding:8px 6px;font:600 14px Barlow,sans-serif;color:var(--muted);white-space:nowrap}
+.comps button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.combien{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.comp .dedans{padding:2px 16px 6px}
 /* Une finale : l'annee a gauche, l'affiche a droite. Rien d'autre — c'est une
    liste qu'on parcourt, pas une fiche qu'on lit. */
 /* Une finale se lit comme un tableau d'affichage : l'annee, puis les deux
@@ -1161,22 +1162,29 @@ $("swap").onclick=e=>{e.preventDefault();start(M,1-TI,false,NOTE_FIN)};
 // un match precis, pas « ce qui est tombe le 12 ». Hors classement, parce que
 // le serveur n'accepte qu'une partie classee par jour et par sport, celle du
 // jour meme.
+// Trois competitions par sport : le code, le nom entier, et le nom du bouton.
 const COMPETS={
-  foot:[["cdm","Coupe du monde"],["euro","Euro"],["ldc","Ligue des champions"]],
-  rugby:[["rwc","Coupe du monde"],["hcup","Coupe d’Europe"],["top14","Top 14"]],
+  foot:[["cdm","Coupe du monde","CDM"],["euro","Euro","Euro"],["ldc","Ligue des champions","LDC"]],
+  rugby:[["rwc","Coupe du monde","CDM"],["hcup","Coupe d’Europe","H Cup"],["top14","Top 14","Top 14"]],
 };
-let SPORT_ARCH="foot";
+let SPORT_ARCH="foot",COMP_ARCH="cdm";
 function renderArchives(){
-  const el=$("arch");
+  const el=$("arch"),cps=COMPETS[SPORT_ARCH];
+  // Au changement de sport, la competition choisie n'existe plus : on repart
+  // de la premiere.
+  if(!cps.some(([cp])=>cp===COMP_ARCH))COMP_ARCH=cps[0][0];
+  const nom=(cps.find(([cp])=>cp===COMP_ARCH)||[])[1]||"";
+  const liste=MATCHES.filter(m=>m.comp===COMP_ARCH).sort((a,b)=>b.yr-a.yr);
   el.innerHTML=`<div class="sports">`
     +SPORTS.map(sp=>`<button data-sa="${sp}"${sp===SPORT_ARCH?' class="on"':""}>${nomSport(sp)}</button>`).join("")
     +`</div>`
-    +COMPETS[SPORT_ARCH].map(([cp,nom],i)=>{
-      const liste=MATCHES.filter(m=>m.comp===cp).sort((a,b)=>b.yr-a.yr);
-      if(!liste.length)return "";
-      return `<details class="comp"${i===0?" open":""}>`
-        +`<summary><b>${nom}</b><em>Finales</em><span>${liste.length}</span></summary>`
-        +`<div class="dedans">`
+    // Deuxieme rangee, meme principe : une competition a la fois, plutot que
+    // trois sections repliees dont deux restaient fermees.
+    +`<div class="comps">`
+    +cps.map(([cp,,court])=>`<button data-ca="${cp}"${cp===COMP_ARCH?' class="on"':""}>${court}</button>`).join("")
+    +`</div>`
+    +`<p class="combien">${nom} · ${liste.length} finales</p>`
+    +`<div class="comp"><div class="dedans">`
         +liste.map(m=>{
           // Le meilleur resultat deja obtenu sur cette compo, s'il existe :
           // bestKey est deja rempli a chaque fin de partie, classee ou non.
@@ -1190,9 +1198,9 @@ function renderArchives(){
             +duel(m)
             +`<span class="nb">${f?f.f+"/"+tot:""}</span></button>`;
         }).join("")
-        +`</div></details>`;
-    }).join("");
+    +`</div></div>`;
   el.querySelectorAll("[data-sa]").forEach(b=>b.onclick=()=>{SPORT_ARCH=b.dataset.sa;renderArchives()});
+  el.querySelectorAll("[data-ca]").forEach(b=>b.onclick=()=>{COMP_ARCH=b.dataset.ca;renderArchives()});
   el.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{
     const m=MATCHES.find(x=>x.id===b.dataset.id);
     if(m)start(m,0,false," Hors classement : seule la compo du jour compte.");

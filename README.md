@@ -70,9 +70,12 @@ ce qu'il y a à faire. L'ancienne carte disait trois fois la même chose —
 « jour n° 7 », « Finale de la Coupe du monde, 1998 », « compo à retrouver » —
 et se lisait d'autant moins bien.
 
-**Toutes les finales** — rangées par sport, puis par compétition (Coupe du
-monde, Euro, Ligue des champions ; Coupe du monde, Coupe d'Europe, Top 14),
-puis par année, de la plus récente à la plus ancienne. On vient y chercher un
+**Toutes les finales** — deux rangées de boutons, le sport puis la compétition
+(CDM, Euro, LDC ; CDM, H Cup, Top 14), et la liste des années en dessous, de la
+plus récente à la plus ancienne. Une compétition à la fois : les trois sections
+repliables d'avant laissaient deux listes fermées en permanence, ce qui est une
+façon compliquée de ne rien montrer. Changer de sport retombe sur la première
+compétition, sinon la liste serait vide. On vient y chercher un
 match précis, pas « ce qui est tombé le 12 » : c'est pour ça que la liste
 chronologique des jours passés a disparu, elle rangeait les mêmes finales dans
 un ordre dont personne n'a l'usage. Ces parties sont hors classement — le
