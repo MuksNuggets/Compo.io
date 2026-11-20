@@ -198,7 +198,9 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     (await s.evaluate(() => document.activeElement.id)) !== 'inp',
     await s.evaluate(() => document.activeElement.id));
   const aide = await s.evaluate(() => {
-    const d = document.querySelector('.pl.aide .nm');
+    // .aide et non .pl.aide : l'indice peut tomber sur l'entraineur, dont la
+    // pastille porte la classe « coach ».
+    const d = document.querySelector('.aide .nm');
     if (!d) return null;
     const vu = !!d.getClientRects().length;
     document.getElementById('play').classList.add('court');   // comme clavier ouvert
@@ -211,6 +213,48 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('la lettre de l’indice s’affiche', aide && aide.vu && /…$/.test(aide.texte), aide);
   v('elle reste visible quand l’ecran se resserre', aide && aide.serre && !aide.autres, aide);
   await s.close();
+
+  // --- 10bis. partager une compo precise
+  // Le lien porte le match et le cote a refaire : celui qui le recoit tombe
+  // sur la meme compo, pas sur celle du jour.
+  const l = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await l.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await l.route('**/functions/v1/compo', r => r.fulfill({ status: 200,
+    contentType: 'application/json', body: '{"roundId":"11111111-1111-1111-1111-111111111111","day":2}' }));
+  await l.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
+  await l.fill('#pseudo', 'leo'); await l.click('#valide'); await l.waitForTimeout(200);
+  await l.click('#home [data-va="archives"]'); await l.waitForTimeout(250);
+  await l.click('#arch .fin'); await l.waitForTimeout(350);
+  const vise = await l.evaluate(() => ({ id: M.id, ti: TI }));
+  await l.click('#giveup'); await l.waitForTimeout(400);
+  v('on peut partager une compo hors classement', await l.isVisible('#share'));
+  await l.click('#share'); await l.waitForTimeout(250);
+  const lien = (await l.evaluate(() => navigator.clipboard.readText())).split('\n')[2] || '';
+  v('le lien designe le match partage', lien.includes('m=' + vise.id), lien);
+  await l.close();
+
+  // Et le lien ouvre bien cette compo-la, sur le bon cote.
+  const d = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await d.route('**/functions/v1/compo', r => r.fulfill({ status: 200,
+    contentType: 'application/json', body: '{"roundId":"11111111-1111-1111-1111-111111111111","day":2}' }));
+  await d.goto('http://127.0.0.1:8123/?m=rwc-2015&e=1', { waitUntil: 'networkidle' });
+  await d.waitForTimeout(300);
+  v('un lien demande d’abord le pseudo', await d.isVisible('#pseudo'));
+  await d.fill('#pseudo', 'leo'); await d.click('#valide'); await d.waitForTimeout(600);
+  const ouvert = await d.evaluate(() => ({ id: M && M.id, ti: TI, classe: RANKED, reste: location.search }));
+  v('puis il ouvre la compo visee, du bon cote',
+    ouvert.id === 'rwc-2015' && ouvert.ti === 1, ouvert);
+  v('elle n’est pas classee', ouvert.classe === false, ouvert);
+  // L'adresse est nettoyee, sinon un rechargement relancerait la partie en boucle.
+  v('l’adresse est nettoyee', ouvert.reste === '', ouvert);
+  await d.reload({ waitUntil: 'networkidle' }); await d.waitForTimeout(400);
+  v('un rechargement ne relance pas la partie',
+    await d.evaluate(() => !document.getElementById('home').classList.contains('hidden')));
+  await d.goto('http://127.0.0.1:8123/?m=nimporte-quoi', { waitUntil: 'networkidle' });
+  await d.waitForTimeout(400);
+  v('un lien casse ramene a l’accueil',
+    await d.evaluate(() => !document.getElementById('home').classList.contains('hidden')));
+  await d.close();
 
   // --- 11. la mesure d'audience
   // Deux choses : qu'elle ne parte vers personne tant qu'aucun code n'est

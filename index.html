@@ -802,7 +802,7 @@ function renderDaily(){
     $("valide").onclick=()=>{
       const v=$("pseudo").value.trim();
       if(v.length<2){$("pseudo").focus();return}
-      majMoi({pseudo:v.slice(0,20)});renderDaily();
+      majMoi({pseudo:v.slice(0,20)});renderDaily();ouvreCible();
     };
     $("pseudo").onkeydown=e=>{if(e.key==="Enter")$("valide").click()};
     $("pseudo").focus();return;
@@ -843,7 +843,7 @@ function renderDaily(){
   });
   // On peut lancer le defi sans avoir joue : le message ne livre que l'affiche.
   el.querySelectorAll("[data-part]").forEach(b=>{
-    b.onclick=()=>copier(texteDefi(picks[b.dataset.part].m),b,"Partager");
+    b.onclick=()=>{const k=picks[b.dataset.part];copier(texteDefi(k.m,k.ti),b,"Partager")};
   });
   // Une compo jouee montre son classement, sans qu'on ait a repasser par la
   // fin de partie.
@@ -861,12 +861,15 @@ function miniTerrain(m,ti){
 }
 async function lancerJour(m,ti,classe,sp,b){
   if(!classe)return start(m,ti,false," Hors classement : tu as déjà joué celle du jour.");
-  const t=m.teams[ti],tot=t.p.length+(t.coach?1:0),je=moi(),libelle=b.textContent;
-  b.disabled=true;b.textContent="…";
+  const t=m.teams[ti],tot=t.p.length+(t.coach?1:0),je=moi();
+  // b est absent quand la partie vient d'un lien partage : il n'y a pas de
+  // bouton a passer en attente.
+  const libelle=b?b.textContent:"";
+  if(b){b.disabled=true;b.textContent="…"}
   let r=null;
   try{r=await api("start",{playerId:je.id,pseudo:je.pseudo,sport:sp,size:tot,
       duration:TIME[m.sport]});}catch(e){}
-  b.disabled=false;b.textContent=libelle;
+  if(b){b.disabled=false;b.textContent=libelle}
   if(r&&r.code==="deja_joue"){            // code stable, jamais le texte
     if(r.sport===sp){                     // le serveur confirme : c'est bien ce sport-là
       store.set(dailyKey(DAYN,sp),{d:DAYN,f:0,n:tot,h:0,l:0,p:0,t:0});renderDaily();
@@ -1063,7 +1066,10 @@ $("giveup").onclick=()=>end();
 // n'apporte rien a quelqu'un qu'on invite a jouer.
 const affiche=m=>m.teams.map(t=>nomCourtEquipe(t.name,m.sport)).join(" - ").toUpperCase()+" "+String(m.yr).slice(-2);
 // Le meme defi, qu'on parte de la carte du jour ou de la fin d'une partie.
-const texteDefi=m=>affiche(m)+"\nPeux-tu refaire la compo ?\n"+location.origin+location.pathname;
+// Le lien porte le match et le cote a refaire : celui qui le recoit tombe sur
+// la meme compo, pas sur celle du jour.
+const lienDefi=(m,ti)=>location.origin+location.pathname+"?m="+m.id+(ti?"&e="+ti:"");
+const texteDefi=(m,ti)=>affiche(m)+"\nPeux-tu refaire la compo ?\n"+lienDefi(m,ti);
 // Copie dans le presse-papier, et le dit sur le bouton lui-meme.
 async function copier(txt,b,libelle){
   try{await navigator.clipboard.writeText(txt);b.textContent="Copié !";
@@ -1097,13 +1103,15 @@ function end(){
     $("rtxt").textContent=`${found.size}/${tot} trouvés en ${fmt(t)}.`
       +(found.size===tot?` Bonus de ${bonus} points pour ${reste} secondes restantes.`:"")
       +(hinted.size?` ${50*hinted.size} points retirés pour ${hinted.size} indice${hinted.size>1?"s":""}.`:"");
-    $("share").hidden=false;
     majClassement(found.size,hinted.size);
-    $("share").onclick=async()=>{
-      copier(texteDefi(M),$("share"),"Partager");
-      compte("/partage","Partage");
-    };
-  } else {$("share").hidden=true;$("board").innerHTML="";}
+  } else {$("board").innerHTML="";}
+  // Partager vaut pour toute compo, pas seulement celle du jour : on peut
+  // defier quelqu'un sur une vieille finale, et le lien l'y emmene.
+  $("share").hidden=false;
+  $("share").onclick=()=>{
+    copier(texteDefi(M,TI),$("share"),"Partager");
+    compte("/partage","Partage");
+  };
   $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";
   // Combien vont au bout : c'est le chiffre qui dit si le jeu est trop dur.
   compte(`/fini/${M.sport}/${found.size===P.length?"complet":"partiel"}`,"Fin de partie");
@@ -1390,7 +1398,33 @@ function renderMoi(){
     renderMoi();renderDaily();};
 }
 
+// ---- un lien partage ---------------------------------------------------
+// On lit la cible une fois pour toutes, puis on nettoie l'adresse : sans ca,
+// un simple rechargement relancerait la partie en boucle.
+const CIBLE=(()=>{
+  const q=new URLSearchParams(location.search),id=q.get("m");
+  if(!id)return null;
+  const m=MATCHES.find(x=>x.id===id);
+  try{history.replaceState(null,"",location.pathname)}catch(e){}
+  if(!m)return null;
+  return {m,ti:q.get("e")==="1"&&m.teams.length>1?1:0};
+})();
+function ouvreCible(){
+  if(!CIBLE)return;
+  const {m,ti}=CIBLE;
+  // Si le lien tombe justement sur la compo du jour et qu'elle n'est pas
+  // faite, elle compte : ce serait absurde de la declasser parce qu'on y est
+  // arrive par un lien.
+  const pk=dailyPick(DAYN,m.sport);
+  if(pk&&pk.m.id===m.id&&pk.ti===ti&&!store.get(dailyKey(DAYN,m.sport)))
+    lancerJour(m,ti,true,m.sport,null);
+  else start(m,ti,false," Hors classement : seule la compo du jour compte.");
+}
+
 montre("home");
+// Le pseudo d'abord : sans lui on ne sait pas qui joue. La cible est reprise
+// des qu'il est donne.
+if(moi().pseudo)ouvreCible();
 </script>
 </body>
 </html>

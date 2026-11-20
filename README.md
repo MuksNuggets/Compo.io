@@ -150,6 +150,21 @@ Un troisième onglet « joueur mystère » a existé une nuit : deviner un joueu
 à partir d'indices dévoilés un à un. Retiré, pas assez bon. Il est dans
 l'historique git si l'idée revient.
 
+## Partager une compo
+
+Le lien de partage porte le match **et le côté à refaire** :
+`…/?m=hcup-2015&e=1`. Celui qui le reçoit tombe sur la même compo, pas sur
+celle du jour. Le bouton existe à la fin de **toute** partie, classée ou non —
+on peut défier quelqu'un sur une vieille finale.
+
+Si le lien tombe justement sur la compo du jour et qu'elle n'est pas faite,
+elle compte : ce serait absurde de la déclasser parce qu'on y est arrivé par
+un lien. Sinon, hors classement comme toute compo passée.
+
+L'adresse est nettoyée dès la cible lue, sans quoi un rechargement relancerait
+la partie en boucle. Et le pseudo passe d'abord : sans lui on ne sait pas qui
+joue.
+
 ## Le code de reprise
 
 Il n'y a ni compte ni mot de passe : le classement est tenu par un identifiant
