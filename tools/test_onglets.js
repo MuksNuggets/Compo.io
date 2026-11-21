@@ -241,7 +241,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     annees.every((a, i) => i === 0 || annees[i - 1] >= a), annees);
 
   await p.click('#arch .fin'); await p.waitForTimeout(250);
-  await p.click('#arch .cotes button'); await p.waitForTimeout(350);
+  await p.click('#arch .cotes [data-cote]'); await p.waitForTimeout(350);
   v('une finale se joue depuis la liste', JSON.stringify(await vue()) === JSON.stringify(['play']), await vue());
   v('elle n’est pas classee', (await p.evaluate(() => RANKED)) === false);
   await p.click('#back'); await p.waitForTimeout(250);

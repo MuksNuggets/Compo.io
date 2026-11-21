@@ -336,11 +336,15 @@ body.enjeu .wrap{padding:0;height:100%}
 .fin.fait .an{color:var(--ok)}
 .fin.ouverte{background:var(--bg);border-radius:9px}
 /* Le choix du cote, sous la ligne touchee. */
-.cotes{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:4px 2px 12px}
+.cotes{display:flex;flex-direction:column;gap:7px;padding:4px 2px 12px}
 .cotes>span{font-size:13px;color:var(--muted)}
-.cotes button{display:flex;align-items:center;gap:7px;flex:1;min-width:0;justify-content:center;
+.cote{display:flex;gap:7px}
+.cotes button{display:flex;align-items:center;gap:7px;justify-content:center;
   border:1px solid var(--line);background:var(--bg);border-radius:10px;
   padding:9px 10px;font:700 14px Barlow,sans-serif;color:inherit}
+.cote>button[data-cote]{flex:1;min-width:0}
+/* Le partage est l'action secondaire : il ne doit pas peser autant que jouer. */
+.cote>button.part{flex:0 0 auto;font-weight:600;font-size:13px;color:var(--muted)}
 .cotes button:active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .cotes button em{font:600 12px Barlow,sans-serif;font-style:normal;color:var(--ok)}
 .duel{flex:1;min-width:0;display:flex;align-items:center;gap:7px}
@@ -1236,11 +1240,17 @@ function renderArchives(){
     if(m.teams.length<2)return lance(m,0);
     b.classList.add("ouverte");
     const d=document.createElement("div");d.className="cotes";
+    // Une ligne par cote : jouer, ou envoyer le defi sans l'avoir fait. Le
+    // message ne livre que l'affiche et le cote, jamais un nom — on peut donc
+    // tres bien defier quelqu'un sur une compo qu'on n'a pas encore tentee.
     d.innerHTML=`<span>Quelle compo ?</span>`
-      +m.teams.map((t,i)=>`<button data-cote="${i}">${marque(t.name)}`
-        +`${esc(nomCourtEquipe(t.name,m.sport))}${faitDuCote(m,i)}</button>`).join("");
+      +m.teams.map((t,i)=>`<div class="cote"><button data-cote="${i}">${marque(t.name)}`
+        +`${esc(nomCourtEquipe(t.name,m.sport))}${faitDuCote(m,i)}</button>`
+        +`<button class="part" data-defi="${i}">Partager</button></div>`).join("");
     b.after(d);
     d.querySelectorAll("[data-cote]").forEach(c=>c.onclick=()=>lance(m,+c.dataset.cote));
+    d.querySelectorAll("[data-defi]").forEach(c=>c.onclick=()=>
+      copier(texteDefi(m,+c.dataset.defi),c,"Partager"));
   });
 }
 

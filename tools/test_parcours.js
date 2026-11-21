@@ -112,7 +112,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('les finales sont listees', nbFinales > 0, nbFinales);
   // Une finale a deux compos : on choisit son cote avant de jouer.
   await p.locator('#arch .fin').first().click(); await p.waitForTimeout(250);
-  await p.locator('#arch .cotes button').first().click(); await p.waitForTimeout(400);
+  await p.locator('#arch .cotes [data-cote]').first().click(); await p.waitForTimeout(400);
   v('une finale se joue hors classement', (await p.evaluate(() => RANKED)) === false);
   await p.click('#giveup'); await p.waitForTimeout(400);
   v('la raison est dite au joueur', /Hors classement/.test(await p.textContent('#rtxt')),
@@ -229,9 +229,24 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await l.fill('#pseudo', 'leo'); await l.click('#valide'); await l.waitForTimeout(200);
   await l.click('#home [data-va="archives"]'); await l.waitForTimeout(250);
   await l.click('#arch .fin'); await l.waitForTimeout(250);
+
+  // On doit pouvoir lancer le defi SANS avoir fait la compo : le message ne
+  // livre que l'affiche et le cote, jamais un nom.
+  v('chaque cote propose de jouer et de partager',
+    (await l.locator('#arch .cotes .cote').count()) === 2
+    && (await l.locator('#arch .cotes [data-defi]').count()) === 2);
+  await l.locator('#arch .cotes [data-defi]').nth(1).click(); await l.waitForTimeout(300);
+  const avantJeu = (await l.evaluate(() => navigator.clipboard.readText())).split('\n');
+  v('on partage une compo jamais tentee',
+    /e=1(&|$)/.test(avantJeu[2] || '') && /Côté/.test(avantJeu[1] || ''), avantJeu);
+  v('et on reste dans la liste',
+    await l.evaluate(() => !document.getElementById('archives').classList.contains('hidden')));
+  v('le bouton confirme la copie',
+    (await l.locator('#arch .cotes [data-defi]').nth(1).textContent()) === 'Copié !');
+
   // On prend le DEUXIEME cote : le lien doit le porter, pas retomber sur le
   // premier par defaut.
-  await l.locator('#arch .cotes button').nth(1).click(); await l.waitForTimeout(400);
+  await l.locator('#arch .cotes [data-cote]').nth(1).click(); await l.waitForTimeout(400);
   const vise = await l.evaluate(() => ({ id: M.id, ti: TI, nom: M.teams[TI].name }));
   v('on joue bien le cote choisi', vise.ti === 1, vise);
   await l.click('#giveup'); await l.waitForTimeout(400);
