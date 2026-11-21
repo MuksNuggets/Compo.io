@@ -334,6 +334,15 @@ body.enjeu .wrap{padding:0;height:100%}
   color:var(--muted);line-height:1.05}
 .fin .an em{display:block;font:400 10px/1.2 Barlow,sans-serif;font-style:normal}
 .fin.fait .an{color:var(--ok)}
+.fin.ouverte{background:var(--bg);border-radius:9px}
+/* Le choix du cote, sous la ligne touchee. */
+.cotes{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:4px 2px 12px}
+.cotes>span{font-size:13px;color:var(--muted)}
+.cotes button{display:flex;align-items:center;gap:7px;flex:1;min-width:0;justify-content:center;
+  border:1px solid var(--line);background:var(--bg);border-radius:10px;
+  padding:9px 10px;font:700 14px Barlow,sans-serif;color:inherit}
+.cotes button:active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.cotes button em{font:600 12px Barlow,sans-serif;font-style:normal;color:var(--ok)}
 .duel{flex:1;min-width:0;display:flex;align-items:center;gap:7px}
 /* Les deux camps se serrent contre le score. */
 .cote{flex:1;min-width:0;display:flex;align-items:center;gap:6px;justify-content:flex-end}
@@ -1101,7 +1110,12 @@ const affiche=m=>m.teams.map(t=>nomCourtEquipe(t.name,m.sport)).join(" - ").toUp
 // Le lien porte le match et le cote a refaire : celui qui le recoit tombe sur
 // la meme compo, pas sur celle du jour.
 const lienDefi=(m,ti)=>location.origin+location.pathname+"?m="+m.id+(ti?"&e="+ti:"");
-const texteDefi=(m,ti)=>affiche(m)+"\nPeux-tu refaire la compo ?\n"+lienDefi(m,ti);
+// « Cote X » plutot que « la compo de X » : les articles francais ne suivent
+// pas — du Bresil, de la France, de Toulouse, des All Blacks. Le lien vise
+// deja ce cote-la, autant que le message le dise.
+const texteDefi=(m,ti)=>affiche(m)
+  +"\nPeux-tu refaire la compo ? Côté "+nomCourtEquipe(m.teams[ti].name,m.sport).toUpperCase()+"."
+  +"\n"+lienDefi(m,ti);
 // Copie dans le presse-papier, et le dit sur le bouton lui-meme.
 async function copier(txt,b,libelle){
   try{await navigator.clipboard.writeText(txt);b.textContent="Copié !";
@@ -1165,6 +1179,17 @@ const COMPETS={
   rugby:[["rwc","Coupe du monde","CDM"],["hcup","Coupe d’Europe","H Cup"],["top14","Top 14","Top 14"]],
 };
 let SPORT_ARCH="foot",COMP_ARCH="cdm";
+const lance=(m,ti)=>start(m,ti,false," Hors classement : seule la compo du jour compte.");
+// Le meilleur des deux cotes, pour la pastille de la ligne.
+function meilleurDesDeux(m){
+  let b=null;
+  m.teams.forEach((_,i)=>{const x=store.get(bestKey(m,i));if(x&&(!b||x.f>b.f))b=x});
+  return b;
+}
+// Ce qu'on a deja fait d'un cote, dit sur son bouton.
+const faitDuCote=(m,i)=>{const x=store.get(bestKey(m,i));
+  const t=m.teams[i],tot=t.p.length+(t.coach?1:0);
+  return x?`<em>${x.f}/${tot}</em>`:""};
 function renderArchives(){
   const el=$("arch"),cps=COMPETS[SPORT_ARCH];
   // Au changement de sport, la competition choisie n'existe plus : on repart
@@ -1183,9 +1208,10 @@ function renderArchives(){
     +`<p class="combien">${nom} · ${liste.length} finales</p>`
     +`<div class="comp"><div class="dedans">`
         +liste.map(m=>{
-          // Le meilleur resultat deja obtenu sur cette compo, s'il existe :
-          // bestKey est deja rempli a chaque fin de partie, classee ou non.
-          const t=m.teams[0],tot=t.p.length+(t.coach?1:0),f=store.get(bestKey(m,0));
+          // Le meilleur resultat deja obtenu sur cette finale, quel que soit le
+          // cote joue : les deux se jouent, et le badge dit « tu y es passe ».
+          // Le detail par cote s'affiche dans le choix, juste en dessous.
+          const t=m.teams[0],tot=t.p.length+(t.coach?1:0),f=meilleurDesDeux(m);
           // Les deux colonnes de bord sont de largeur fixe et toujours la,
           // meme vides : le resultat qui apparait apres une partie decalait
           // toute la ligne, et on le voyait aussitot a cote des autres.
@@ -1198,9 +1224,23 @@ function renderArchives(){
     +`</div></div>`;
   el.querySelectorAll("[data-sa]").forEach(b=>b.onclick=()=>{SPORT_ARCH=b.dataset.sa;renderArchives()});
   el.querySelectorAll("[data-ca]").forEach(b=>b.onclick=()=>{COMP_ARCH=b.dataset.ca;renderArchives()});
+  // Une finale a deux compos : on demande laquelle plutot que d'imposer la
+  // premiere. Le choix s'ouvre sous la ligne touchee, et se referme si on
+  // la retouche.
   el.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{
-    const m=MATCHES.find(x=>x.id===b.dataset.id);
-    if(m)start(m,0,false," Hors classement : seule la compo du jour compte.");
+    const m=MATCHES.find(x=>x.id===b.dataset.id);if(!m)return;
+    const ouvert=b.nextElementSibling&&b.nextElementSibling.classList.contains("cotes");
+    el.querySelectorAll(".cotes").forEach(x=>x.remove());
+    el.querySelectorAll(".fin").forEach(x=>x.classList.remove("ouverte"));
+    if(ouvert)return;
+    if(m.teams.length<2)return lance(m,0);
+    b.classList.add("ouverte");
+    const d=document.createElement("div");d.className="cotes";
+    d.innerHTML=`<span>Quelle compo ?</span>`
+      +m.teams.map((t,i)=>`<button data-cote="${i}">${marque(t.name)}`
+        +`${esc(nomCourtEquipe(t.name,m.sport))}${faitDuCote(m,i)}</button>`).join("");
+    b.after(d);
+    d.querySelectorAll("[data-cote]").forEach(c=>c.onclick=()=>lance(m,+c.dataset.cote));
   });
 }
 

@@ -50,9 +50,13 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.context().grantPermissions(['clipboard-read', 'clipboard-write']);
   await p.click('[data-part="foot"]'); await p.waitForTimeout(200);
   const defi = (await p.evaluate(() => navigator.clipboard.readText())).split('\n');
+  // Deux lignes et un lien, et la deuxieme dit de quel cote : une finale a
+  // deux compos, le lien en vise une seule.
   v('le defi copie tient en deux lignes et un lien',
-    /^[A-ZÀ-Ü' .-]+ - [A-ZÀ-Ü' .-]+ \d\d$/.test(defi[0])
-    && defi[1] === 'Peux-tu refaire la compo ?' && defi.length === 3, defi);
+    /^[A-ZÀ-Ü0-9' .-]+ - [A-ZÀ-Ü0-9' .-]+ \d\d$/.test(defi[0])
+    && /^Peux-tu refaire la compo \? Côté [A-ZÀ-Ü0-9' .-]+\.$/.test(defi[1])
+    && defi.length === 3, defi);
+  v('et le lien porte le match', /[?&]m=[a-z0-9-]+/.test(defi[2]), defi[2]);
   v('le bouton dit qu’il a copie', (await p.textContent('[data-part="foot"]')) === 'Copié !');
 
   // --- profil : code de reprise
@@ -236,7 +240,8 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   v('les annees vont de la plus recente a la plus ancienne',
     annees.every((a, i) => i === 0 || annees[i - 1] >= a), annees);
 
-  await p.click('#arch .fin'); await p.waitForTimeout(350);
+  await p.click('#arch .fin'); await p.waitForTimeout(250);
+  await p.click('#arch .cotes button'); await p.waitForTimeout(350);
   v('une finale se joue depuis la liste', JSON.stringify(await vue()) === JSON.stringify(['play']), await vue());
   v('elle n’est pas classee', (await p.evaluate(() => RANKED)) === false);
   await p.click('#back'); await p.waitForTimeout(250);

@@ -71,8 +71,10 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   const copie = await p.evaluate(() => navigator.clipboard.readText());
   const lignes = copie.split('\n');
   v('le partage annonce le match en deux lignes',
-    // Les chiffres sont admis : « RACING 92 » est un nom d'equipe.
-    /^[A-ZÀ-Ü0-9' .-]+ - [A-ZÀ-Ü0-9' .-]+ \d\d$/.test(lignes[0]) && lignes[1] === 'Peux-tu refaire la compo ?', lignes);
+    // Les chiffres sont admis : « RACING 92 » est un nom d'equipe. Et la
+    // deuxieme ligne dit de quel cote : une finale a deux compos.
+    /^[A-ZÀ-Ü0-9' .-]+ - [A-ZÀ-Ü0-9' .-]+ \d\d$/.test(lignes[0])
+    && /^Peux-tu refaire la compo \? Côté [A-ZÀ-Ü0-9' .-]+\.$/.test(lignes[1]), lignes);
   v('le partage ne porte aucun carre', !/[🟩🟥🟨]/u.test(copie), copie);
 
   // --- 3bis. de retour a l'accueil, la compo jouee porte son classement
@@ -108,7 +110,9 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.click('#home [data-va="archives"]'); await p.waitForTimeout(300);
   const nbFinales = await p.locator('#arch .fin').count();
   v('les finales sont listees', nbFinales > 0, nbFinales);
-  await p.locator('#arch .fin').first().click(); await p.waitForTimeout(400);
+  // Une finale a deux compos : on choisit son cote avant de jouer.
+  await p.locator('#arch .fin').first().click(); await p.waitForTimeout(250);
+  await p.locator('#arch .cotes button').first().click(); await p.waitForTimeout(400);
   v('une finale se joue hors classement', (await p.evaluate(() => RANKED)) === false);
   await p.click('#giveup'); await p.waitForTimeout(400);
   v('la raison est dite au joueur', /Hors classement/.test(await p.textContent('#rtxt')),
@@ -224,13 +228,23 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await l.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
   await l.fill('#pseudo', 'leo'); await l.click('#valide'); await l.waitForTimeout(200);
   await l.click('#home [data-va="archives"]'); await l.waitForTimeout(250);
-  await l.click('#arch .fin'); await l.waitForTimeout(350);
-  const vise = await l.evaluate(() => ({ id: M.id, ti: TI }));
+  await l.click('#arch .fin'); await l.waitForTimeout(250);
+  // On prend le DEUXIEME cote : le lien doit le porter, pas retomber sur le
+  // premier par defaut.
+  await l.locator('#arch .cotes button').nth(1).click(); await l.waitForTimeout(400);
+  const vise = await l.evaluate(() => ({ id: M.id, ti: TI, nom: M.teams[TI].name }));
+  v('on joue bien le cote choisi', vise.ti === 1, vise);
   await l.click('#giveup'); await l.waitForTimeout(400);
   v('on peut partager une compo hors classement', await l.isVisible('#share'));
   await l.click('#share'); await l.waitForTimeout(250);
   const lien = (await l.evaluate(() => navigator.clipboard.readText())).split('\n')[2] || '';
   v('le lien designe le match partage', lien.includes('m=' + vise.id), lien);
+  v('et le cote choisi', lien.includes('e=1'), lien);
+  // Le message doit dire de quel cote : le lien seul ne se lit pas.
+  const phrase = (await l.evaluate(() => navigator.clipboard.readText())).split('\n')[1] || '';
+  v('le message dit de quel cote',
+    phrase.includes('Côté') && phrase.toUpperCase().includes(vise.nom.toUpperCase().slice(0, 6)),
+    phrase);
   await l.close();
 
   // Et le lien ouvre bien cette compo-la, sur le bon cote.

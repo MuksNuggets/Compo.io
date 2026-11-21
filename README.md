@@ -152,9 +152,17 @@ l'historique git si l'idée revient.
 
 ## Partager une compo
 
+Une finale a **deux** compos. Toucher une ligne de la liste demande donc
+laquelle, plutôt que d'imposer la première, et chaque bouton rappelle ce qu'on
+a déjà fait de ce côté-là. La pastille de la ligne, elle, montre le meilleur
+des deux : elle dit « tu y es passé ».
+
 Le lien de partage porte le match **et le côté à refaire** :
-`…/?m=hcup-2015&e=1`. Celui qui le reçoit tombe sur la même compo, pas sur
-celle du jour. Le bouton existe à la fin de **toute** partie, classée ou non —
+`…/?m=hcup-2015&e=1`, et le message le dit en toutes lettres — « Peux-tu
+refaire la compo ? Côté ARGENTINE. » On écrit « côté X » plutôt que « la compo
+de X » parce que les articles français ne suivent pas : du Brésil, de la
+France, de Toulouse, des All Blacks. Celui qui le reçoit tombe sur la même
+compo, du même côté, pas sur celle du jour. Le bouton existe à la fin de **toute** partie, classée ou non —
 on peut défier quelqu'un sur une vieille finale.
 
 Si le lien tombe justement sur la compo du jour et qu'elle n'est pas faite,
