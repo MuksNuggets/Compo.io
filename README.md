@@ -252,8 +252,13 @@ comptes.
 
 En haut du profil, et pour lui seul : nombre de joueurs, de parties, combien
 sont revenus trois jours ou plus, puis par sport le taux de compos finies, la
-part de noms trouvés, la durée moyenne et les indices consommés, et enfin les
-quatorze derniers jours.
+part de noms trouvés, la durée moyenne et les indices consommés, **la liste des
+inscrits** — qui, combien de compos, et quand on l'a vu pour la dernière fois —
+et enfin les quatorze derniers jours. Un compte sans nom ne dit rien.
+
+La date de dernier passage se lit en clair (« hier », « il y a 4 j ») : une
+date complète dans un tableau ne se lit pas, et ce qu'on veut savoir c'est si
+la personne est encore là.
 
 **La porte est au serveur, pas dans le navigateur.** Le code de reprise du
 propriétaire est posé en secret Supabase, et c'est la fonction `compo` qui
@@ -347,6 +352,13 @@ Tant que ce qui est tapé peut encore devenir un autre nom de la compo, on
 attend — 700 ms sans frappe, ou Entrée.
 
 # Tests
+
+**Aucune suite ne joint le vrai serveur.** Tant que le réseau du conteneur
+bloquait `supabase.co`, les appels échouaient d'eux-mêmes et les tests
+tournaient hors ligne sans qu'on y pense ; le jour où l'accès a été ouvert,
+ils se sont mis à interroger la base de production. `tools/hors_ligne.js`
+coupe explicitement, page par page ; une suite qui veut simuler une réponse
+pose sa propre route après.
 
 ```
 sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)

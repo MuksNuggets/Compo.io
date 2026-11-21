@@ -9,6 +9,7 @@
 // toutes les formations — un 1-4-3-3 de foot et une melee de rugby n'ont pas
 // du tout la meme densite.
 const { chromium } = require('playwright');
+const { horsLigne } = require('./hors_ligne');
 
 const COMPOS = ['rwc-2011', 'hcup-2024', 'cdm-1998', 'cdm-2026', 'top14-1993',
                 'euro-1992', 'ldc-2013', 'cdm-1990', 'hcup-1997', 'rwc-1995'];
@@ -23,7 +24,7 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
   for (const id of COMPOS) for (const w of LARGEURS) {
     // Sans ca on mesure pendant l'animation d'apparition, qui part a scale(.6) :
     // les boites rendues sont alors fausses, et le test ment.
-    const p = await b.newPage({ viewport: { width: w, height: 1000 }, reducedMotion: 'reduce' });
+    const p = await horsLigne(await b.newPage({ viewport: { width: w, height: 1000 }, reducedMotion: 'reduce' }));
     await p.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
     await p.waitForTimeout(200);
     const existe = await p.evaluate(m => !!MATCHES.find(x => x.id === m), id);
@@ -59,8 +60,8 @@ const CHEVAUCHEMENT_MAX = 8;   // px ; au-dela ca se voit
   // --- le clavier ne doit pas emporter le terrain hors de vue
   // On simule le clavier en retrecissant la fenetre : pendant une partie,
   // l'ecran doit tenir dedans, terrain entier et saisie visible, sans defilement.
-  const q = await b.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce',
-                              hasTouch: true });
+  const q = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce',
+                              hasTouch: true }));
   await q.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
   await q.waitForTimeout(300);
   await q.evaluate(() => { const m = MATCHES.find(x => x.id === 'cdm-1998'); start(m, 0, false); });

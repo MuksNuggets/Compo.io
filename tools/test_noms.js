@@ -8,6 +8,7 @@
 // fausse une partie classee. Le test mesure les deux en simulant ce qu'un
 // joueur tape vraiment, pas en comparant des cles entre elles.
 const { chromium } = require('playwright');
+const { horsLigne } = require('./hors_ligne');
 
 // Fautes plausibles, telles qu'un francophone les ecrirait de memoire.
 const FAUTES = [
@@ -47,7 +48,7 @@ const FAUTES = [
 
 (async () => {
   const b = await chromium.launch();
-  const p = await b.newPage();
+  const p = await horsLigne(await b.newPage());
   await p.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
 
   // --- 1. on tape le nom de chaque joueur : tombe-t-on sur lui ?

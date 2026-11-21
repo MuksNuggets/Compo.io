@@ -280,7 +280,25 @@ Deno.serve(async (req) => {
         .sort((a, b) => b[0] - a[0])
         .map(([day, d]) => ({ day, foot: d.foot, rugby: d.rugby, joueurs: d.joueurs }));
 
-      return json({ jour: aujourdhui, joueurs, parties, fideles, jours, sports });
+      // Qui s'est inscrit. Un compte sans nom ne dit rien : c'est la liste des
+      // gens, avec ce qu'ils ont fait et quand on les a vus pour la dernière
+      // fois. Les cent derniers vus suffisent — au-delà, c'est une liste qu'on
+      // ne lit plus.
+      const { data: gens } = await db.from("players")
+        .select("id, pseudo, created_at, last_seen")
+        .order("last_seen", { ascending: false }).limit(100);
+      // Combien de compos chacun a refaites, tous sports et toutes finales.
+      const { data: faites } = await db.from("resultats")
+        .select("player_id").limit(50000);
+      const compte = new Map<string, number>();
+      for (const r of faites ?? []) compte.set(r.player_id, (compte.get(r.player_id) ?? 0) + 1);
+
+      const inscrits = (gens ?? []).map((g: any) => ({
+        playerId: g.id, pseudo: g.pseudo, compos: compte.get(g.id) ?? 0,
+        arrive: g.created_at, vu: g.last_seen,
+      }));
+
+      return json({ jour: aujourdhui, joueurs, parties, fideles, jours, sports, inscrits });
     }
 
     return json({ code: "action", erreur: "action inconnue" }, 400);

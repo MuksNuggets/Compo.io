@@ -2,12 +2,13 @@
 //   sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)
 //   node tools/test_onglets.js
 const { chromium } = require('playwright');
+const { horsLigne } = require('./hors_ligne');
 const ok = [], ko = [];
 const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringify(d)));
 
 (async () => {
   const b = await chromium.launch();
-  const p = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const p = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   const err = [];
   p.on('pageerror', e => err.push('pageerror: ' + e.message));
   p.on('console', m => { if (m.type() === 'error' && !/fonts|TUNNEL/.test(m.text())) err.push(m.text()); });

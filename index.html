@@ -1413,6 +1413,14 @@ document.querySelectorAll("[data-va]").forEach(b=>b.onclick=()=>montre(b.dataset
 // refus, et le bloc reste vide. Rien a cacher dans le navigateur, donc rien a
 // contourner.
 const nb=n=>(n||0).toLocaleString("fr-FR");
+// « hier », « il y a 4 j » : une date complete dans un tableau ne se lit pas,
+// et ce qu'on veut savoir c'est si la personne est encore la.
+function depuisQuand(iso){
+  const t=Date.parse(iso);if(!t)return "—";
+  const j=Math.floor((Date.now()-t)/864e5);
+  return j<=0?"aujourd’hui":j===1?"hier":j<30?`il y a ${j} j`:
+    new Date(t).toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"2-digit"});
+}
 async function renderAdmin(){
   const el=$("admin");el.innerHTML="";
   let s;try{s=await api("stats",{playerId:moi().id})}catch(e){return}
@@ -1436,6 +1444,14 @@ async function renderAdmin(){
         +`<span class="chiffre"><b>${moy(x.secondes,x.n)} s</b><span>par partie</span></span>`
         +`<span class="chiffre"><b>${(moy(x.indices*10,x.n)/10).toString().replace(".",",")}</b><span>indices par partie</span></span>`
         +`</div></div>`}).join("")
+   +(s.inscrits&&s.inscrits.length?`<div class="bloc"><h3>Les inscrits</h3>
+       <table class="board" style="table-layout:fixed">
+       <thead><tr><th style="width:44%">Joueur</th><th class="n" style="width:26%">Compos</th>
+       <th class="n" style="width:30%">Vu</th></tr></thead><tbody>`
+     +s.inscrits.map(g=>`<tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.pseudo)}</td>`
+       +`<td class="n">${nb(g.compos)}</td><td class="n">${depuisQuand(g.vu)}</td></tr>`).join("")
+     +`</tbody></table>${s.joueurs>s.inscrits.length
+         ?`<p class="sub" style="margin:10px 0 0;font-size:12.5px">Les ${s.inscrits.length} derniers vus, sur ${nb(s.joueurs)}.</p>`:""}</div>`:"")
    +`<div class="bloc"><h3>Les 14 derniers jours</h3>
        <table class="board" style="table-layout:fixed">
        <thead><tr><th style="width:14%">Jour</th><th style="width:22%">Joueurs</th>

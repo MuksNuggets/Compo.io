@@ -4,12 +4,13 @@
 //   node tools/test_app.js
 // Sort en erreur si un controle echoue ou si la page leve une erreur JS.
 const { chromium } = require('playwright');
+const { horsLigne } = require('./hors_ligne');
 const ok = [], ko = [];
 const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : '  <-- ' + JSON.stringify(detail)));
 
 (async () => {
   const b = await chromium.launch();
-  const p = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const p = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   const erreurs = [];
   p.on('pageerror', e => erreurs.push('pageerror: ' + e.message));
   p.on('console', m => { if (m.type() === 'error' && !/fonts\.googleapis|ERR_TUNNEL/.test(m.text())) erreurs.push('console: ' + m.text()); });
@@ -85,7 +86,7 @@ const verifie = (nom, cond, detail) => (cond ? ok : ko).push(nom + (cond ? '' : 
   // Trois allers-retours ont ete perdus a chercher des bugs deja corriges,
   // sur un telephone qui gardait l'ancienne page en cache.
   const cas = async (reponse, attendu, quoi) => {
-    const q = await b.newPage();
+    const q = await horsLigne(await b.newPage());
     let n = 0; const err = [];
     // On compte les navigations, pas les evenements « load » : le rechargement
     // part des la reponse de version.txt, souvent avant la fin du premier

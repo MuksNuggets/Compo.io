@@ -8,12 +8,13 @@
 // Le serveur du classement est simule par une interception de requete, donc
 // rien ne part vers Supabase et le test marche hors ligne.
 const { chromium } = require('playwright');
+const { horsLigne } = require('./hors_ligne');
 const ok = [], ko = [];
 const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringify(d)));
 
 (async () => {
   const b = await chromium.launch();
-  const p = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const p = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   const err = [];
   p.on('pageerror', e => err.push('pageerror: ' + e.message));
   p.on('console', m => { if (m.type() === 'error') err.push('console: ' + m.text()); });
@@ -161,7 +162,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     ['classement rempli',  { day: 2, sport: 'foot', serie: 1, classement: [
         { rang: 1, playerId: 'x', pseudo: 'ami', points: 1300, found: 12, size: 12, seconds: 80, hints: 0 }] }, /ami/],
   ]) {
-    const q = await b.newPage({ viewport: { width: 390, height: 844 } });
+    const q = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
     await q.route('**/functions/v1/compo', async r => {
       const c = JSON.parse(r.request().postData() || '{}');
       const corps = c.action === 'start' ? { roundId: '11111111-1111-1111-1111-111111111111', day: 2, sport: c.sport }
@@ -182,7 +183,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // --- 9. navigation privee : localStorage leve a chaque acces. L'app doit
   //          rester jouable, et surtout garder la meme identite d'un appel a
   //          l'autre, sinon le classement interroge quelqu'un d'autre.
-  const w = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const w = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   await w.addInitScript(() => { Object.defineProperty(window, 'localStorage',
     { get() { throw new Error('bloque'); } }); });
   const errPrive = [];
@@ -203,7 +204,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // curseur sans ouvrir le clavier, et le premier appui sur un champ deja
   // focalise n'ouvre rien non plus — il n'y a pas de changement de focus a
   // signaler. Le joueur tapait sur une barre qui ne repondait pas.
-  const s = await b.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  const s = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true }));
   await s.route('**/functions/v1/compo', r => r.fulfill({ status: 200,
     contentType: 'application/json', body: '{"roundId":"11111111-1111-1111-1111-111111111111","day":2}' }));
   await s.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
@@ -247,7 +248,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // --- 10bis. partager une compo precise
   // Le lien porte le match et le cote a refaire : celui qui le recoit tombe
   // sur la meme compo, pas sur celle du jour.
-  const l = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const l = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   await l.context().grantPermissions(['clipboard-read', 'clipboard-write']);
   const appelsQui = [];
   await l.route('**/functions/v1/compo', r => {
@@ -316,7 +317,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await l.close();
 
   // Et le lien ouvre bien cette compo-la, sur le bon cote.
-  const d = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const d = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   await d.route('**/functions/v1/compo', r => r.fulfill({ status: 200,
     contentType: 'application/json', body: '{"roundId":"11111111-1111-1111-1111-111111111111","day":2}' }));
   await d.goto('http://127.0.0.1:8123/?m=rwc-2015&e=1', { waitUntil: 'networkidle' });
@@ -341,7 +342,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // --- 10ter. le tableau d'une compo, hors du jour
   // Le classement restait enferme dans la journee : on pouvait partager une
   // vieille finale sans jamais savoir ce que les autres y avaient fait.
-  const t = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const t = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   const appels = [];
   await t.route('**/functions/v1/compo', r => {
     const c = JSON.parse(r.request().postData() || '{}');
@@ -377,7 +378,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // renseigne, et que les chemins comptes disent bien ce qui se passe —
   // l'app ne rechargeant jamais la page, sans eux on ne verrait qu'une vue
   // par visiteur.
-  const g = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const g = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   // Supabase est notre propre serveur, et il est simule ici : ce qu'on
   // surveille, c'est qu'aucune mesure ne parte chez un tiers.
   const dehors = [];
@@ -406,7 +407,7 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // La porte est au serveur, pas dans le navigateur : on verifie qu'un joueur
   // ordinaire ne voit rien, et que le bloc n'apparait que sur reponse du
   // serveur. Le faux serveur tient le secret cote Node, comme le vrai.
-  const a = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const a = await horsLigne(await b.newPage({ viewport: { width: 390, height: 844 } }));
   let ADMIN = null, demandes = 0;
   await a.route('**/functions/v1/compo', async r => {
     const c = JSON.parse(r.request().postData() || '{}');
@@ -418,7 +419,11 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
       body: bon ? JSON.stringify({ jour: 3, joueurs: 12, parties: 30, fideles: 4,
           sports: { foot: { n: 20, complets: 5, indices: 3, secondes: 1800, trouves: 180, total: 240 },
                     rugby: { n: 10, complets: 1, indices: 6, secondes: 1500, trouves: 100, total: 160 } },
-          jours: [{ day: 3, foot: 8, rugby: 4, joueurs: 9 }] })
+          jours: [{ day: 3, foot: 8, rugby: 4, joueurs: 9 }],
+          inscrits: [
+            { playerId: 'a', pseudo: 'marco', compos: 11, vu: new Date().toISOString() },
+            { playerId: 'b', pseudo: 'ines', compos: 3,
+              vu: new Date(Date.now() - 4 * 864e5).toISOString() }] })
         : JSON.stringify({ code: 'refuse', erreur: 'reserve' }) });
   });
   await a.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
@@ -434,6 +439,13 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   const bord = await a.textContent('#admin');
   v('le proprietaire voit le tableau de bord', /Tableau de bord/.test(bord || ''), (bord || '').slice(0, 60));
   v('il porte les chiffres du serveur', /12/.test(bord) && /30/.test(bord), (bord || '').slice(0, 120));
+
+  // Un compte sans nom ne dit rien : on veut savoir QUI s'est inscrit.
+  v('le tableau de bord nomme les inscrits',
+    /marco/.test(bord) && /ines/.test(bord), (bord || '').slice(0, 200));
+  v('il dit ce que chacun a fait et quand on l’a vu',
+    /11/.test(bord) && /aujourd’hui/.test(bord) && /il y a 4 j/.test(bord),
+    (bord || '').replace(/\s+/g, ' ').slice(0, 200));
   await a.close();
 
   console.log('REUSSIS\n  ' + ok.join('\n  '));
