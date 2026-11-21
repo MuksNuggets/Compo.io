@@ -230,25 +230,26 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await l.click('#home [data-va="archives"]'); await l.waitForTimeout(250);
   await l.click('#arch .fin'); await l.waitForTimeout(250);
 
-  // On doit pouvoir lancer le defi SANS avoir fait la compo : le message ne
-  // livre que l'affiche et le cote, jamais un nom.
-  v('chaque cote propose de jouer et de partager',
-    (await l.locator('#arch .cotes .cote').count()) === 2
-    && (await l.locator('#arch .cotes [data-defi]').count()) === 2);
-  await l.locator('#arch .cotes [data-defi]').nth(1).click(); await l.waitForTimeout(300);
-  const avantJeu = (await l.evaluate(() => navigator.clipboard.readText())).split('\n');
-  v('on partage une compo jamais tentee',
-    /e=1(&|$)/.test(avantJeu[2] || '') && /Côté/.test(avantJeu[1] || ''), avantJeu);
-  v('et on reste dans la liste',
-    await l.evaluate(() => !document.getElementById('archives').classList.contains('hidden')));
-  v('le bouton confirme la copie',
-    (await l.locator('#arch .cotes [data-defi]').nth(1).textContent()) === 'Copié !');
+  // Le choix ne fait que choisir : partager se fait sur l'ecran de la compo.
+  v('le choix ne propose que les equipes',
+    (await l.locator('#arch .cotes button').count()) === 2);
 
   // On prend le DEUXIEME cote : le lien doit le porter, pas retomber sur le
   // premier par defaut.
   await l.locator('#arch .cotes [data-cote]').nth(1).click(); await l.waitForTimeout(400);
   const vise = await l.evaluate(() => ({ id: M.id, ti: TI, nom: M.teams[TI].name }));
   v('on joue bien le cote choisi', vise.ti === 1, vise);
+
+  // Partager depuis l'ecran de la compo, sans l'avoir finie : le message ne
+  // livre que l'affiche et le cote, jamais un nom.
+  v('l’ecran de la compo porte le partage', await l.isVisible('#defi'));
+  await l.click('#defi'); await l.waitForTimeout(300);
+  const enCours = (await l.evaluate(() => navigator.clipboard.readText())).split('\n');
+  v('on partage une compo en cours',
+    /e=1(&|$)/.test(enCours[2] || '') && /Côté/.test(enCours[1] || ''), enCours);
+  v('et on reste sur la compo',
+    await l.evaluate(() => !document.getElementById('play').classList.contains('hidden')));
+  v('le bouton confirme la copie', (await l.textContent('#defi')) === 'Copié !');
   await l.click('#giveup'); await l.waitForTimeout(400);
   v('on peut partager une compo hors classement', await l.isVisible('#share'));
   await l.click('#share'); await l.waitForTimeout(250);

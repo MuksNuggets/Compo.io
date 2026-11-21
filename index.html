@@ -233,6 +233,10 @@ body.enjeu .wrap{padding:0;height:100%}
 .apres a:hover{color:var(--ink)}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 16px;font-weight:600}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+/* Trois boutons sur l'ecran de la compo — Indice, Partager, Abandonner — ne
+   tiennent plus sur une rangee a 320 px. On les resserre plutot que de les
+   laisser passer a la ligne : la hauteur est ce qui manque le plus ici. */
+@media (max-width:365px){#acts .btn{padding:8px 10px;font-size:13px}}
 .result{margin-top:14px;padding:16px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
 .result .big{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:44px;line-height:1}
 .hidden{display:none!important}
@@ -336,15 +340,11 @@ body.enjeu .wrap{padding:0;height:100%}
 .fin.fait .an{color:var(--ok)}
 .fin.ouverte{background:var(--bg);border-radius:9px}
 /* Le choix du cote, sous la ligne touchee. */
-.cotes{display:flex;flex-direction:column;gap:7px;padding:4px 2px 12px}
+.cotes{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:4px 2px 12px}
 .cotes>span{font-size:13px;color:var(--muted)}
-.cote{display:flex;gap:7px}
-.cotes button{display:flex;align-items:center;gap:7px;justify-content:center;
+.cotes button{display:flex;align-items:center;gap:7px;flex:1;min-width:0;justify-content:center;
   border:1px solid var(--line);background:var(--bg);border-radius:10px;
   padding:9px 10px;font:700 14px Barlow,sans-serif;color:inherit}
-.cote>button[data-cote]{flex:1;min-width:0}
-/* Le partage est l'action secondaire : il ne doit pas peser autant que jouer. */
-.cote>button.part{flex:0 0 auto;font-weight:600;font-size:13px;color:var(--muted)}
 .cotes button:active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .cotes button em{font:600 12px Barlow,sans-serif;font-style:normal;color:var(--ok)}
 .duel{flex:1;min-width:0;display:flex;align-items:center;gap:7px}
@@ -442,7 +442,7 @@ body.enjeu .wrap{padding:0;height:100%}
        au-dessus d'elle. -->
   <p class="flash" id="flash" aria-live="polite"></p>
   <input class="inp" id="inp" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tape un joueur…" aria-label="Nom d’un joueur">
-  <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="giveup">Abandonner</button></div>
+  <div class="actions" id="acts"><button class="btn" id="hint">Indice</button><button class="btn" id="defi">Partager</button><button class="btn" id="giveup">Abandonner</button></div>
   <div class="result hidden" id="result">
     <div class="big" id="rbig"></div>
     <p id="rtxt" style="margin:6px 0 10px;color:var(--muted)"></p>
@@ -1106,6 +1106,9 @@ $("hint").onclick=()=>{if(over)return;const todo=P.map((_,i)=>i).filter(i=>!foun
   // et la lettre qu'on vient de payer disparaitrait avec les etiquettes. A la
   // souris il n'y a rien a cacher, donc on y rend la main a la saisie.
   if(matchMedia("(hover:hover) and (pointer:fine)").matches)$("inp").focus();};
+// Partager depuis l'ecran de la compo : on voit l'affiche qu'on envoie, et on
+// n'a pas besoin d'avoir fini — le message ne livre aucun nom.
+$("defi").onclick=()=>{copier(texteDefi(M,TI),$("defi"),"Partager");compte("/partage","Partage")};
 $("giveup").onclick=()=>end();
 // L'affiche du match pour le partage : FRANCE - BRESIL 98. Pas de score, il
 // n'apporte rien a quelqu'un qu'on invite a jouer.
@@ -1240,17 +1243,13 @@ function renderArchives(){
     if(m.teams.length<2)return lance(m,0);
     b.classList.add("ouverte");
     const d=document.createElement("div");d.className="cotes";
-    // Une ligne par cote : jouer, ou envoyer le defi sans l'avoir fait. Le
-    // message ne livre que l'affiche et le cote, jamais un nom — on peut donc
-    // tres bien defier quelqu'un sur une compo qu'on n'a pas encore tentee.
+    // Le choix ne fait qu'une chose : choisir. Partager se fait sur l'ecran de
+    // la compo, ou l'on voit ce qu'on envoie.
     d.innerHTML=`<span>Quelle compo ?</span>`
-      +m.teams.map((t,i)=>`<div class="cote"><button data-cote="${i}">${marque(t.name)}`
-        +`${esc(nomCourtEquipe(t.name,m.sport))}${faitDuCote(m,i)}</button>`
-        +`<button class="part" data-defi="${i}">Partager</button></div>`).join("");
+      +m.teams.map((t,i)=>`<button data-cote="${i}">${marque(t.name)}`
+        +`${esc(nomCourtEquipe(t.name,m.sport))}${faitDuCote(m,i)}</button>`).join("");
     b.after(d);
     d.querySelectorAll("[data-cote]").forEach(c=>c.onclick=()=>lance(m,+c.dataset.cote));
-    d.querySelectorAll("[data-defi]").forEach(c=>c.onclick=()=>
-      copier(texteDefi(m,+c.dataset.defi),c,"Partager"));
   });
 }
 

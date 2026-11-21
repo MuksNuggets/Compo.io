@@ -154,9 +154,12 @@ l'historique git si l'idée revient.
 
 Une finale a **deux** compos. Toucher une ligne de la liste demande donc
 laquelle, plutôt que d'imposer la première, et chaque bouton rappelle ce qu'on
-a déjà fait de ce côté-là. Chaque côté se joue **ou se partage** : le message
-ne livre que l'affiche et le côté, jamais un nom, donc rien n'oblige à avoir
-fait la compo pour la proposer à quelqu'un. La pastille de la ligne, elle, montre le meilleur
+a déjà fait de ce côté-là. Le choix ne fait que choisir.
+
+Le bouton **Partager est sur l'écran de la compo**, à côté d'Indice et
+d'Abandonner, et non dans le choix : on y voit l'affiche qu'on envoie. Il ne
+demande pas d'avoir fini — le message ne livre que l'affiche et le côté, jamais
+un nom. La pastille de la ligne, elle, montre le meilleur
 des deux : elle dit « tu y es passé ».
 
 Le lien de partage porte le match **et le côté à refaire** :
