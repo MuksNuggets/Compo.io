@@ -868,7 +868,7 @@ async function lancerJour(m,ti,classe,sp,b){
   if(b){b.disabled=true;b.textContent="…"}
   let r=null;
   try{r=await api("start",{playerId:je.id,pseudo:je.pseudo,sport:sp,size:tot,
-      duration:TIME[m.sport]});}catch(e){}
+      duration:TIME[m.sport],matchId:m.id,team:ti,classe:true});}catch(e){}
   if(b){b.disabled=false;b.textContent=libelle}
   if(r&&r.code==="deja_joue"){            // code stable, jamais le texte
     if(r.sport===sp){                     // le serveur confirme : c'est bien ce sport-là
@@ -894,6 +894,36 @@ function htmlBoard(b){
     +b.classement.map(l=>`<tr class="${l.playerId===je.id?"moi":""}"><td>${l.rang}</td><td>${esc(l.pseudo)}</td>`
       +`<td class="n">${l.points.toLocaleString("fr-FR")}</td><td class="n">${l.found}/${l.size}</td><td class="n">${fmt(l.seconds)}</td></tr>`).join("")
     +`</tbody></table>`;
+}
+// Qui a refait cette compo-la. Ni chrono ni points : le nombre de noms
+// retrouves, et c'est tout. Le classement du jour, lui, garde ses points — on
+// y joue tous la meme compo le meme jour, departager a la seconde a un sens.
+function htmlTableau(t){
+  if(!t||!t.tableau)return motBoard("Tableau indisponible pour l’instant.");
+  if(!t.tableau.length)return motBoard("Personne n’a encore refait cette compo.");
+  const je=moi();
+  return `<table class="board"><thead><tr><th>#</th><th>Joueur</th><th class="n">Trouvés</th></tr></thead><tbody>`
+    +t.tableau.map(l=>`<tr class="${l.playerId===je.id?"moi":""}"><td>${l.rang}</td><td>${esc(l.pseudo)}</td>`
+      +`<td class="n">${l.found}/${l.size}</td></tr>`).join("")
+    +`</tbody></table>`;
+}
+// Ouvre une partie hors classement cote serveur, pour que son resultat compte
+// dans le tableau du match. Sans identite, on ne trace rien.
+async function ouvreLibre(m,ti,tot){
+  ROUND=null;
+  const je=moi();if(!je.pseudo)return;
+  let r=null;
+  try{r=await api("start",{playerId:je.id,pseudo:je.pseudo,sport:m.sport,size:tot,
+    duration:TIME[m.sport],matchId:m.id,team:ti,classe:false});}catch(e){}
+  // La reponse peut arriver apres qu'on a change de compo : on ne l'accroche
+  // qu'a la partie qui l'a demandee.
+  if(r&&r.roundId&&M===m&&TI===ti&&!over)ROUND=r.roundId;
+}
+async function majTableau(trouves,indices){
+  if(ROUND){try{await api("submit",{roundId:ROUND,found:trouves,hints:indices});}catch(e){}}
+  $("board").innerHTML=motBoard("Tableau…");
+  let t=null;try{t=await api("tableau",{matchId:M.id,team:TI,playerId:moi().id});}catch(e){}
+  $("board").innerHTML=htmlTableau(t);
 }
 // Le classement du jour, par sport, garde le temps de la visite : la carte se
 // redessine a chaque retour a l'accueil, inutile de rappeler le serveur.
@@ -943,6 +973,8 @@ function start(m,ti,ranked,note){
   direClavier=false;saisieActive=false;
   montre("play");$("play").classList.add("enjeu");document.body.classList.add("enjeu");
   compte(`/partie/${m.sport}${RANKED?"":"/passee"}`,`Partie ${m.sport}`);
+  // Hors classement, mais pas hors tableau : le resultat compte pour ce match.
+  if(!RANKED)ouvreLibre(m,ti,P.length);
   $("scene").scrollTop=0;hauteurVisible();
   $("result").classList.add("hidden");$("acts").classList.remove("hidden");
   $("ptitle").textContent=afficheCourte(m);
@@ -1104,7 +1136,7 @@ function end(){
       +(found.size===tot?` Bonus de ${bonus} points pour ${reste} secondes restantes.`:"")
       +(hinted.size?` ${50*hinted.size} points retirés pour ${hinted.size} indice${hinted.size>1?"s":""}.`:"");
     majClassement(found.size,hinted.size);
-  } else {$("board").innerHTML="";}
+  } else {majTableau(found.size,hinted.size);}
   // Partager vaut pour toute compo, pas seulement celle du jour : on peut
   // defier quelqu'un sur une vieille finale, et le lien l'y emmene.
   $("share").hidden=false;

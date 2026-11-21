@@ -256,6 +256,40 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
     await d.evaluate(() => !document.getElementById('home').classList.contains('hidden')));
   await d.close();
 
+  // --- 10ter. le tableau d'une compo, hors du jour
+  // Le classement restait enferme dans la journee : on pouvait partager une
+  // vieille finale sans jamais savoir ce que les autres y avaient fait.
+  const t = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const appels = [];
+  await t.route('**/functions/v1/compo', r => {
+    const c = JSON.parse(r.request().postData() || '{}');
+    appels.push(c);
+    const corps =
+      c.action === 'start'   ? { roundId: '11111111-1111-1111-1111-111111111111', day: 3, sport: c.sport, classe: c.classe } :
+      c.action === 'submit'  ? { matchId: 'rwc-2015', team: 0, found: 4, size: 16, classe: false } :
+      c.action === 'tableau' ? { matchId: c.matchId, team: c.team, tableau: [
+          { rang: 1, playerId: 'zz', pseudo: 'marco', found: 14, size: 16 },
+          { rang: 2, playerId: c.playerId, pseudo: 'leo', found: 4, size: 16 }] } :
+      { day: 3, sport: 'foot', classement: [] };
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(corps) });
+  });
+  await t.goto('http://127.0.0.1:8123/?m=rwc-2015', { waitUntil: 'networkidle' });
+  await t.fill('#pseudo', 'leo'); await t.click('#valide'); await t.waitForTimeout(800);
+  const ouv = appels.find(v => v.action === 'start');
+  v('une compo hors classement ouvre quand meme une partie',
+    !!ouv && ouv.matchId === 'rwc-2015' && ouv.classe === false, ouv);
+  v('et la partie reste hors classement', (await t.evaluate(() => RANKED)) === false);
+
+  await t.click('#giveup'); await t.waitForTimeout(900);
+  v('le resultat est envoye', !!appels.find(x => x.action === 'submit'));
+  const dem = appels.find(x => x.action === 'tableau');
+  v('le tableau est demande pour CE match', dem && dem.matchId === 'rwc-2015' && dem.team === 0, dem);
+  const vu = (await t.textContent('#board')).replace(/\s+/g, ' ');
+  v('il montre ce que les autres ont fait', /marco/.test(vu) && /14\/16/.test(vu), vu.slice(0, 60));
+  v('il ne porte ni points ni chrono', !/pts|Score|Temps/.test(vu), vu.slice(0, 60));
+  v('le joueur y est surligne', await t.evaluate(() => !!document.querySelector('#board tr.moi')));
+  await t.close();
+
   // --- 11. la mesure d'audience
   // Deux choses : qu'elle ne parte vers personne tant qu'aucun code n'est
   // renseigne, et que les chemins comptes disent bien ce qui se passe —

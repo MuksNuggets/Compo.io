@@ -59,6 +59,12 @@ Deno.serve(async (req) => {
       const sport = sportDe(c.sport);
       if (!sport) return json({ code: "sport", erreur: "sport invalide" }, 400);
 
+      // La compo du jour est classée ; toute autre finale ne l'est pas, mais
+      // laisse quand même une trace dans resultats.
+      const classe = c.classe !== false;
+      const matchId = typeof c.matchId === "string" && /^[a-z0-9-]{3,40}$/.test(c.matchId) ? c.matchId : null;
+      const team = c.team === 1 ? 1 : 0;
+
       await db.from("players").upsert({ id: c.playerId, pseudo, last_seen: new Date().toISOString() });
 
       const code = String(c.groupCode ?? "").trim().toLowerCase();
@@ -68,18 +74,25 @@ Deno.serve(async (req) => {
         await db.from("memberships").upsert({ group_code: code, player_id: c.playerId });
       }
 
-      const { data: deja } = await db.from("scores").select("day")
-        .eq("player_id", c.playerId).eq("day", aujourdhui).eq("sport", sport).maybeSingle();
+      // Une vieille finale ne consomme pas la place du jour : on ne regarde
+      // scores que pour la compo du jour.
+      let deja: unknown = null;
+      if (classe) {
+        const { data } = await db.from("scores").select("day")
+          .eq("player_id", c.playerId).eq("day", aujourdhui).eq("sport", sport).maybeSingle();
+        deja = data;
+      }
       // Le sport est renvoye avec le refus : c'est ce qui permet a l'app de
       // distinguer cette reponse de celle d'une ancienne version de la fonction,
       // qui ne comptait qu'une partie par jour tous sports confondus.
       if (deja) return json({ code: "deja_joue", erreur: "deja joue aujourd'hui", day: aujourdhui, sport }, 409);
 
       const { data, error } = await db.from("rounds")
-        .insert({ player_id: c.playerId, day: aujourdhui, sport, size: taille, duration: duree })
+        .insert({ player_id: c.playerId, day: aujourdhui, sport, size: taille, duration: duree,
+                  match_id: matchId, team, classe })
         .select("id").single();
       if (error) throw error;
-      return json({ roundId: data.id, day: aujourdhui, sport });
+      return json({ roundId: data.id, day: aujourdhui, sport, classe });
     }
 
     // ---- fin de partie : le score est recalculé ici, le navigateur ne l'envoie pas
@@ -88,7 +101,10 @@ Deno.serve(async (req) => {
       const { data: r } = await db.from("rounds").select("*").eq("id", c.roundId).maybeSingle();
       if (!r) return json({ code: "inconnue", erreur: "partie inconnue" }, 404);
       if (r.submitted) return json({ code: "close", erreur: "partie deja close" }, 409);
-      if (r.day !== aujourdhui) return json({ code: "perimee", erreur: "partie perimee" }, 409);
+      // Une vieille finale n'a pas de date d'expiration : seule la compo du
+      // jour en a une, puisqu'elle change a minuit.
+      if (r.classe !== false && r.day !== aujourdhui)
+        return json({ code: "perimee", erreur: "partie perimee" }, 409);
 
       const trouves = Math.max(0, Math.min(Number(c.found) || 0, r.size));
       const indices = Math.max(0, Math.min(Number(c.hints) || 0, r.size));
@@ -105,6 +121,24 @@ Deno.serve(async (req) => {
       const pts = points(trouves, r.size, restant, indices, r.duration);
 
       await db.from("rounds").update({ submitted: true }).eq("id", r.id);
+
+      // La trace par match, pour toute partie : c'est elle qui permet de voir
+      // ce que les autres ont fait sur cette compo-la. On garde le MEILLEUR
+      // essai, pas le dernier — rejouer ne doit pas faire baisser sa marque.
+      if (r.match_id) {
+        const { data: avant } = await db.from("resultats").select("found")
+          .eq("player_id", r.player_id).eq("match_id", r.match_id).eq("team", r.team ?? 0).maybeSingle();
+        if (!avant || trouves > avant.found) {
+          await db.from("resultats").upsert({
+            player_id: r.player_id, match_id: r.match_id, team: r.team ?? 0,
+            found: trouves, size: r.size, hints: indices, updated_at: new Date().toISOString(),
+          });
+        }
+      }
+
+      if (r.classe === false)
+        return json({ matchId: r.match_id, team: r.team ?? 0, found: trouves, size: r.size, hints: indices, classe: false });
+
       const { error } = await db.from("scores").insert({
         player_id: r.player_id, day: r.day, sport: r.sport, found: trouves, size: r.size,
         hints: indices, time_left: restant, seconds: Math.min(ecoule, r.duration), points: pts,
@@ -155,6 +189,29 @@ Deno.serve(async (req) => {
         classement: (lignes ?? []).map((l: any, i: number) => ({
           rang: i + 1, playerId: l.player_id, pseudo: l.players?.pseudo ?? "?",
           points: l.points, found: l.found, size: l.size, seconds: l.seconds, hints: l.hints,
+        })),
+      });
+    }
+
+    // ---- qui a refait cette compo-là
+    // Sans chrono ni points : le nombre de noms retrouvés, et c'est tout.
+    // À égalité, le plus ancien passe devant — il l'a trouvé le premier.
+    if (c.action === "tableau") {
+      const matchId = String(c.matchId ?? "");
+      if (!/^[a-z0-9-]{3,40}$/.test(matchId)) return json({ code: "match", erreur: "match invalide" }, 400);
+      const team = c.team === 1 ? 1 : 0;
+
+      const { data: lignes } = await db.from("resultats")
+        .select("player_id, found, size, hints, updated_at, players(pseudo)")
+        .eq("match_id", matchId).eq("team", team)
+        .order("found", { ascending: false }).order("updated_at", { ascending: true })
+        .limit(100);
+
+      return json({
+        matchId, team,
+        tableau: (lignes ?? []).map((l: any, i: number) => ({
+          rang: i + 1, playerId: l.player_id, pseudo: l.players?.pseudo ?? "?",
+          found: l.found, size: l.size, hints: l.hints,
         })),
       });
     }

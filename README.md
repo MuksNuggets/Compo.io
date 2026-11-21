@@ -165,6 +165,21 @@ L'adresse est nettoyée dès la cible lue, sans quoi un rechargement relancerait
 la partie en boucle. Et le pseudo passe d'abord : sans lui on ne sait pas qui
 joue.
 
+## Qui a refait cette compo
+
+Chaque finale garde la trace de qui l'a refaite, et ce tableau s'affiche à la
+fin d'une partie hors classement. **Ni chrono ni points** : seulement le nombre
+de noms retrouvés. On veut savoir qui a fait mieux sur *cette* compo, pas
+départager à la seconde — et il y a d'autant moins à surveiller côté triche.
+À égalité, le plus ancien passe devant : il l'a trouvé le premier.
+
+Une seule ligne par joueur et par compo, et c'est le **meilleur** essai qui est
+gardé : rejouer ne doit pas pouvoir faire baisser sa marque.
+
+La compo du jour, elle, garde son classement à points : on y joue tous la même
+compo le même jour, départager à la seconde a un sens. Les deux cohabitent —
+`scores` pour le jour, `resultats` pour le match.
+
 ## Le code de reprise
 
 Il n'y a ni compte ni mot de passe : le classement est tenu par un identifiant
