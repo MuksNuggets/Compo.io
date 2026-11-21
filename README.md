@@ -156,6 +156,12 @@ Une finale a **deux** compos. Toucher une ligne de la liste demande donc
 laquelle, plutôt que d'imposer la première, et chaque bouton rappelle ce qu'on
 a déjà fait de ce côté-là. Le choix ne fait que choisir.
 
+À la fin d'une partie, la barre du bas disparaît : le bilan porte son propre
+**Retour**, et celui de la barre faisait double emploi, juste en dessous et
+avec le même libellé. `tools/test_parcours.js` vérifie la famille entière
+plutôt que ce seul cas — sur l'écran d'une compo, pendant la partie comme
+après, aucun libellé de bouton n'apparaît deux fois.
+
 Le bouton **Partager est sur l'écran de la compo**, à côté d'Indice et
 d'Abandonner, et non dans le choix : on y voit l'affiche qu'on envoie. Il ne
 demande pas d'avoir fini — le message ne livre que l'affiche et le côté, jamais

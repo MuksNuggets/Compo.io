@@ -147,6 +147,8 @@ body.enjeu .wrap{padding:0;height:100%}
    au demarrage n'ouvre aucun clavier. */
 #play.enjeu.clavier #acts,#play.enjeu.clavier .top.bas{display:none}
 #play.enjeu.court .sub,#play.enjeu.court .top.bas{display:none}
+/* Partie finie : le bilan a son Retour, la barre du bas n'a plus lieu d'etre. */
+#play.fini .top.bas{display:none}
 #play.enjeu.court #acts{margin:4px 0 0}
 #play.enjeu.court #acts .btn{padding:7px 12px;font-size:13px}
 #play.enjeu.court .title{font-size:21px}
@@ -989,6 +991,7 @@ function start(m,ti,ranked,note){
   // Hors classement, mais pas hors tableau : le resultat compte pour ce match.
   if(!RANKED)ouvreLibre(m,ti,P.length);
   $("scene").scrollTop=0;hauteurVisible();
+  $("play").classList.remove("fini");
   $("result").classList.add("hidden");$("acts").classList.remove("hidden");
   $("ptitle").textContent=afficheCourte(m);
   $("psub").innerHTML=`${compet(m)} ${m.yr} · compo à retrouver : `
@@ -1165,6 +1168,9 @@ function end(){
     copier(texteDefi(M,TI),$("share"),"Partager");
     compte("/partage","Partage");
   };
+  // Le bilan porte son propre Retour : celui de la barre du bas ferait double
+  // emploi, juste en dessous et avec le meme libelle.
+  $("play").classList.add("fini");
   $("acts").classList.add("hidden");$("result").classList.remove("hidden");$("flash").textContent="";
   // Combien vont au bout : c'est le chiffre qui dit si le jeu est trop dur.
   compte(`/fini/${M.sport}/${found.size===P.length?"complet":"partiel"}`,"Fin de partie");

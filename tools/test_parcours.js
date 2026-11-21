@@ -45,6 +45,16 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // --- 2. on joue celle de foot, pour de vrai
   await p.click('[data-jour="foot"]'); await p.waitForTimeout(500);
   v('la partie est lancee', await p.isVisible('#pitch'));
+  const dJeu = await p.evaluate(() => {
+    const vus = {}, deux = [];
+    document.querySelectorAll('#play button').forEach(e => {
+      if (!e.getClientRects().length) return;
+      const t = e.textContent.trim();
+      if (vus[t]) deux.push(t); else vus[t] = 1;
+    });
+    return deux;
+  });
+  v('aucun bouton en double pendant la partie', dJeu.length === 0, dJeu);
   v('elle est classee', await p.evaluate(() => RANKED === true && ROUND !== null));
   v('le clavier a sa place sous le terrain', await p.isVisible('#inp'));
 
@@ -60,6 +70,22 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   await p.waitForTimeout(600);
   v('la compo est complete', (await p.textContent('#count')) === '12/12');
   v('le panneau de fin s’affiche', await p.isVisible('#result'));
+
+  // Deux boutons « Retour » cohabitaient a la fin d'une partie : celui du
+  // bilan et celui de la barre du bas, l'un sous l'autre. On verifie la
+  // famille entiere, pas seulement ce cas : sur l'ecran d'une compo, aucun
+  // libelle de bouton ne doit apparaitre deux fois.
+  const doublons = async () => p.evaluate(() => {
+    const vus = {}, deux = [];
+    document.querySelectorAll('#play button').forEach(e => {
+      if (!e.getClientRects().length) return;
+      const t = e.textContent.trim();
+      if (vus[t]) deux.push(t + ' (' + vus[t] + ' et ' + e.id + ')'); else vus[t] = e.id || '?';
+    });
+    return deux;
+  });
+  const dFin = await doublons();
+  v('aucun bouton en double a la fin d’une partie', dFin.length === 0, dFin);
   v('le champ disparait a la fin',
     await p.evaluate(() => getComputedStyle(document.getElementById('inp')).display === 'none'));
   v('le serveur a bien ete appele', dernierSubmit && dernierSubmit.found === 12, dernierSubmit);
