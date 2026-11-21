@@ -180,6 +180,18 @@ La compo du jour, elle, garde son classement à points : on y joue tous la même
 compo le même jour, départager à la seconde a un sens. Les deux cohabitent —
 `scores` pour le jour, `resultats` pour le match.
 
+### Les migrations
+
+`supabase db push` est une commande qu'on ne joue qu'une fois, sur la vraie
+base, et Supabase n'est joignable ni depuis le conteneur ni depuis
+l'intégration continue : une erreur de syntaxe ou une contrainte mal écrite ne
+se découvrirait qu'en production. `tools/test_sql.sh` applique donc les
+migrations dans l'ordre sur un PostgreSQL local jetable, puis vérifie ce qui
+compte : le meilleur essai gardé, une seule ligne par joueur et par compo, les
+garde-fous qui refusent bien, l'ancienne fonction Edge qui continue d'écrire
+pendant la migration, et le navigateur sans aucun droit sur les nouvelles
+tables. Sans PostgreSQL installé, il le dit et sort sans échouer.
+
 ## Le code de reprise
 
 Il n'y a ni compte ni mot de passe : le classement est tenu par un identifiant
@@ -294,6 +306,7 @@ attend — 700 ms sans frappe, ou Entrée.
 ```
 sh tools/site.sh site && (cd site && python3 -m http.server 8123 &)
 node tools/test_app.js        # le jeu, le partage, les fichiers de l'app
+sh   tools/test_sql.sh        # les migrations, sur un PostgreSQL jetable
 node tools/test_onglets.js    # onglets, profil, toutes les finales
 node tools/test_noms.js       # la reconnaissance des noms, sur toute la base
 node tools/test_parcours.js   # une soirée entière, à la souris et au clavier
