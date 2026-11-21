@@ -205,6 +205,26 @@ La compo du jour, elle, garde son classement à points : on y joue tous la même
 compo le même jour, départager à la seconde a un sens. Les deux cohabitent —
 `scores` pour le jour, `resultats` pour le match.
 
+### Mettre le serveur à jour, depuis un navigateur
+
+`supabase db push` et `supabase functions deploy` supposent le CLI installé,
+une session ouverte et le projet lié — soit un ordinateur. Depuis un téléphone,
+tout se fait dans le tableau de bord Supabase :
+
+1. **SQL Editor → New query** : coller `supabase/tout_le_sql.sql` en entier,
+   puis *Run*. Ce fichier est la concaténation des migrations et il est
+   **rejouable** : inutile de savoir lesquelles sont déjà passées.
+   `tools/tout_le_sql.sh` le régénère ; `tools/test_sql.sh` vérifie qu'il passe
+   trois fois de suite et qu'il donne les mêmes tables que les migrations.
+2. **Edge Functions → compo → Edit** : remplacer tout le contenu par
+   `supabase/functions/compo/index.ts`, puis *Deploy*.
+3. **Edge Functions → Secrets** : ajouter `ADMIN_PLAYER_ID`, avec pour valeur
+   le code de reprise du propriétaire (bloc « Code de reprise » de son profil).
+
+L'ordre compte : le SQL d'abord. Les colonnes ajoutées ont toutes une valeur
+par défaut, donc l'ancienne fonction continue de tourner entre les deux étapes
+— `tools/test_sql.sh` le vérifie aussi.
+
 ### Les migrations
 
 `supabase db push` est une commande qu'on ne joue qu'une fois, sur la vraie

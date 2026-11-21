@@ -59,6 +59,24 @@ if $Q -f supabase/migrations/0004_resultats.sql >"$D/out" 2>&1
 then echo "  0004 rejouee sans effet"
 else echo "  ECHEC : 0004 n'est pas rejouable"; cat "$D/out"; ennuis=$((ennuis+1)); fi
 
+# Le fichier a coller dans le tableau de bord doit valoir les migrations, et
+# pouvoir etre passe plusieurs fois : celui qui le colle n'a pas a savoir
+# lesquelles sont deja passees.
+psql -h "$D" -p $PORT -U postgres -q -c "create database recolle" >/dev/null
+R="psql -h $D -p $PORT -U postgres -d recolle -v ON_ERROR_STOP=1 -tAq"
+if [ -f supabase/tout_le_sql.sql ]; then
+  ok=1
+  for essai in 1 2 3; do
+    $R -f supabase/tout_le_sql.sql >"$D/out" 2>&1 || { ok=0; echo "  ECHEC : tout_le_sql.sql, passage $essai"; cat "$D/out"; }
+  done
+  [ "$ok" = 1 ] && echo "  tout_le_sql.sql passe trois fois de suite" || ennuis=$((ennuis+1))
+  dit "il donne les memes tables que les migrations" \
+      "$($Q -c "select string_agg(table_name,',' order by table_name) from information_schema.tables where table_schema='public'")" \
+      "$($R -c "select string_agg(table_name,',' order by table_name) from information_schema.tables where table_schema='public'")"
+else
+  echo "  ECHEC : supabase/tout_le_sql.sql manquant (sh tools/tout_le_sql.sh)"; ennuis=$((ennuis+1))
+fi
+
 $Q -c "insert into players(id,pseudo) values
   ('11111111-1111-1111-1111-111111111111','leo'),
   ('22222222-2222-2222-2222-222222222222','marco')" >/dev/null
