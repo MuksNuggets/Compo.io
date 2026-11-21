@@ -186,8 +186,14 @@ joue.
 
 ## Qui a refait cette compo
 
-Chaque finale garde la trace de qui l'a refaite, et ce tableau s'affiche à la
-fin d'une partie hors classement. **Ni chrono ni points** : seulement le nombre
+Chaque finale garde la trace de qui l'a refaite. Le **choix du côté** en donne
+un aperçu avant de jouer — les trois meilleurs par côté, le reste compté, ou
+« personne ne l'a encore faite » — et le tableau entier s'affiche à la fin
+d'une partie hors classement. Il fallait sinon avoir joué la compo pour savoir
+si quelqu'un y était passé, ce qui est l'ordre inverse de l'utile.
+
+L'aperçu demande les deux côtés en un seul appel, et le garde pour la visite :
+rouvrir le choix ne rappelle pas le serveur. **Ni chrono ni points** : seulement le nombre
 de noms retrouvés. On veut savoir qui a fait mieux sur *cette* compo, pas
 départager à la seconde — et il y a d'autant moins à surveiller côté triche.
 À égalité, le plus ancien passe devant : il l'a trouvé le premier.

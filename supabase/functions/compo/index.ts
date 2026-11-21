@@ -199,18 +199,27 @@ Deno.serve(async (req) => {
     if (c.action === "tableau") {
       const matchId = String(c.matchId ?? "");
       if (!/^[a-z0-9-]{3,40}$/.test(matchId)) return json({ code: "match", erreur: "match invalide" }, 400);
+      // Sans côté précisé, on renvoie les deux : c'est ce qu'il faut pour dire
+      // qui a fait la compo avant de choisir laquelle refaire.
+      const lesDeux = c.team !== 0 && c.team !== 1;
       const team = c.team === 1 ? 1 : 0;
 
-      const { data: lignes } = await db.from("resultats")
-        .select("player_id, found, size, hints, updated_at, players(pseudo)")
-        .eq("match_id", matchId).eq("team", team)
+      let q = db.from("resultats")
+        .select("player_id, team, found, size, hints, updated_at, players(pseudo)")
+        .eq("match_id", matchId);
+      if (!lesDeux) q = q.eq("team", team);
+      const { data: lignes } = await q
         .order("found", { ascending: false }).order("updated_at", { ascending: true })
-        .limit(100);
+        .limit(200);
 
+      // Le rang se compte par côté : deux compos différentes ne se classent pas
+      // ensemble.
+      const rangs: Record<number, number> = { 0: 0, 1: 0 };
       return json({
-        matchId, team,
-        tableau: (lignes ?? []).map((l: any, i: number) => ({
-          rang: i + 1, playerId: l.player_id, pseudo: l.players?.pseudo ?? "?",
+        matchId, team: lesDeux ? null : team,
+        tableau: (lignes ?? []).map((l: any) => ({
+          rang: ++rangs[l.team ?? 0], playerId: l.player_id, team: l.team ?? 0,
+          pseudo: l.players?.pseudo ?? "?",
           found: l.found, size: l.size, hints: l.hints,
         })),
       });

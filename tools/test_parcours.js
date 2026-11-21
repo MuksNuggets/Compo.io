@@ -249,8 +249,24 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // sur la meme compo, pas sur celle du jour.
   const l = await b.newPage({ viewport: { width: 390, height: 844 } });
   await l.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-  await l.route('**/functions/v1/compo', r => r.fulfill({ status: 200,
-    contentType: 'application/json', body: '{"roundId":"11111111-1111-1111-1111-111111111111","day":2}' }));
+  const appelsQui = [];
+  await l.route('**/functions/v1/compo', r => {
+    const c = JSON.parse(r.request().postData() || '{}');
+    if (c.action === 'tableau') {
+      appelsQui.push(c);
+      // Les deux cotes dans une seule reponse : cote 0 joue par trois
+      // personnes et plus, cote 1 par personne.
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ matchId: c.matchId, team: null, tableau: [
+          { rang: 1, playerId: 'z1', team: 0, pseudo: 'marco', found: 12, size: 12 },
+          { rang: 2, playerId: 'z2', team: 0, pseudo: 'paul', found: 9, size: 12 },
+          { rang: 3, playerId: 'z3', team: 0, pseudo: 'ines', found: 7, size: 12 },
+          { rang: 4, playerId: 'z4', team: 0, pseudo: 'jo', found: 5, size: 12 },
+          { rang: 5, playerId: 'z5', team: 0, pseudo: 'ana', found: 3, size: 12 }] }) });
+    }
+    r.fulfill({ status: 200, contentType: 'application/json',
+      body: '{"roundId":"11111111-1111-1111-1111-111111111111","day":2}' });
+  });
   await l.goto('http://127.0.0.1:8123/', { waitUntil: 'networkidle' });
   await l.fill('#pseudo', 'leo'); await l.click('#valide'); await l.waitForTimeout(200);
   await l.click('#home [data-va="archives"]'); await l.waitForTimeout(250);
@@ -259,6 +275,16 @@ const v = (n, c, d) => (c ? ok : ko).push(n + (c ? '' : '  <-- ' + JSON.stringif
   // Le choix ne fait que choisir : partager se fait sur l'ecran de la compo.
   v('le choix ne propose que les equipes',
     (await l.locator('#arch .cotes button').count()) === 2);
+
+  // Et il dit qui l'a deja refaite, cote par cote : il fallait jusqu'ici
+  // l'avoir jouee pour le savoir.
+  await l.waitForTimeout(400);
+  const qui = (await l.textContent('#arch .qui') || '').replace(/\s+/g, ' ').trim();
+  v('le choix dit qui a fait la compo', /marco 12\/12/.test(qui), qui);
+  v('il s’arrete a trois noms et compte le reste', /et 2 autres/.test(qui), qui);
+  v('et dit quand un cote n’a jamais ete fait', /personne/.test(qui), qui);
+  v('il demande les DEUX cotes a la fois',
+    appelsQui.some(x => x.matchId && (x.team === undefined || x.team === null)), appelsQui);
 
   // On prend le DEUXIEME cote : le lien doit le porter, pas retomber sur le
   // premier par defaut.

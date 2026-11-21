@@ -342,8 +342,16 @@ body.enjeu .wrap{padding:0;height:100%}
 .fin.fait .an{color:var(--ok)}
 .fin.ouverte{background:var(--bg);border-radius:9px}
 /* Le choix du cote, sous la ligne touchee. */
-.cotes{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:4px 2px 12px}
+.cotes{display:flex;flex-direction:column;gap:8px;padding:4px 2px 12px}
 .cotes>span{font-size:13px;color:var(--muted)}
+.deuxcotes{display:flex;flex-wrap:wrap;gap:8px}
+/* Qui l'a deja refaite : un apercu, pas un tableau. Le tableau entier
+   s'affiche a la fin d'une partie. */
+.qui{font-size:12.5px;color:var(--muted);line-height:1.45}
+.qui p{margin:0}
+.qui b{color:var(--ink);font-weight:700;margin-right:5px}
+.qui .moi{color:var(--ok);font-weight:600}
+.qui i{font-style:normal;opacity:.75}
 .cotes button{display:flex;align-items:center;gap:7px;flex:1;min-width:0;justify-content:center;
   border:1px solid var(--line);background:var(--bg);border-radius:10px;
   padding:9px 10px;font:700 14px Barlow,sans-serif;color:inherit}
@@ -1193,6 +1201,28 @@ const COMPETS={
 };
 let SPORT_ARCH="foot",COMP_ARCH="cdm";
 const lance=(m,ti)=>start(m,ti,false," Hors classement : seule la compo du jour compte.");
+// Qui a deja refait cette finale, cote par cote. Il fallait jusqu'ici l'avoir
+// jouee pour le savoir : on le dit au moment de choisir, donc avant.
+const QUI={};
+async function remplitQui(m,el){
+  if(!el)return;
+  if(!QUI[m.id]){
+    let r=null;try{r=await api("tableau",{matchId:m.id,playerId:moi().id});}catch(e){}
+    if(!r||!r.tableau){el.textContent="On ne sait pas qui l’a faite pour l’instant.";return}
+    QUI[m.id]=r.tableau;
+  }
+  const je=moi();
+  el.innerHTML=m.teams.map((t,i)=>{
+    const l=QUI[m.id].filter(x=>x.team===i);
+    const nom=esc(nomCourtEquipe(t.name,m.sport));
+    if(!l.length)return `<p><b>${nom}</b> personne ne l’a encore faite</p>`;
+    // Les trois premiers suffisent : c'est un apercu, le tableau entier
+    // s'affiche a la fin d'une partie.
+    const gens=l.slice(0,3).map(x=>
+      `<span class="${x.playerId===je.id?"moi":""}">${esc(x.pseudo)} ${x.found}/${x.size}</span>`).join(", ");
+    return `<p><b>${nom}</b> ${gens}${l.length>3?` <i>et ${l.length-3} autre${l.length>4?"s":""}</i>`:""}</p>`;
+  }).join("");
+}
 // Le meilleur des deux cotes, pour la pastille de la ligne.
 function meilleurDesDeux(m){
   let b=null;
@@ -1251,11 +1281,13 @@ function renderArchives(){
     const d=document.createElement("div");d.className="cotes";
     // Le choix ne fait qu'une chose : choisir. Partager se fait sur l'ecran de
     // la compo, ou l'on voit ce qu'on envoie.
-    d.innerHTML=`<span>Quelle compo ?</span>`
+    d.innerHTML=`<span>Quelle compo ?</span><div class="deuxcotes">`
       +m.teams.map((t,i)=>`<button data-cote="${i}">${marque(t.name)}`
-        +`${esc(nomCourtEquipe(t.name,m.sport))}${faitDuCote(m,i)}</button>`).join("");
+        +`${esc(nomCourtEquipe(t.name,m.sport))}${faitDuCote(m,i)}</button>`).join("")
+      +`</div><div class="qui">Qui l’a faite…</div>`;
     b.after(d);
     d.querySelectorAll("[data-cote]").forEach(c=>c.onclick=()=>lance(m,+c.dataset.cote));
+    remplitQui(m,d.querySelector(".qui"));
   });
 }
 
