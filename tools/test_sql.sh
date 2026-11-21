@@ -88,6 +88,20 @@ $Q -c "insert into rounds(player_id,day,sport,size,duration)
 dit "l'ancienne fonction ecrit toujours" "true|0" \
     "$($Q -c "select classe||'|'||team from rounds where match_id is null limit 1")"
 
+# Les parties d'avant 0003 portent toutes sport='foot', rugby compris. 0005
+# leur rend leur sport par la taille de la compo, les deux ne se recouvrant pas.
+$Q -c "insert into scores(player_id,day,sport,found,size,points) values
+  ('11111111-1111-1111-1111-111111111111',2,'foot',8,16,600),
+  ('22222222-2222-2222-2222-222222222222',2,'foot',9,12,700)" >/dev/null
+$Q -f supabase/migrations/0005_sport_retrouve.sql >/dev/null
+dit "une compo de 16 redevient du rugby" "rugby" \
+    "$($Q -c "select sport from scores where size=16 and day=2")"
+dit "une compo de 12 reste du foot" "foot" \
+    "$($Q -c "select sport from scores where size=12 and day=2")"
+$Q -f supabase/migrations/0005_sport_retrouve.sql >/dev/null
+dit "0005 rejouee ne change plus rien" "rugby|foot" \
+    "$($Q -c "select string_agg(sport,'|' order by size desc) from scores where day=2")"
+
 # Le meilleur essai est garde : c'est la comparaison que fait submit.
 $Q -c "insert into resultats(player_id,match_id,team,found,size) values
   ('11111111-1111-1111-1111-111111111111','rwc-2015',0,9,16),

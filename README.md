@@ -225,6 +225,19 @@ L'ordre compte : le SQL d'abord. Les colonnes ajoutées ont toutes une valeur
 par défaut, donc l'ancienne fonction continue de tourner entre les deux étapes
 — `tools/test_sql.sh` le vérifie aussi.
 
+### Le sport des parties d'avant
+
+Jusqu'à `0003`, la table ne portait pas de colonne `sport` : en l'ajoutant, la
+migration lui a donné `'foot'` pour défaut, volontairement, pour que l'ancienne
+fonction continue de tourner le temps d'être redéployée. Toutes les parties
+antérieures se sont donc retrouvées étiquetées foot, rugby compris — les
+classements passés les mélangeaient, et le tableau de bord comptait du rugby
+dans « Football ».
+
+`0005` leur rend leur sport par la **taille de la compo**, les deux ne se
+recouvrant pas : 12 réponses au foot pour les 110 équipes, 15 ou 16 au rugby
+pour les 124. Aucune taille n'est commune, donc aucune ambiguïté.
+
 ### Les migrations
 
 `supabase db push` est une commande qu'on ne joue qu'une fois, sur la vraie
